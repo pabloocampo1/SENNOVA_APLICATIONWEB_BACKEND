@@ -2,52 +2,56 @@ package com.example.sennova.infrastructure.persistence.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
-@Table(name = "product")
+@Table(name = "Sample_reception")
 @Data
 @EntityListeners(AuditingEntityListener.class)
-public class ProductEntity {
+public class SampleReception {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_id")
-    private Long productId;
+    private Long sampleReceptionId;
 
     @Column(nullable = false)
-    private String analysis;
+    private LocalDate sampling_time;
 
     @Column(nullable = false)
-    private String matrix;
+    private LocalDate sampling_date;
 
     @Column(nullable = false)
-    private String method;
+    private double gross_weight;
 
     @Column(nullable = false)
-    private String equipment;
+    private double temperature;
 
     @Column(nullable = false)
-    private String units;
+    private String package_description;
 
     @Column(nullable = false)
-    private double price;
+    private String storage_conditions;
+
+    @Column(nullable = false)
+    private String observations;
+
+    private Boolean status;
+
+    private String sampleImage;
 
     @CreatedDate
     private LocalDate createAt;
 
+    @OneToOne
+    @JoinColumn(name = "sample_code", referencedColumnName = "sample_code")
+    private SampleEntity sample;
+
     @LastModifiedDate
     private LocalDate updateAt;
-
-    @Column(length = 500)
-    private String notes;
-
-    @OneToMany(mappedBy = "product")
-    private List<SampleProductAnalysisEntity> sampleProductAnalysisEntities;
 
 }

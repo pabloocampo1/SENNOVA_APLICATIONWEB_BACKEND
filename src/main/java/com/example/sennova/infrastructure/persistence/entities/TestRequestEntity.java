@@ -49,4 +49,12 @@ public class TestRequestEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id", referencedColumnName = "customer_id", nullable = false)
     private CustomerEntity customer;
+
+    @ManyToMany
+    @JoinTable(
+            name = "test_user",
+            joinColumns = @JoinColumn(name = "request_code"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<UserEntity> members;
 }

@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Table(name = "user")
 @Entity
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long userId;
 
     @Column(nullable = false, unique = true)
@@ -56,4 +58,7 @@ public class UserEntity {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     private RoleEntity role;
+
+    @ManyToMany(mappedBy = "members")
+    private List<TestRequestEntity> testRequestEntities;
 }
