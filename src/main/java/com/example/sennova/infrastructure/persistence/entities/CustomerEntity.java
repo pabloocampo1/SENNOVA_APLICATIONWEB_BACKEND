@@ -11,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "customer")
@@ -23,6 +24,7 @@ public class CustomerEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "customer_id")
     private Long customerId;
 
     @Column(nullable = false, length = 200)
@@ -49,5 +51,7 @@ public class CustomerEntity {
     @LastModifiedDate
     private LocalDate updateAt;
 
-
+    // relationships
+    @OneToMany(mappedBy = "customer")
+    private List<TestRequestEntity> testRequestEntityList;
 }
