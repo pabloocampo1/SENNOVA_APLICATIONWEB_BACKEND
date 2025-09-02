@@ -1,4 +1,4 @@
-package com.example.sennova.infrastructure.persistence.entities.inventoryEquipment;
+package com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities;
 
 
 import com.example.sennova.infrastructure.persistence.entities.UserEntity;

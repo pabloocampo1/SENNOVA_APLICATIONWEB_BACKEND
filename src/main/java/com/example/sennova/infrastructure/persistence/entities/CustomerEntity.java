@@ -1,6 +1,6 @@
 package com.example.sennova.infrastructure.persistence.entities;
 
-import com.example.sennova.infrastructure.persistence.entities.analysisRequests.TestRequestEntity;
+import com.example.sennova.infrastructure.persistence.entities.analysisRequestsEntities.TestRequestEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

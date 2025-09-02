@@ -1,4 +1,4 @@
-package com.example.sennova.infrastructure.persistence.entities.analysisRequests;
+package com.example.sennova.infrastructure.persistence.entities.analysisRequestsEntities;
 
 import jakarta.persistence.*;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.example.sennova.infrastructure.persistence.entities.inventoryEquipment;
+package com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,22 +9,23 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 
-@Table(name = "equipment_loan")
+
+@Table(name = "maintenance_record_equipment")
 @Entity
 @Data
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
-public class EquipmentLoanEntity {
+public class MaintenanceRecordsEquipment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "equipment_loan_id")
-    private Long equipmentLoanId;
-
-    private String loanPurpose;
+    @Column(name = "maintenance_record_equipment_id")
+    private Long userId;
 
     @Column(nullable = false)
-    private String username;
+    private String performed_by;
+
+    private String maintenance_type;
 
     @Column(length = 400)
     private String notes;
@@ -35,7 +36,7 @@ public class EquipmentLoanEntity {
     @LastModifiedDate
     private LocalDate updateAt;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "equipment_id", referencedColumnName = "equipment_id")
     private EquipmentEntity equipment;
 
