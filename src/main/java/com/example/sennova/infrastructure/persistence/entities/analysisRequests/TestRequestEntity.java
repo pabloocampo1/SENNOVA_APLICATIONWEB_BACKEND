@@ -1,6 +1,8 @@
-package com.example.sennova.infrastructure.persistence.entities;
+package com.example.sennova.infrastructure.persistence.entities.analysisRequests;
 
 
+import com.example.sennova.infrastructure.persistence.entities.CustomerEntity;
+import com.example.sennova.infrastructure.persistence.entities.UserEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;

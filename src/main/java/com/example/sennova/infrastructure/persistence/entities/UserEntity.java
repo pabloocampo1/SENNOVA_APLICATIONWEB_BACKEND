@@ -1,5 +1,7 @@
 package com.example.sennova.infrastructure.persistence.entities;
 
+import com.example.sennova.infrastructure.persistence.entities.analysisRequests.TestRequestEntity;
+import com.example.sennova.infrastructure.persistence.entities.inventoryEquipment.EquipmentEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -61,4 +63,7 @@ public class UserEntity {
 
     @ManyToMany(mappedBy = "members")
     private List<TestRequestEntity> testRequestEntities;
+
+    @OneToMany(mappedBy = "responsible")
+    private List<EquipmentEntity> equipmentEntityList;
 }
