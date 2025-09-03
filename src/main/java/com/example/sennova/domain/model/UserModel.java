@@ -12,6 +12,7 @@ public class UserModel {
     private Long dni;
     private String imageProfile;
     private String position;
+    private String refreshToken;
     private String username;
     private String password;
     private RoleModel role;

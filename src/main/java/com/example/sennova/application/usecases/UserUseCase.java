@@ -13,7 +13,10 @@ public interface UserUseCase {
     UserResponse update(Long userId, UserSaveRequest userSaveRequest);
     void deleteUser();
     List<UserResponse> findByName(String name);
+    UserModel findByUsername(String username);
     List<UserResponse> findByRole(String role);
     List<UserResponse> findByDni(Long dni);
     Boolean existByUsername(String username);
+    void saveRefreshToken(String refreshToken, String username);
+    void deleteRefreshToken(String username);
 }

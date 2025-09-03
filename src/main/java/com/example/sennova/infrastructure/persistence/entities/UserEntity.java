@@ -52,6 +52,8 @@ public class UserEntity {
 
     private String imageProfile;
 
+    @Column(length = 1000)
+    private String refreshToken;
 
     @CreatedDate
     private LocalDate createAt;

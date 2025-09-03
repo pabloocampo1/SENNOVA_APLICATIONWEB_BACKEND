@@ -28,6 +28,12 @@ public class AuthController {
         return new ResponseEntity<>(this.authService.login(loginRequestDto), HttpStatus.OK);
     };
 
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestParam("username") @Valid String username){
+        this.authService.logout(username);
+        return new ResponseEntity<>(HttpStatus.OK);
+    };
+
     @PostMapping("/refresh/token/{token}")
     public ResponseEntity<String> login(@PathVariable("token") @Valid String refreshToken){
         return new ResponseEntity<>(this.authService.refreshToken(refreshToken), HttpStatus.OK);

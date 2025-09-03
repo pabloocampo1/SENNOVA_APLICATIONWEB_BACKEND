@@ -87,4 +87,23 @@ public class UserAdapterImpl implements UserPersistencePort {
         UserEntity user = this.userRepositoryJpa.findByUsername(username).orElseThrow();
         return this.userMapperDbo.toModel(user);
     }
+
+    @Override
+    public void saveRefreshToken(String refreshToken, String username) {
+        System.out.println(username);
+        UserEntity user = this.userRepositoryJpa.findByUsername(username)
+                .orElseThrow();
+
+        user.setRefreshToken(refreshToken);
+        this.userRepositoryJpa.save(user);
+    }
+
+    @Override
+    public void deleteRefreshToken(String username) {
+        UserEntity user = this.userRepositoryJpa.findByUsername(username)
+                .orElseThrow();
+
+        user.setRefreshToken(null);
+        this.userRepositoryJpa.save(user);
+    }
 }

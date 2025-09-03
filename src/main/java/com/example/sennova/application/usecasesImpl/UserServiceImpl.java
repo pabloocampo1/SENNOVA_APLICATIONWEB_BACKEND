@@ -91,6 +91,11 @@ public class UserServiceImpl implements UserUseCase {
     }
 
     @Override
+    public UserModel findByUsername(String username) {
+        return this.userPersistencePort.findByUsername(username);
+    }
+
+    @Override
     public List<UserResponse> findByRole(String role) {
         return List.of();
     }
@@ -103,5 +108,15 @@ public class UserServiceImpl implements UserUseCase {
     @Override
     public Boolean existByUsername(String username) {
         return this.userPersistencePort.existByUserName(username);
+    }
+
+    @Override
+    public void saveRefreshToken(String refreshToken, String username) {
+        this.userPersistencePort.saveRefreshToken(refreshToken,username);
+    }
+
+    @Override
+    public void deleteRefreshToken( @Valid String username) {
+        this.userPersistencePort.deleteRefreshToken(username);
     }
 }

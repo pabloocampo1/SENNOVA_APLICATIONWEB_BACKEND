@@ -43,13 +43,19 @@ public class AuthServiceImpl {
             String authority = user.getAuthorities().iterator().next().getAuthority();
             HashMap<String, String> jwt = (HashMap<String, String>) this.jwtUtils.createJwt(user.getUsername(), authority);
 
-            return new LoginResponseDto(jwt.get("access-token"), jwt.get("refresh-token"), 22L, true, "Logged success", LocalDate.now(), authority);
+           LoginResponseDto response = new  LoginResponseDto(jwt.get("access-token"), jwt.get("refresh-token"), 22L, true, "Logged success", LocalDate.now(), authority);
+            this.userUseCase.saveRefreshToken( response.refreshToken(), user.getUsername());
+            return  response;
 
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
 
+    }
+
+    public void logout(String username){
+        this.userUseCase.deleteRefreshToken(username);
     }
 
     // method for validate with spring security if the username and password are correct

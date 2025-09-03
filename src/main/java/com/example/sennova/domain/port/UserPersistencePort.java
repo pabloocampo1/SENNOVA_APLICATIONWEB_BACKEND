@@ -15,5 +15,7 @@ public interface UserPersistencePort {
     List<UserModel> findByDni(Long dni);
     Boolean existByUserName(String username);
     UserModel findByUsername(String username);
+    void saveRefreshToken(String refreshToken, String username);
+    void deleteRefreshToken(String username);
 
 }
