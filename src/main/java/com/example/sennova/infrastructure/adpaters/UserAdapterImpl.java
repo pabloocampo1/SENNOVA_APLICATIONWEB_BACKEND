@@ -10,6 +10,7 @@ import com.example.sennova.infrastructure.persistence.repositoryJpa.RoleReposito
 import com.example.sennova.infrastructure.persistence.repositoryJpa.UserRepositoryJpa;
 import com.example.sennova.web.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -73,5 +74,17 @@ public class UserAdapterImpl implements UserPersistencePort {
     @Override
     public List<UserModel> findByDni(Long dni) {
         return List.of();
+    }
+
+    @Override
+    public Boolean existByUserName(String username) {
+        return this.userRepositoryJpa.existsByUsername(username);
+    }
+
+    @Override
+    public UserModel findByUsername(String username) {
+
+        UserEntity user = this.userRepositoryJpa.findByUsername(username).orElseThrow();
+        return this.userMapperDbo.toModel(user);
     }
 }

@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,13 +24,15 @@ public class UserServiceImpl implements UserUseCase {
     private final UserPersistencePort userPersistencePort;
     private final UserMapper userMapper;
     private final RolePersistencePort rolePersistencePort;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Autowired
-    public UserServiceImpl(UserPersistencePort userPersistencePort, UserMapper userMapper, RolePersistencePort rolePersistencePort) {
+    public UserServiceImpl(UserPersistencePort userPersistencePort, UserMapper userMapper, RolePersistencePort rolePersistencePort, PasswordEncoder passwordEncoder) {
         this.userPersistencePort = userPersistencePort;
         this.userMapper = userMapper;
         this.rolePersistencePort = rolePersistencePort;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -44,6 +47,9 @@ public class UserServiceImpl implements UserUseCase {
 
             // add the role to the user
             userModel.setRole(roleModel);
+
+            // encrip one password by default (the user can change after)
+            userModel.setPassword(passwordEncoder.encode(userModel.getDni().toString()));
 
             // save the user
             UserModel userSaved = this.userPersistencePort.save(userModel);
@@ -92,5 +98,10 @@ public class UserServiceImpl implements UserUseCase {
     @Override
     public List<UserResponse> findByDni(Long dni) {
         return List.of();
+    }
+
+    @Override
+    public Boolean existByUsername(String username) {
+        return this.userPersistencePort.existByUserName(username);
     }
 }

@@ -13,5 +13,7 @@ public interface UserPersistencePort {
     List<UserModel> findByName(String name);
     List<UserModel> findByRole(String role);
     List<UserModel> findByDni(Long dni);
+    Boolean existByUserName(String username);
+    UserModel findByUsername(String username);
 
 }

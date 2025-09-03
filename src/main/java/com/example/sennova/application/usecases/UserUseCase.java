@@ -15,4 +15,5 @@ public interface UserUseCase {
     List<UserResponse> findByName(String name);
     List<UserResponse> findByRole(String role);
     List<UserResponse> findByDni(Long dni);
+    Boolean existByUsername(String username);
 }
