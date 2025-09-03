@@ -28,7 +28,6 @@ public class UserAdapterImpl implements UserPersistencePort {
         this.roleRepositoryJpa = roleRepositoryJpa;
     }
 
-
     @Override
     public UserModel findById(Long id) {
         UserEntity userEntity = this.userRepositoryJpa.findById(id)
