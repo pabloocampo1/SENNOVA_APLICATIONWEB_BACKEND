@@ -6,10 +6,12 @@ import com.example.sennova.domain.model.ProductModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface ProductUseCase {
     Page<ProductModel> getAll(Pageable pageable);
     ProductModel getById(Long id);
-    ProductModel getByName(String name);
+    List<ProductModel> getByName(String name);
     void deleteProduct(Long id);
     ProductModel editProduct(ProductModel productModel, Long id);
     ProductModel save(ProductModel productModel);

@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 public record ProductRequestDto(
+        Long productId,
+
         @NotBlank(message = "El análisis es obligatorio")
         String analysis,
 

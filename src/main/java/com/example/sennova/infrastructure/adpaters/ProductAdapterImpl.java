@@ -9,7 +9,10 @@ import com.example.sennova.infrastructure.persistence.repositoryJpa.ProductRepos
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class ProductAdapterImpl implements ProductPersistencePort {
@@ -32,22 +35,37 @@ public class ProductAdapterImpl implements ProductPersistencePort {
 
     @Override
     public ProductModel findById(Long id) {
-        return null;
+         ProductEntity productEntity = this.productRepositoryJpa.findById(id)
+                 .orElseThrow(() -> new UsernameNotFoundException("No se encontro el producto"));
+
+        return this.productMapperDbo.toModel(productEntity);
     }
 
     @Override
-    public ProductModel findByName(String name) {
-        return null;
+    public List<ProductModel> findByName(String name) {
+        List<ProductEntity> productEntities = this.productRepositoryJpa.findAllByAnalysisContainingIgnoreCase(name);
+
+        return productEntities.stream().map(this.productMapperDbo::toModel).toList();
     }
 
     @Override
     public void deleteById(Long id) {
+         if (!this.productRepositoryJpa.existsById(id)){
+             throw new UsernameNotFoundException("no se encontro el usuario");
+         }
+
+         this.productRepositoryJpa.deleteById(id);
 
     }
 
     @Override
     public ProductModel update(ProductModel productModel, Long id) {
-        return null;
+        if (!this.productRepositoryJpa.existsById(id)){
+            throw new UsernameNotFoundException("no se encontro el usuario");
+        }
+         ProductEntity productEntity = this.productMapperDbo.toEntity(productModel);
+        ProductEntity productSaved = this.productRepositoryJpa.save(productEntity);
+        return this.productMapperDbo.toModel(productSaved);
     }
 
     @Override

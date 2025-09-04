@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 public class ProductServiceImpl implements ProductUseCase {
@@ -32,23 +34,31 @@ public class ProductServiceImpl implements ProductUseCase {
     }
 
     @Override
-    public ProductModel getById(Long id) {
-        return null;
+    public ProductModel getById(@Valid Long id) {
+        return this.productPersistencePort.findById(id);
     }
 
     @Override
-    public ProductModel getByName(String name) {
-        return null;
+    public List<ProductModel> getByName(@Valid String name) {
+        return this.productPersistencePort.findByName(name);
     }
 
     @Override
-    public void deleteProduct(Long id) {
-
+    @Transactional
+    public void deleteProduct(@Valid Long id) {
+        try{
+            this.productPersistencePort.deleteById(id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public ProductModel editProduct(ProductModel productModel, Long id) {
-        return null;
+    public ProductModel editProduct(@Valid ProductModel productModel, @Valid Long id) {
+        if (productModel.getProductId() == null){
+            throw new IllegalArgumentException("No se pudo realizar la edicion del usuario, intentalo mas tarde.");
+        }
+        return this.productPersistencePort.update(productModel, id);
     }
 
     @Override

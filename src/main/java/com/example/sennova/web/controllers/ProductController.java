@@ -36,7 +36,7 @@ public class ProductController {
     public ResponseEntity<Page<ProductResponseBasicDto>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "8") int elements
-    ){
+    ) {
 
         Pageable pageable = PageRequest.of(page, elements, Sort.by("createAt").descending());
         Page<ProductModel> productModelList = this.productUseCase.getAll(pageable);
@@ -45,9 +45,31 @@ public class ProductController {
 
     }
 
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<ProductResponseBasicDto> getById(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(this.productMapper.toResponse(this.productUseCase.getById(id)), HttpStatus.OK);
+    }
+
+    @GetMapping("/getByName/{name}")
+    public ResponseEntity<List<ProductResponseBasicDto>> getByName(@PathVariable("name") String name) {
+        return new ResponseEntity<>(this.productMapper.toResponse(this.productUseCase.getByName(name)), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> getByName(@PathVariable("id") Long id) {
+        this.productUseCase.deleteProduct(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping("/save")
-    public ResponseEntity<ProductResponseBasicDto> save(@RequestBody @Valid ProductRequestDto productRequestDto){
+    public ResponseEntity<ProductResponseBasicDto> save(@RequestBody @Valid ProductRequestDto productRequestDto) {
         ProductModel productModel = this.productMapper.toModel(productRequestDto);
         return new ResponseEntity<>(this.productMapper.toResponse(this.productUseCase.save(productModel)), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ProductResponseBasicDto> update(@RequestBody @Valid ProductRequestDto productRequestDto, @PathVariable("id") Long id) {
+        ProductModel productModel = this.productMapper.toModel(productRequestDto);
+        return new ResponseEntity<>(this.productMapper.toResponse(this.productUseCase.editProduct(productModel, id)), HttpStatus.OK);
     }
 }
