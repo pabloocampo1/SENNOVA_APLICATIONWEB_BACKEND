@@ -11,6 +11,7 @@ import com.example.sennova.infrastructure.persistence.repositoryJpa.UserReposito
 import com.example.sennova.web.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -52,33 +53,51 @@ public class UserAdapterImpl implements UserPersistencePort {
     }
 
     @Override
-    public UserModel update(Long userId, UserModel userModel) {
-        return null;
+    public UserModel update(UserModel userModel) {
+        UserEntity userWithDataImportant = this.userRepositoryJpa.findById(userModel.getUserId()).orElseThrow();
+        UserEntity userEntity = this.userMapperDbo.toEntity(userModel);
+
+        userEntity.setPassword(userWithDataImportant.getPassword());
+        userEntity.setUsername(userWithDataImportant.getUsername());
+        UserEntity userUpdated = this.userRepositoryJpa.save(userEntity);
+        System.out.println(userUpdated);
+
+
+        return  this.userMapperDbo.toModel(userUpdated);
     }
 
     @Override
-    public void deleteUser() {
-
+    public void deleteUser(Long userId) {
+        this.userRepositoryJpa.deleteById(userId);
     }
 
     @Override
     public List<UserModel> findByName(String name) {
-        return List.of();
+        List<UserEntity> userEntityList = this.userRepositoryJpa.findAllByNameContainingIgnoreCase(name);
+
+        return userEntityList.stream().map(this.userMapperDbo::toModel).toList();
     }
 
     @Override
-    public List<UserModel> findByRole(String role) {
-        return List.of();
+    public List<UserModel> findByRole(Long roleId) {
+        List<UserEntity> userEntityList = this.userRepositoryJpa.findAllByRole(roleId);
+        return userEntityList.stream().map(this.userMapperDbo::toModel).toList();
     }
 
     @Override
     public List<UserModel> findByDni(Long dni) {
-        return List.of();
+        List<UserEntity> userEntityList = this.userRepositoryJpa.findAllByDni(dni);
+        return userEntityList.stream().map(this.userMapperDbo::toModel).toList();
     }
 
     @Override
     public Boolean existByUserName(String username) {
         return this.userRepositoryJpa.existsByUsername(username);
+    }
+
+    @Override
+    public Boolean existsById(Long id) {
+        return this.userRepositoryJpa.existsById(id);
     }
 
     @Override

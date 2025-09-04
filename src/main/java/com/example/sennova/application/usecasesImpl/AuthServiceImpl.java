@@ -6,6 +6,7 @@ import com.example.sennova.application.usecases.AuthUseCase;
 import com.example.sennova.application.usecases.UserUseCase;
 import com.example.sennova.web.security.JwtUtils;
 import com.example.sennova.web.security.UserServiceSecurity;
+import com.example.sennova.web.security.UserSystemUserDetails;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,7 +40,7 @@ public class AuthServiceImpl {
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         try {
             Authentication authentication = this.authentication(loginRequestDto.username(), loginRequestDto.password());
-            User user = (User) authentication.getPrincipal();
+            UserSystemUserDetails user = (UserSystemUserDetails) authentication.getPrincipal();
             String authority = user.getAuthorities().iterator().next().getAuthority();
             HashMap<String, String> jwt = (HashMap<String, String>) this.jwtUtils.createJwt(user.getUsername(), authority);
 
@@ -70,7 +71,6 @@ public class AuthServiceImpl {
     public String refreshToken(String refreshToken){
 
         if (!this.jwtUtils.validateJwt(refreshToken)){
-
             throw new RuntimeException();
         }
 

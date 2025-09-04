@@ -14,6 +14,7 @@ public class UserModel {
     private String position;
     private String refreshToken;
     private String username;
+    private Boolean available;
     private String password;
     private RoleModel role;
 }

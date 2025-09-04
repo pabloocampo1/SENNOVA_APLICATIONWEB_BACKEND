@@ -8,12 +8,13 @@ public interface UserPersistencePort {
     UserModel findById(Long id);
     UserModel save(UserModel userModel);
     List<UserModel> findAll();
-    UserModel update(Long userId, UserModel userModel);
-    void deleteUser();
+    UserModel update(UserModel userModel);
+    void deleteUser(Long userId);
     List<UserModel> findByName(String name);
-    List<UserModel> findByRole(String role);
+    List<UserModel> findByRole(Long roleId);
     List<UserModel> findByDni(Long dni);
     Boolean existByUserName(String username);
+    Boolean existsById(Long id);
     UserModel findByUsername(String username);
     void saveRefreshToken(String refreshToken, String username);
     void deleteRefreshToken(String username);

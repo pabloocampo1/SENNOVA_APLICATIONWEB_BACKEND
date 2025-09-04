@@ -49,8 +49,14 @@ public class SecurityConfig {
                     request.requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh/token/**").permitAll();
 
 
+                    request.requestMatchers(HttpMethod.POST,"/api/v1/users/save").hasRole(ROLE_SUPERADMIN);
                     request.requestMatchers(HttpMethod.GET,"/api/v1/users/getAll").hasAnyRole(ROLE_SUPERADMIN, ROLE_ADMIN);
-                    request.requestMatchers(HttpMethod.POST,"/api/v1/users/save").permitAll();
+                    request.requestMatchers(HttpMethod.GET, "/api/v1/users/getByName/**").hasAnyRole(ROLE_ADMIN, ROLE_SUPERADMIN);
+                    request.requestMatchers(HttpMethod.GET, "/api/v1/users/getByDni/**").hasAnyRole(ROLE_ADMIN, ROLE_SUPERADMIN);
+                    request.requestMatchers(HttpMethod.GET, "/api/v1/users/getByRole/**").hasAnyRole(ROLE_ADMIN, ROLE_SUPERADMIN);
+                    request.requestMatchers(HttpMethod.PUT,"/api/v1/users/update/**").hasAnyRole(ROLE_SUPERADMIN, ROLE_ADMIN, ROLE_ANALYST);
+                    request.requestMatchers(HttpMethod.DELETE,"/api/v1/users/delete/**").hasAnyRole(ROLE_SUPERADMIN);
+
                     request.anyRequest().authenticated();
                         }
                 ).

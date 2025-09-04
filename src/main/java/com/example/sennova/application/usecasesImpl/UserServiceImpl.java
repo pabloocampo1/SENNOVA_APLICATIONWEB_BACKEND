@@ -2,6 +2,7 @@ package com.example.sennova.application.usecasesImpl;
 
 import com.example.sennova.application.dto.UserDtos.UserResponse;
 import com.example.sennova.application.dto.UserDtos.UserSaveRequest;
+import com.example.sennova.application.dto.UserDtos.UserUpdateDto;
 import com.example.sennova.application.mapper.UserMapper;
 import com.example.sennova.application.usecases.UserUseCase;
 import com.example.sennova.domain.model.RoleModel;
@@ -13,6 +14,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -70,39 +73,74 @@ public class UserServiceImpl implements UserUseCase {
 
     @Override
     public UserResponse findById(@Valid Long id) {
-
            UserModel userModel = this.userPersistencePort.findById(id);
            return this.userMapper.toResponse(userModel);
     }
 
     @Override
-    public UserResponse update(Long userId, UserSaveRequest userSaveRequest) {
-        return null;
+    @Transactional
+    public UserResponse update(@Valid  Long userId, @Valid UserUpdateDto userUpdateDto) {
+
+        if(!this.userPersistencePort.existsById(userUpdateDto.userId())){
+            throw  new UsernameNotFoundException("El usuario " + userUpdateDto.name() + " no existe.");
+        }
+
+        UserModel user = new UserModel();
+        user.setUserId(userUpdateDto.userId());
+        user.setName(userUpdateDto.name());
+        user.setDni(userUpdateDto.dni());
+        user.setAvailable(userUpdateDto.available());
+        user.setPhoneNumber(userUpdateDto.phoneNumber());
+        user.setEmail(userUpdateDto.email());
+        user.setImageProfile(userUpdateDto.imageProfile());
+        user.setPosition(userUpdateDto.position());
+        user.setRole(userUpdateDto.role());
+
+        return this.userMapper.toResponse(this.userPersistencePort.update(user));
     }
 
     @Override
-    public void deleteUser() {
+    public void deleteUser(@Valid Long userId) {
+        if(!this.userPersistencePort.existsById(userId)){
+            throw new UsernameNotFoundException("No se encontro ese usuario para eliminar");
+        }
 
+        this.userPersistencePort.deleteUser(userId);
     }
 
     @Override
     public List<UserResponse> findByName(String name) {
-        return List.of();
+       List<UserResponse> userResponseList = this.userPersistencePort.findByName(name)
+               .stream()
+               .map(this.userMapper::toResponse)
+               .toList();
+
+        return userResponseList;
     }
 
     @Override
-    public UserModel findByUsername(String username) {
+    public UserModel findByUsername(@Valid String username) {
         return this.userPersistencePort.findByUsername(username);
     }
 
     @Override
-    public List<UserResponse> findByRole(String role) {
-        return List.of();
+    public List<UserResponse> findByRole(@Valid Long roleId) {
+        List<UserResponse> userResponseList = this.userPersistencePort.findByRole(roleId)
+                .stream()
+                .map(this.userMapper::toResponse)
+                .toList();
+
+        return userResponseList;
     }
 
     @Override
     public List<UserResponse> findByDni(Long dni) {
-        return List.of();
+        List<UserResponse> userResponseList = this.userPersistencePort.findByDni(dni)
+                .stream()
+                .map(this.userMapper::toResponse)
+                .toList();
+
+        return userResponseList;
     }
 
     @Override

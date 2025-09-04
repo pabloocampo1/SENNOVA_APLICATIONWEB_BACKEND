@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceSecurity implements UserDetailsService {
 
@@ -26,10 +28,11 @@ public class UserServiceSecurity implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         UserModel user = this.userPersistencePort.findByUsername(username);
-        return User.builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .authorities(new SimpleGrantedAuthority("ROLE_" +  user.getRole().getNameRole()))
-                .build();
+        return new UserSystemUserDetails(
+                user.getUserId(),
+                user.getUsername(),
+                user.getPassword(),
+                List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().getNameRole()))
+        );
     }
 }
