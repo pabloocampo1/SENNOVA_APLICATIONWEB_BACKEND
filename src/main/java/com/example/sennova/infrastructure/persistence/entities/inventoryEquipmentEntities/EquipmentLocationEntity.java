@@ -21,7 +21,7 @@ public class EquipmentLocationEntity {
     private Long equipmentLocationId;
 
     @Column(nullable = false)
-    private String location_name;
+    private String locationName;
 
     @CreatedDate
     private LocalDate createAt;

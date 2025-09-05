@@ -41,6 +41,7 @@ public class EquipmentEntity {
 
     private double equipment_cost;
 
+    // fk with other entities
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private UserEntity responsible;
@@ -53,6 +54,7 @@ public class EquipmentEntity {
     @JoinColumn(name = "usage_id", referencedColumnName = "equipment_usage_id")
     private EquipmentUsageEntity usage;
 
+    // instance of reference for relationship
     @OneToMany(mappedBy = "equipment")
     private List<EquipmentLoanEntity> loanEntities;
 
