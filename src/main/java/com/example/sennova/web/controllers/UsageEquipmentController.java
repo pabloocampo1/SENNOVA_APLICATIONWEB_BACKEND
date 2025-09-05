@@ -11,12 +11,18 @@ import com.example.sennova.domain.model.EquipmentLocationModel;
 import com.example.sennova.domain.model.EquipmentUsageModel;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/v1/usage")
+@RequestMapping("/api/v1/usage/equipment")
 public class UsageEquipmentController {
 
     private final UsageEquipmentUseCase usageEquipmentUseCase;
@@ -41,8 +47,45 @@ public class UsageEquipmentController {
             @RequestBody @Valid UsageEquipmentRequestDto usageEquipmentRequestDto,
             @PathVariable("id") @Valid Long id) {
         EquipmentUsageModel equipmentLocationModel = this.equipmentUsageMapper.toModel(usageEquipmentRequestDto);
-        EquipmentUsageModel usageModelSaved = this.usageEquipmentUseCase.save(equipmentLocationModel);
+        EquipmentUsageModel usageModelSaved = this.usageEquipmentUseCase.update(id, equipmentLocationModel);
         return new ResponseEntity<>(this.equipmentUsageMapper.toResponse(usageModelSaved), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllByName/{name}")
+    public ResponseEntity<List<UsageEquipmentResponseDto>> getAllByName(@PathVariable("name") String name){
+        return new ResponseEntity<>(this.usageEquipmentUseCase.getAllByName(name).stream().map(this.equipmentUsageMapper::toResponse).toList(), HttpStatus.OK);
+    }
+
+
+
+    @GetMapping("/getAll")
+    public ResponseEntity<List<UsageEquipmentResponseDto>> getAll(){
+       try{
+           return new ResponseEntity<>(this.usageEquipmentUseCase.getAll().stream().map(this.equipmentUsageMapper::toResponse).toList(), HttpStatus.OK);
+       } catch (Exception e) {
+           e.printStackTrace();
+           throw new RuntimeException(e);
+       }
+    }
+
+    @GetMapping("/getAllPage")
+    public ResponseEntity<Page<UsageEquipmentResponseDto>> getAllPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int elements
+    ){
+        Pageable pageable = PageRequest.of(page, elements, Sort.by("createAt").descending() );
+        return new ResponseEntity<>(this.usageEquipmentUseCase.getAll(pageable).map(this.equipmentUsageMapper::toResponse), HttpStatus.OK);
+    }
+
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<UsageEquipmentResponseDto> getById(@PathVariable("id") Long id){
+        return new ResponseEntity<>(this.equipmentUsageMapper.toResponse(this.usageEquipmentUseCase.getById(id)), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id){
+        this.usageEquipmentUseCase.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

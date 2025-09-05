@@ -22,7 +22,7 @@ public class EquipmentUsageEntity {
     private Long equipmentUsageId;
 
     @Column(nullable = false)
-    private String usage_name;
+    private String usageName;
 
     @CreatedDate
     private LocalDate createAt;
