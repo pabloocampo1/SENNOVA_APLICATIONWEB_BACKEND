@@ -4,9 +4,12 @@ package com.example.sennova.infrastructure.persistence.entities.inventoryEquipme
 import com.example.sennova.infrastructure.persistence.entities.UserEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -48,6 +51,12 @@ public class EquipmentEntity {
 
 
     private Boolean available;
+
+    @CreatedDate
+    private LocalDateTime createAt;
+
+    @LastModifiedDate
+    private LocalDateTime updateAt;
 
     // fk with other entities
     @ManyToOne

@@ -9,9 +9,10 @@ import java.util.List;
 
 public interface EquipmentUseCase {
     EquipmentModel save(EquipmentModel equipmentModel,Long responsibleId, Long locationId, Long usageId);
-    EquipmentModel update(EquipmentModel equipmentModel, Long id);
+    EquipmentModel update(EquipmentModel equipmentModel, Long id,Long responsibleId, Long locationId, Long usageId);
     EquipmentModel getById(Long id);
-    List<EquipmentModel> getAllById(String name);
+    List<EquipmentModel> getAllByName(String name);
+    List<EquipmentModel> getAllByInternalCode(String internalCode);
     Page<EquipmentModel> getAll(Pageable pageable);
     List<EquipmentModel> getAll();
     void deleteById(Long id);

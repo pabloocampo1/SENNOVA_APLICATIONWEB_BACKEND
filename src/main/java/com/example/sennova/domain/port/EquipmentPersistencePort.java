@@ -11,10 +11,11 @@ import java.util.List;
 public interface EquipmentPersistencePort {
 
     EquipmentModel save(EquipmentModel equipmentModel);
-    EquipmentModel update(Long id, EquipmentModel equipmentModel);
+    EquipmentModel update( EquipmentModel equipmentModel);
     Page<EquipmentModel> getAllPage(Pageable pageable);
     EquipmentModel findById(Long id);
-    EquipmentModel findByInternalCode(Long internalCode);
+    List<EquipmentModel> findAllByInternalCode(String internalCode);
+    List<EquipmentModel> findAll();
     List<EquipmentModel> findAllByName(String name);
     Boolean existById(Long id);
     void changeState(Long id, String state);

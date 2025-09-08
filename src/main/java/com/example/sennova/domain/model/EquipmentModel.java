@@ -1,8 +1,10 @@
 package com.example.sennova.domain.model;
 
 import jakarta.validation.constraints.*;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class EquipmentModel {
     private Long equipmentId;
@@ -47,6 +49,26 @@ public class EquipmentModel {
     private EquipmentLocationModel location;
 
     private EquipmentUsageModel usage;
+
+    private LocalDateTime createAt;
+
+    public LocalDateTime getUpdateAt() {
+        return updateAt;
+    }
+
+    public void setUpdateAt(LocalDateTime updateAt) {
+        this.updateAt = updateAt;
+    }
+
+    public LocalDateTime getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(LocalDateTime createAt) {
+        this.createAt = createAt;
+    }
+
+    private LocalDateTime updateAt;
 
     public LocalDate getMaintenanceDate() {
         return maintenanceDate;

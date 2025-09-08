@@ -76,6 +76,8 @@ public class SecurityConfig {
 
                     // Usages and location
 
+
+
                     request.anyRequest().authenticated();
                         }
                 ).

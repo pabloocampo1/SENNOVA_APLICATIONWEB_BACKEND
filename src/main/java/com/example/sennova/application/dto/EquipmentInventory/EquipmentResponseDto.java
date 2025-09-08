@@ -1,7 +1,10 @@
 package com.example.sennova.application.dto.EquipmentInventory;
 
 
+import org.springframework.data.annotation.LastModifiedDate;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record EquipmentResponseDto(
         Long equipmentId,
@@ -22,6 +25,8 @@ public record EquipmentResponseDto(
         Long locationId,
         String locationName,
         Long usageId,
-        String usageName
+        String usageName,
+        LocalDateTime createAt,
+        LocalDateTime updateAt
 ) {
 }

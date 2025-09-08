@@ -60,8 +60,6 @@ public class UserAdapterImpl implements UserPersistencePort {
         userEntity.setPassword(userWithDataImportant.getPassword());
         userEntity.setUsername(userWithDataImportant.getUsername());
         UserEntity userUpdated = this.userRepositoryJpa.save(userEntity);
-        System.out.println(userUpdated);
-
 
         return  this.userMapperDbo.toModel(userUpdated);
     }
