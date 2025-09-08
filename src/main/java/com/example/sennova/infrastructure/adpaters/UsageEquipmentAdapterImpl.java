@@ -40,7 +40,6 @@ public class UsageEquipmentAdapterImpl implements UsageEquipmentPersistencePort 
         EquipmentUsageEntity equipmentUsageEntityOriginal = this.usageEquipmentRepositoryJpa.findById(id)
                 .orElseThrow();
 
-
         // change the model to entity
         EquipmentUsageEntity equipmentUsageEntity = this.usageEquipmentMapperDbo.toEntity(equipmentUsageModel);
         equipmentUsageEntity.setCreateAt(equipmentUsageEntityOriginal.getCreateAt());
@@ -74,7 +73,7 @@ public class UsageEquipmentAdapterImpl implements UsageEquipmentPersistencePort 
     @Override
     public EquipmentUsageModel findById(Long id) {
        EquipmentUsageEntity equipmentUsageEntity =  this.usageEquipmentRepositoryJpa.findById(id)
-               .orElseThrow(() -> new ResourceNotFoundException("No se pudo encontrar el elemento con id : " + id));
+               .orElseThrow(() -> new ResourceNotFoundException("No se pudo encontrar el uso,  con id : " + id));
         return this.usageEquipmentMapperDbo.toModel(equipmentUsageEntity);
     }
 

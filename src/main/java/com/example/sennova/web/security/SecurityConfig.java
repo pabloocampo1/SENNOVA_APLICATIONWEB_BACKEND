@@ -66,6 +66,14 @@ public class SecurityConfig {
                     request.requestMatchers(HttpMethod.PUT,"/api/v1/product/**").hasRole(ROLE_SUPERADMIN);
                     request.requestMatchers(HttpMethod.GET,"/api/v1/product/**").hasAnyRole(ROLE_SUPERADMIN, ROLE_ADMIN, ROLE_ANALYST);
 
+
+                    request.requestMatchers(HttpMethod.POST, "/api/v1/location").hasRole(ROLE_SUPERADMIN);
+                    request.requestMatchers(HttpMethod.POST, "/api/v1/usage/equipment").hasRole(ROLE_SUPERADMIN);
+
+
+                    request.requestMatchers(HttpMethod.POST, "/api/v1/equipment/save/**").hasRole(ROLE_SUPERADMIN);
+
+
                     // Usages and location
 
                     request.anyRequest().authenticated();

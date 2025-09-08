@@ -15,7 +15,7 @@ public interface UserMapper {
 
     UserResponse toResponse(UserModel userModel);
     UserModel toModel(UserSaveRequest userSaveRequest);
-
+    UserModel toModel(UserResponse userResponse);
     List<UserResponse> toResponse(Iterable<UserModel> userModelIterable);
 
 }

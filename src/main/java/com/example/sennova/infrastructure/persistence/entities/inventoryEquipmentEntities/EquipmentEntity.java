@@ -19,8 +19,8 @@ public class EquipmentEntity {
     @Column(name = "equipment_id")
     private Long equipmentId;
 
-    @Column(unique = true, nullable = false)
-    private String internal_code;
+    @Column(unique = true, nullable = false, name = "internal_code")
+    private String internalCode;
 
 
     @Column(nullable = false)
@@ -31,7 +31,7 @@ public class EquipmentEntity {
     private String model;
 
     @Column(unique = true, nullable = false)
-    private Long serial_number;
+    private Long serialNumber;
 
     private LocalDate acquisitionDate;
 
@@ -40,6 +40,14 @@ public class EquipmentEntity {
     private String voltage;
 
     private double equipment_cost;
+
+    @Column(nullable = false)
+    private LocalDate maintenanceDate;
+
+    private String state;
+
+
+    private Boolean available;
 
     // fk with other entities
     @ManyToOne

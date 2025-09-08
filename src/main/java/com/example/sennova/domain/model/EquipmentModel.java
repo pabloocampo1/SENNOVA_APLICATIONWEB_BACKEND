@@ -5,150 +5,179 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 
 public class EquipmentModel {
-        private Long equipmentId;
+    private Long equipmentId;
 
-        @NotBlank(message = "El código interno no puede estar vacío")
-        @Size(max = 100, message = "El código interno no puede superar los 100 caracteres")
-        private String internalCode;
+    @NotBlank(message = "El código interno no puede estar vacío")
+    @Size(max = 100, message = "El código interno no puede superar los 100 caracteres")
+    private String internalCode;
 
-        @NotBlank(message = "El nombre del equipo es obligatorio")
-        private String equipmentName;
+    @NotBlank(message = "El nombre del equipo es obligatorio")
+    private String equipmentName;
 
-        @Size(max = 100, message = "La marca no puede superar los 100 caracteres")
-        private String brand;
+    @Size(max = 100, message = "La marca no puede superar los 100 caracteres")
+    private String brand;
 
-        @Size(max = 100, message = "El modelo no puede superar los 100 caracteres")
-        private String model;
+    @Size(max = 100, message = "El modelo no puede superar los 100 caracteres")
+    private String model;
 
-        @NotNull(message = "El número de serie es obligatorio")
-        @Positive(message = "El número de serie debe ser positivo")
-        private Long serialNumber;
+    @NotNull(message = "El número de serie es obligatorio")
+    @Positive(message = "El número de serie debe ser positivo")
+    private Long serialNumber;
 
-        @PastOrPresent(message = "La fecha de adquisición no puede estar en el futuro")
-        private LocalDate acquisitionDate;
+    @PastOrPresent(message = "La fecha de adquisición no puede estar en el futuro")
+    private LocalDate acquisitionDate;
 
-        @Size(max = 50, message = "El amperaje no puede superar los 50 caracteres")
-        private String amperage;
+    @Size(max = 50, message = "El amperaje no puede superar los 50 caracteres")
+    private String amperage;
 
-        @Size(max = 50, message = "El voltaje no puede superar los 50 caracteres")
-        private String voltage;
+    @Size(max = 50, message = "El voltaje no puede superar los 50 caracteres")
+    private String voltage;
 
-        @PositiveOrZero(message = "El costo del equipo no puede ser negativo")
-        private double equipmentCost;
+    @PositiveOrZero(message = "El costo del equipo no puede ser negativo")
+    private double equipmentCost;
 
-        @NotNull(message = "Debe existir un responsable asignado")
-        private UserModel responsible;
+    private String state;
 
-        @NotNull(message = "Debe estar asignado a una ubicación")
-        private EquipmentLocationModel location;
+    private Boolean available;
 
-        private EquipmentUsageModel usage;
+    @NotNull(message = "Debe existir un responsable asignado")
+    private UserModel responsible;
+
+    @NotNull(message = "Debe estar asignado a una ubicación")
+    private EquipmentLocationModel location;
+
+    private EquipmentUsageModel usage;
+
+    public LocalDate getMaintenanceDate() {
+        return maintenanceDate;
+    }
+
+    public void setMaintenanceDate(LocalDate maintenanceDate) {
+        this.maintenanceDate = maintenanceDate;
+    }
+
+    private LocalDate maintenanceDate;
 
 
-        // Getters y Setters
-        public Long getEquipmentId() {
-            return equipmentId;
-        }
+    // Getters y Setters}
+    public String getState() {
+        return state;
+    }
 
-        public void setEquipmentId(Long equipmentId) {
-            this.equipmentId = equipmentId;
-        }
+    public void setState(String state) {
+        this.state = state;
+    }
 
-        public String getInternalCode() {
-            return internalCode;
-        }
+    public Boolean getAvailable() {
+        return available;
+    }
 
-        public void setInternalCode(String internalCode) {
-            this.internalCode = internalCode;
-        }
+    public void setAvailable(Boolean available) {
+        this.available = available;
+    }
+    public Long getEquipmentId() {
+        return equipmentId;
+    }
 
-        public String getEquipmentName() {
-            return equipmentName;
-        }
+    public void setEquipmentId(Long equipmentId) {
+        this.equipmentId = equipmentId;
+    }
 
-        public void setEquipmentName(String equipmentName) {
-            this.equipmentName = equipmentName;
-        }
+    public String getInternalCode() {
+        return internalCode;
+    }
 
-        public String getBrand() {
-            return brand;
-        }
+    public void setInternalCode(String internalCode) {
+        this.internalCode = internalCode;
+    }
 
-        public void setBrand(String brand) {
-            this.brand = brand;
-        }
+    public String getEquipmentName() {
+        return equipmentName;
+    }
 
-        public String getModel() {
-            return model;
-        }
+    public void setEquipmentName(String equipmentName) {
+        this.equipmentName = equipmentName;
+    }
 
-        public void setModel(String model) {
-            this.model = model;
-        }
+    public String getBrand() {
+        return brand;
+    }
 
-        public Long getSerialNumber() {
-            return serialNumber;
-        }
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
 
-        public void setSerialNumber(Long serialNumber) {
-            this.serialNumber = serialNumber;
-        }
+    public String getModel() {
+        return model;
+    }
 
-        public LocalDate getAcquisitionDate() {
-            return acquisitionDate;
-        }
+    public void setModel(String model) {
+        this.model = model;
+    }
 
-        public void setAcquisitionDate(LocalDate acquisitionDate) {
-            this.acquisitionDate = acquisitionDate;
-        }
+    public Long getSerialNumber() {
+        return serialNumber;
+    }
 
-        public String getAmperage() {
-            return amperage;
-        }
+    public void setSerialNumber(Long serialNumber) {
+        this.serialNumber = serialNumber;
+    }
 
-        public void setAmperage(String amperage) {
-            this.amperage = amperage;
-        }
+    public LocalDate getAcquisitionDate() {
+        return acquisitionDate;
+    }
 
-        public String getVoltage() {
-            return voltage;
-        }
+    public void setAcquisitionDate(LocalDate acquisitionDate) {
+        this.acquisitionDate = acquisitionDate;
+    }
 
-        public void setVoltage(String voltage) {
-            this.voltage = voltage;
-        }
+    public String getAmperage() {
+        return amperage;
+    }
 
-        public double getEquipmentCost() {
-            return equipmentCost;
-        }
+    public void setAmperage(String amperage) {
+        this.amperage = amperage;
+    }
 
-        public void setEquipmentCost(double equipmentCost) {
-            this.equipmentCost = equipmentCost;
-        }
+    public String getVoltage() {
+        return voltage;
+    }
 
-        public UserModel getResponsible() {
-            return responsible;
-        }
+    public void setVoltage(String voltage) {
+        this.voltage = voltage;
+    }
 
-        public void setResponsible(UserModel responsible) {
-            this.responsible = responsible;
-        }
+    public double getEquipmentCost() {
+        return equipmentCost;
+    }
 
-        public EquipmentLocationModel getLocation() {
-            return location;
-        }
+    public void setEquipmentCost(double equipmentCost) {
+        this.equipmentCost = equipmentCost;
+    }
 
-        public void setLocation(EquipmentLocationModel location) {
-            this.location = location;
-        }
+    public UserModel getResponsible() {
+        return responsible;
+    }
 
-        public EquipmentUsageModel getUsage() {
-            return usage;
-        }
+    public void setResponsible(UserModel responsible) {
+        this.responsible = responsible;
+    }
 
-        public void setUsage(EquipmentUsageModel usage) {
-            this.usage = usage;
-        }
+    public EquipmentLocationModel getLocation() {
+        return location;
+    }
+
+    public void setLocation(EquipmentLocationModel location) {
+        this.location = location;
+    }
+
+    public EquipmentUsageModel getUsage() {
+        return usage;
+    }
+
+    public void setUsage(EquipmentUsageModel usage) {
+        this.usage = usage;
+    }
 
 
 }
