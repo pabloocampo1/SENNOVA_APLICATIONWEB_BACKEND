@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class AuthServiceImpl {
@@ -37,16 +38,21 @@ public class AuthServiceImpl {
     }
 
 
-    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+    public Map<String, Object> login(LoginRequestDto loginRequestDto) {
+        System.out.println(loginRequestDto);
         try {
             Authentication authentication = this.authentication(loginRequestDto.username(), loginRequestDto.password());
             UserSystemUserDetails user = (UserSystemUserDetails) authentication.getPrincipal();
             String authority = user.getAuthorities().iterator().next().getAuthority();
             HashMap<String, String> jwt = (HashMap<String, String>) this.jwtUtils.createJwt(user.getUsername(), authority);
 
-           LoginResponseDto response = new  LoginResponseDto(jwt.get("access-token"), jwt.get("refresh-token"), 22L, true, "Logged success", LocalDate.now(), authority);
-            this.userUseCase.saveRefreshToken( response.refreshToken(), user.getUsername());
-            return  response;
+           LoginResponseDto response = new  LoginResponseDto(jwt.get("access-token"),  22L, true, "Logged success", LocalDate.now(), authority);
+            this.userUseCase.saveRefreshToken( jwt.get("refresh-token"), user.getUsername());
+
+            Map<String, Object> objectMap = new HashMap<>();
+            objectMap.put("refreshToken", jwt.get("refresh-token") );
+            objectMap.put("response", response);
+            return objectMap;
 
         } catch (Exception e) {
             e.printStackTrace();

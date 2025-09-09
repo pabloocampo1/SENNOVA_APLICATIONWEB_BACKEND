@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public record LoginResponseDto(
         String accessToken,
-        String refreshToken,
+//        String refreshToken,
         Long userId,
         Boolean status,
         String message,
