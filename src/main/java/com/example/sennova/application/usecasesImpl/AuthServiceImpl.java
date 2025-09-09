@@ -4,6 +4,7 @@ import com.example.sennova.application.dto.authDto.LoginRequestDto;
 import com.example.sennova.application.dto.authDto.LoginResponseDto;
 import com.example.sennova.application.usecases.AuthUseCase;
 import com.example.sennova.application.usecases.UserUseCase;
+import com.example.sennova.domain.model.UserModel;
 import com.example.sennova.web.security.JwtUtils;
 import com.example.sennova.web.security.UserServiceSecurity;
 import com.example.sennova.web.security.UserSystemUserDetails;
@@ -46,7 +47,9 @@ public class AuthServiceImpl {
             String authority = user.getAuthorities().iterator().next().getAuthority();
             HashMap<String, String> jwt = (HashMap<String, String>) this.jwtUtils.createJwt(user.getUsername(), authority);
 
-           LoginResponseDto response = new  LoginResponseDto(jwt.get("access-token"),  22L, true, "Logged success", LocalDate.now(), authority);
+            UserModel userModel = this.userUseCase.findByUsername(user.getUsername());
+
+           LoginResponseDto response = new  LoginResponseDto(jwt.get("access-token"),  userModel.getUserId(), true, "Logged success", LocalDate.now(), authority);
             this.userUseCase.saveRefreshToken( jwt.get("refresh-token"), user.getUsername());
 
             Map<String, Object> objectMap = new HashMap<>();
