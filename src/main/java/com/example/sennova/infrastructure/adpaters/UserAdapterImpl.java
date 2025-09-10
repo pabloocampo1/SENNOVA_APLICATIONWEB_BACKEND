@@ -12,6 +12,7 @@ import com.example.sennova.web.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -101,7 +102,7 @@ public class UserAdapterImpl implements UserPersistencePort {
     @Override
     public UserModel findByUsername(String username) {
 
-        UserEntity user = this.userRepositoryJpa.findByUsername(username).orElseThrow();
+        UserEntity user = this.userRepositoryJpa.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
         return this.userMapperDbo.toModel(user);
     }
 
@@ -117,8 +118,9 @@ public class UserAdapterImpl implements UserPersistencePort {
 
     @Override
     public void deleteRefreshToken(String username) {
+        System.out.println("llego");
         UserEntity user = this.userRepositoryJpa.findByUsername(username)
-                .orElseThrow();
+                .orElseThrow(() -> new UsernameNotFoundException("No se encontro el usuario"));
 
         user.setRefreshToken(null);
         this.userRepositoryJpa.save(user);

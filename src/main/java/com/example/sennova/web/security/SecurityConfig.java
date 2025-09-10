@@ -50,6 +50,7 @@ public class SecurityConfig {
                     // Auth request
                     request.requestMatchers(HttpMethod.POST, "/api/v1/auth/signIn").permitAll();
                     request.requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh/token").permitAll();
+                    request.requestMatchers(HttpMethod.POST, "/api/v1/auth/logout").permitAll();
 
                     // users
                     request.requestMatchers(HttpMethod.POST,"/api/v1/users/save").hasRole(ROLE_SUPERADMIN);

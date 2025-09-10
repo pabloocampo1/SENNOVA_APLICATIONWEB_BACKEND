@@ -28,6 +28,11 @@ public class UserServiceSecurity implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         UserModel user = this.userPersistencePort.findByUsername(username);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("Usuario no encontrado: " + username);
+        }
+
         return new UserSystemUserDetails(
                 user.getUserId(),
                 user.getUsername(),

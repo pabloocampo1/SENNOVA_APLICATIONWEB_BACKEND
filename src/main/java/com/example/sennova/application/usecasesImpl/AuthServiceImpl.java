@@ -10,6 +10,7 @@ import com.example.sennova.web.security.UserServiceSecurity;
 import com.example.sennova.web.security.UserSystemUserDetails;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,6 +19,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
@@ -49,7 +51,7 @@ public class AuthServiceImpl {
 
             UserModel userModel = this.userUseCase.findByUsername(user.getUsername());
 
-           LoginResponseDto response = new  LoginResponseDto(jwt.get("access-token"),  userModel.getUserId(), true, "Logged success", LocalDate.now(), authority);
+           LoginResponseDto response = new  LoginResponseDto(jwt.get("access-token"),  userModel.getUserId(), true, "Logged success", LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName());
             this.userUseCase.saveRefreshToken( jwt.get("refresh-token"), user.getUsername());
 
             Map<String, Object> objectMap = new HashMap<>();
@@ -77,13 +79,28 @@ public class AuthServiceImpl {
         return this.authenticationManager.authenticate(authenticationToken);
     }
 
-    public String refreshToken(String refreshToken){
+    public Map<String, Object> refreshToken(String refreshToken){
 
         if (!this.jwtUtils.validateJwt(refreshToken)){
             throw new RuntimeException();
         }
-
         UserDetails user = this.userServiceSecurity.loadUserByUsername(this.jwtUtils.getUsername(refreshToken));
-        return this.jwtUtils.generateSingleAccessToken(user.getUsername(), user.getAuthorities().iterator().next().getAuthority());
+        String authority = String.valueOf(user.getAuthorities().stream().iterator().next());
+        String jwt = jwtUtils.generateSingleAccessToken(user.getUsername(), user.getAuthorities().iterator().next().getAuthority());
+        UserModel userModel = this.userUseCase.findByUsername(user.getUsername());
+
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", userModel.getRefreshToken())
+                .httpOnly(true)
+                .secure(true)
+                .path("/api/v1/auth/refresh/token")
+                .maxAge(Duration.ofDays(7))
+                .sameSite("Strict")
+                .build();
+
+        Map<String, Object> objectMapResponse = new HashMap<>();
+        objectMapResponse.put("response", new  LoginResponseDto(jwt,  userModel.getUserId(), true, "Logged success", LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName()));
+        objectMapResponse.put("refreshToken", refreshCookie);
+
+        return objectMapResponse;
     }
 }

@@ -9,12 +9,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @RestController
@@ -49,25 +52,35 @@ public class AuthController {
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                     .body(loginResponseDto);
+        } catch (BadCredentialsException e) {
+            throw new RuntimeException("Credenciales incorrectas");
+        } catch (UsernameNotFoundException e) {
+            throw new RuntimeException("Usuario no encontrado");
         } catch (Exception e) {
-            LoginResponseDto response = new  LoginResponseDto(null,  0L, false, "Logged not success", LocalDate.now(), null);
-           return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+            throw new RuntimeException("Credenciales inválidas");
         }
-    }
 
-    ;
+    }
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@RequestParam("username") @Valid String username) {
-        this.authService.logout(username);
-        return new ResponseEntity<>(HttpStatus.OK);
+       try {
+           this.authService.logout(username);
+           return new ResponseEntity<>(HttpStatus.OK);
+       } catch (Exception e) {
+           throw new RuntimeException(e);
+       }
     }
 
-    ;
-
     @PostMapping("/refresh/token")
-    public ResponseEntity<String> login(@CookieValue("refreshToken") String refreshToken) {
-        return new ResponseEntity<>(this.authService.refreshToken(refreshToken), HttpStatus.OK);
+    public ResponseEntity<Object> login(@CookieValue("refreshToken") String refreshToken) {
+        Map<String, Object> objectMap = this.authService.refreshToken(refreshToken);
+        Object loginResponseDto = objectMap.get("response");
+        Object cookie = objectMap.get("refreshToken");
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(loginResponseDto);
     }
 
     ;
