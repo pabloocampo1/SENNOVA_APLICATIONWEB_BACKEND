@@ -20,4 +20,5 @@ public interface UserUseCase {
     Boolean existByUsername(String username);
     void saveRefreshToken(String refreshToken, String username);
     void deleteRefreshToken(String username);
+    UserModel getByEmail(String email);
 }

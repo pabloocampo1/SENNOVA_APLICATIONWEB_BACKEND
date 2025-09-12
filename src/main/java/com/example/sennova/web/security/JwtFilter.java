@@ -31,20 +31,28 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        String path = request.getServletPath();
+        if (path.startsWith("/api/v1/auth/logout") || path.startsWith("/api/v1/auth/signIn") || path.startsWith("/api/v1/auth/refresh/token")) {
+            System.out.println("Entro aca.");
+            filterChain.doFilter(request, response);
+
+            return;
+        }
+
         String authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || authHeader.isEmpty() || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String jwt = authHeader.substring(7);
+        String jwt = authHeader.substring(7).trim();
 
-
-       if(!this.jwtUtils.validateJwt(jwt)){
-           filterChain.doFilter(request, response);
-           return;
-       }
+        if (jwt.isEmpty() || !jwtUtils.validateJwt(jwt)) {
+            SecurityContextHolder.clearContext();
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
 
 
        String username = this.jwtUtils.getUsername(jwt);

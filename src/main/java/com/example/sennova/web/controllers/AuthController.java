@@ -3,6 +3,8 @@ package com.example.sennova.web.controllers;
 import com.example.sennova.application.dto.authDto.LoginRequestDto;
 import com.example.sennova.application.dto.authDto.LoginResponseDto;
 import com.example.sennova.application.usecasesImpl.AuthServiceImpl;
+import com.example.sennova.domain.model.UserModel;
+import com.example.sennova.web.security.GoogleAuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -27,9 +29,11 @@ public class AuthController {
 
     private final AuthServiceImpl authService;
 
+
     @Autowired
     public AuthController(AuthServiceImpl authService) {
         this.authService = authService;
+
     }
 
     @PostMapping("/signIn")
@@ -62,18 +66,53 @@ public class AuthController {
 
     }
 
+    @PostMapping("/signIn/google")
+    public ResponseEntity<Object> loginByGoogle(@RequestBody Map<String, String> body) {
+        try {
+
+            Map<String, Object> signInWithGoogle = this.authService.signInWithGoogle(body);
+
+            System.out.println("response 2: " + signInWithGoogle);
+            Object response = signInWithGoogle.get("response");
+            Object cookie = signInWithGoogle.get("cookie");
+            System.out.println("cookie : " + cookie);
+            System.out.println("response 2: " + response);
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, ((ResponseCookie) cookie).toString())
+                    .body(response);
+        } catch (BadCredentialsException e) {
+            throw new RuntimeException("Credenciales incorrectas");
+        } catch (UsernameNotFoundException e) {
+            throw new RuntimeException("Usuario no encontrado");
+        } catch (Exception e) {
+            throw new RuntimeException("Credenciales inválidas");
+        }
+
+    }
+
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestParam("username") @Valid String username) {
-       try {
-           this.authService.logout(username);
-           return new ResponseEntity<>(HttpStatus.OK);
-       } catch (Exception e) {
-           throw new RuntimeException(e);
-       }
+    public ResponseEntity<?> logout(@RequestParam("username") @Valid String username) {
+        try {
+            this.authService.logout(username);
+            ResponseCookie deleteCookie = ResponseCookie.from("refreshToken", "")
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/api/v1/auth/refresh/token")
+                    .maxAge(0)
+                    .sameSite("Strict")
+                    .build();
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
+                    .body(HttpStatus.OK);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @PostMapping("/refresh/token")
     public ResponseEntity<Object> login(@CookieValue("refreshToken") String refreshToken) {
+
         Map<String, Object> objectMap = this.authService.refreshToken(refreshToken);
         Object loginResponseDto = objectMap.get("response");
         Object cookie = objectMap.get("refreshToken");
@@ -83,5 +122,5 @@ public class AuthController {
                 .body(loginResponseDto);
     }
 
-    ;
+
 }

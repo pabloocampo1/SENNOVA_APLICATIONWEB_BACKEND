@@ -125,4 +125,11 @@ public class UserAdapterImpl implements UserPersistencePort {
         user.setRefreshToken(null);
         this.userRepositoryJpa.save(user);
     }
+
+    @Override
+    public UserModel findByEmail(String email) {
+        UserEntity user = this.userRepositoryJpa.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("No se encontro el usuario"));
+        return this.userMapperDbo.toModel(user);
+    }
 }

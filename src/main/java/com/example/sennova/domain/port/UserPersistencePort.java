@@ -18,5 +18,6 @@ public interface UserPersistencePort {
     UserModel findByUsername(String username);
     void saveRefreshToken(String refreshToken, String username);
     void deleteRefreshToken(String username);
+    UserModel findByEmail(String email);
 
 }

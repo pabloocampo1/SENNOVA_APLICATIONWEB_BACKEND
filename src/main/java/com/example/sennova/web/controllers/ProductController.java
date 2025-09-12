@@ -42,7 +42,6 @@ public class ProductController {
         Page<ProductModel> productModelList = this.productUseCase.getAll(pageable);
         Page<ProductResponseBasicDto> productResponseBasicDtoPage = productModelList.map(this.productMapper::toResponse);
         return new ResponseEntity<>(productResponseBasicDtoPage, HttpStatus.OK);
-
     }
 
     @GetMapping("/getById/{id}")

@@ -157,4 +157,9 @@ public class UserServiceImpl implements UserUseCase {
     public void deleteRefreshToken( @Valid String username) {
         this.userPersistencePort.deleteRefreshToken(username);
     }
+
+    @Override
+    public UserModel getByEmail(String email) {
+        return this.userPersistencePort.findByEmail(email);
+    }
 }
