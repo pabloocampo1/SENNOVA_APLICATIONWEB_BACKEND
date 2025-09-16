@@ -35,7 +35,7 @@ public class ProductController {
     @GetMapping("/getAll")
     public ResponseEntity<Page<ProductResponseBasicDto>> getAll(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "8") int elements
+            @RequestParam(defaultValue = "6") int elements
     ) {
 
         Pageable pageable = PageRequest.of(page, elements, Sort.by("createAt").descending());

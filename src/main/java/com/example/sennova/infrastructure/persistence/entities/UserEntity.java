@@ -55,6 +55,15 @@ public class UserEntity {
     @Column(length = 1000)
     private String refreshToken;
 
+    private boolean notifyEquipment;
+
+    private boolean notifyReagents;
+
+    private boolean notifyQuotes;
+
+    private boolean notifyResults;
+
+
     @CreatedDate
     private LocalDate createAt;
 

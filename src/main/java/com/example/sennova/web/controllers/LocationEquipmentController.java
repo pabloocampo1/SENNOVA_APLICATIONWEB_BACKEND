@@ -61,7 +61,7 @@ public class LocationEquipmentController {
     @GetMapping("/getAllPage")
     public ResponseEntity<Page<LocationEquipmentResponseDto>> getAll(
             @RequestParam(defaultValue = "0")  int page,
-            @RequestParam(defaultValue = "8")  int elements
+            @RequestParam(defaultValue = "6")  int elements
     ){
         Pageable pageable = PageRequest.of(page, elements, Sort.by("createAt").descending());
         Page<EquipmentLocationModel> locationModelPage = this.locationEquipmentUseCase.getAllPage(pageable);

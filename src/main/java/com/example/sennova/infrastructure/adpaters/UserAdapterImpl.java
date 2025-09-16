@@ -45,6 +45,7 @@ public class UserAdapterImpl implements UserPersistencePort {
                 .orElseThrow(() -> new IllegalArgumentException("El rol de " + userModel.getRole().getNameRole() + "no existe."));
         userEntity.setRole(role);
         UserEntity userSaved = this.userRepositoryJpa.save(userEntity);
+        System.out.println("user saved: " + userSaved);
         return this.userMapperDbo.toModel(userSaved);
     }
 

@@ -1,5 +1,7 @@
 package com.example.sennova.application.dto.authDto;
 
+import com.example.sennova.application.dto.UserDtos.UserPreferenceResponse;
+
 import java.time.LocalDate;
 
 public record LoginResponseDto(
@@ -7,10 +9,13 @@ public record LoginResponseDto(
         Long userId,
         Boolean status,
         String message,
+        String position,
+        String imageProfile,
         LocalDate timestamp,
         String authorities,
         Boolean userExist,
         String username,
-        String name
+        String name,
+        UserPreferenceResponse userPreferenceResponse
 ) {
 }

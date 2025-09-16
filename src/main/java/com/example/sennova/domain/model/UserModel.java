@@ -17,4 +17,13 @@ public class UserModel {
     private Boolean available;
     private String password;
     private RoleModel role;
+
+    // preferences
+    private boolean notifyEquipment;
+
+    private boolean notifyReagents;
+
+    private boolean notifyQuotes;
+
+    private boolean notifyResults;
 }

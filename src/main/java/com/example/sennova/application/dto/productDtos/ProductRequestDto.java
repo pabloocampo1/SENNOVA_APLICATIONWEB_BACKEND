@@ -28,10 +28,7 @@ public record ProductRequestDto(
         double price,
 
         @Size(max = 500, message = "Las notas no pueden superar los 500 caracteres")
-        String notes,
-
-        LocalDate createAt,
-        LocalDate updateAt
+        String notes
 
 ) {
 }

@@ -1,8 +1,6 @@
 package com.example.sennova.application.usecasesImpl;
 
-import com.example.sennova.application.dto.UserDtos.UserResponse;
-import com.example.sennova.application.dto.UserDtos.UserSaveRequest;
-import com.example.sennova.application.dto.UserDtos.UserUpdateDto;
+import com.example.sennova.application.dto.UserDtos.*;
 import com.example.sennova.application.mapper.UserMapper;
 import com.example.sennova.application.usecases.UserUseCase;
 import com.example.sennova.domain.model.RoleModel;
@@ -161,5 +159,25 @@ public class UserServiceImpl implements UserUseCase {
     @Override
     public UserModel getByEmail(String email) {
         return this.userPersistencePort.findByEmail(email);
+    }
+
+    @Override
+    public UserPreferenceResponse changePreference(@Valid UserPreferencesRequestDto userPreferencesRequestDto, @Valid String username) {
+        UserModel userModel = this.userPersistencePort.findByUsername(username);
+
+        System.out.println("user model qu eme trae: " + userModel);
+
+        userModel.setNotifyEquipment(userPreferencesRequestDto.inventoryEquipment());
+        userModel.setNotifyReagents(userPreferencesRequestDto.inventoryReagents());
+        userModel.setNotifyQuotes(userPreferencesRequestDto.quotations());
+        userModel.setNotifyResults(userPreferencesRequestDto.results());
+
+        System.out.println("usermodel que me va a guardar: " + userModel);
+
+        UserModel userUpdate = this.userPersistencePort.save(userModel);
+
+        System.out.println("el que se gauardo: " + userUpdate);
+        UserPreferenceResponse userPreferenceResponse = new UserPreferenceResponse(userModel.isNotifyEquipment(), userModel.isNotifyReagents(), userModel.isNotifyQuotes(), userModel.isNotifyResults());
+        return userPreferenceResponse ;
     }
 }

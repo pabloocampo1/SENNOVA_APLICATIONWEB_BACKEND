@@ -1,5 +1,6 @@
 package com.example.sennova.application.usecasesImpl;
 
+import com.example.sennova.application.dto.UserDtos.UserPreferenceResponse;
 import com.example.sennova.application.dto.authDto.LoginRequestDto;
 import com.example.sennova.application.dto.authDto.LoginResponseDto;
 import com.example.sennova.application.usecases.AuthUseCase;
@@ -53,12 +54,12 @@ public class AuthServiceImpl {
             HashMap<String, String> jwt = (HashMap<String, String>) this.jwtUtils.createJwt(user.getUsername(), authority);
 
             UserModel userModel = this.userUseCase.findByUsername(user.getUsername());
-
-           LoginResponseDto response = new  LoginResponseDto(jwt.get("access-token"),  userModel.getUserId(), true, "Logged success", LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName());
-            this.userUseCase.saveRefreshToken( jwt.get("refresh-token"), user.getUsername());
+            UserPreferenceResponse userPreferenceResponse = new UserPreferenceResponse(userModel.isNotifyEquipment(), userModel.isNotifyReagents(), userModel.isNotifyQuotes(), userModel.isNotifyResults());
+            LoginResponseDto response = new LoginResponseDto(jwt.get("access-token"), userModel.getUserId(), true, "Logged success", userModel.getPosition(), userModel.getImageProfile(), LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName(), userPreferenceResponse);
+            this.userUseCase.saveRefreshToken(jwt.get("refresh-token"), user.getUsername());
 
             Map<String, Object> objectMap = new HashMap<>();
-            objectMap.put("refreshToken", jwt.get("refresh-token") );
+            objectMap.put("refreshToken", jwt.get("refresh-token"));
             objectMap.put("response", response);
             return objectMap;
 
@@ -69,7 +70,7 @@ public class AuthServiceImpl {
 
     }
 
-    public Map<String, Object> signInWithGoogle (Map<String, String> body){
+    public Map<String, Object> signInWithGoogle(Map<String, String> body) {
         String idToken = body.get("token");
 
         var payload = googleAuthService.verifyToken(idToken);
@@ -78,10 +79,11 @@ public class AuthServiceImpl {
         String name = (String) payload.get("name");
 
         UserModel userModel = this.userUseCase.getByEmail(email);
-        String authority = "ROLE_"+userModel.getRole().getNameRole();
+        String authority = "ROLE_" + userModel.getRole().getNameRole();
 
-        HashMap<String, String> jwt = (HashMap<String, String>) this.jwtUtils.createJwt(userModel.getUsername(), authority );
-        LoginResponseDto response = new  LoginResponseDto(jwt.get("access-token"),  userModel.getUserId(), true, "Logged success", LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName());
+        HashMap<String, String> jwt = (HashMap<String, String>) this.jwtUtils.createJwt(userModel.getUsername(), authority);
+        UserPreferenceResponse userPreferenceResponse = new UserPreferenceResponse(userModel.isNotifyEquipment(), userModel.isNotifyReagents(), userModel.isNotifyQuotes(), userModel.isNotifyResults());
+        LoginResponseDto response = new LoginResponseDto(jwt.get("access-token"), userModel.getUserId(), true, "Logged success", userModel.getPosition(), userModel.getImageProfile(), LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName(), userPreferenceResponse);
 
         Map<String, Object> objectMap = new HashMap<>();
         objectMap.put("response", response);
@@ -95,10 +97,11 @@ public class AuthServiceImpl {
                 .build();
 
         objectMap.put("cookie", refreshCookie);
-        return  objectMap;
+        this.userUseCase.saveRefreshToken(jwt.get("refresh-token"), userModel.getUsername());
+        return objectMap;
     }
 
-    public void logout(String username){
+    public void logout(String username) {
         this.userUseCase.deleteRefreshToken(username);
     }
 
@@ -111,9 +114,9 @@ public class AuthServiceImpl {
         return this.authenticationManager.authenticate(authenticationToken);
     }
 
-    public Map<String, Object> refreshToken(String refreshToken){
+    public Map<String, Object> refreshToken(String refreshToken) {
 
-        if (!this.jwtUtils.validateJwt(refreshToken)){
+        if (!this.jwtUtils.validateJwt(refreshToken)) {
             throw new RuntimeException();
         }
         UserDetails user = this.userServiceSecurity.loadUserByUsername(this.jwtUtils.getUsername(refreshToken));
@@ -130,8 +133,11 @@ public class AuthServiceImpl {
                 .sameSite("Strict")
                 .build();
 
+        UserPreferenceResponse userPreferenceResponse = new UserPreferenceResponse(userModel.isNotifyEquipment(), userModel.isNotifyReagents(), userModel.isNotifyQuotes(), userModel.isNotifyResults());
+
+
         Map<String, Object> objectMapResponse = new HashMap<>();
-        objectMapResponse.put("response", new  LoginResponseDto(jwt,  userModel.getUserId(), true, "Logged success", LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName()));
+        objectMapResponse.put("response", new LoginResponseDto(jwt, userModel.getUserId(), true, "Logged success", userModel.getPosition(), userModel.getImageProfile(), LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName(), userPreferenceResponse));
         objectMapResponse.put("refreshToken", refreshCookie);
 
         return objectMapResponse;

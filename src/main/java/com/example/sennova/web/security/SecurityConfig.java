@@ -30,14 +30,12 @@ public class SecurityConfig {
     private final String ROLE_SUPERADMIN = "SUPERADMIN";
     private final String ROLE_ANALYST = "ANALYST";
     private final JwtFilter jwtFilter;
-
     @Autowired
     private CorsConfig corsConfig;
 
     public SecurityConfig(JwtFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
     }
-
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -64,7 +62,9 @@ public class SecurityConfig {
 
                             // products
 
-                            request.requestMatchers(HttpMethod.POST, "/api/v1/product/**").hasRole(ROLE_SUPERADMIN);
+
+                    // change everithing and authotities in some paths
+                            request.requestMatchers(HttpMethod.POST, "/api/v1/product/**").hasAnyRole(ROLE_SUPERADMIN, ROLE_ADMIN);
                             request.requestMatchers(HttpMethod.PUT, "/api/v1/product/**").hasRole(ROLE_SUPERADMIN);
                             request.requestMatchers(HttpMethod.GET, "/api/v1/product/**").hasAnyRole(ROLE_SUPERADMIN, ROLE_ADMIN, ROLE_ANALYST);
 

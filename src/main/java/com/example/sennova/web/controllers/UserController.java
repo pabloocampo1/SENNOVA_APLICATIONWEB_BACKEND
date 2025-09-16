@@ -1,8 +1,6 @@
 package com.example.sennova.web.controllers;
 
-import com.example.sennova.application.dto.UserDtos.UserResponse;
-import com.example.sennova.application.dto.UserDtos.UserSaveRequest;
-import com.example.sennova.application.dto.UserDtos.UserUpdateDto;
+import com.example.sennova.application.dto.UserDtos.*;
 import com.example.sennova.application.usecases.UserUseCase;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +67,12 @@ public class UserController {
         } catch (UsernameNotFoundException e) {
            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping("/changePreferences/{username}")
+    public ResponseEntity<UserPreferenceResponse> changePreferences(@RequestBody UserPreferencesRequestDto userPreferencesRequestDto, @PathVariable("username") String username) {
+        System.out.println("lo que me llega al controlador: " + userPreferencesRequestDto);
+        return new ResponseEntity<>(this.userUseCase.changePreference(userPreferencesRequestDto, username), HttpStatus.OK);
     }
 
 

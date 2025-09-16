@@ -71,7 +71,7 @@ public class UsageEquipmentController {
     @GetMapping("/getAllPage")
     public ResponseEntity<Page<UsageEquipmentResponseDto>> getAllPage(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "8") int elements
+            @RequestParam(defaultValue = "6") int elements
     ){
         Pageable pageable = PageRequest.of(page, elements, Sort.by("createAt").descending() );
         return new ResponseEntity<>(this.usageEquipmentUseCase.getAll(pageable).map(this.equipmentUsageMapper::toResponse), HttpStatus.OK);
@@ -87,7 +87,5 @@ public class UsageEquipmentController {
         this.usageEquipmentUseCase.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
 
 }

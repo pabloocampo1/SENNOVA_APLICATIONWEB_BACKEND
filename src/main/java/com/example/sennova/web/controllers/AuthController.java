@@ -93,6 +93,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestParam("username") @Valid String username) {
+        System.out.println("hizo logout");
         try {
             this.authService.logout(username);
             ResponseCookie deleteCookie = ResponseCookie.from("refreshToken", "")
@@ -112,7 +113,7 @@ public class AuthController {
 
     @PostMapping("/refresh/token")
     public ResponseEntity<Object> login(@CookieValue("refreshToken") String refreshToken) {
-
+        System.out.println("entro aca");
         Map<String, Object> objectMap = this.authService.refreshToken(refreshToken);
         Object loginResponseDto = objectMap.get("response");
         Object cookie = objectMap.get("refreshToken");
