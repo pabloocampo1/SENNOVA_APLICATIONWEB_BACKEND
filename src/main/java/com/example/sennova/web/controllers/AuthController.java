@@ -1,10 +1,7 @@
 package com.example.sennova.web.controllers;
 
 import com.example.sennova.application.dto.authDto.LoginRequestDto;
-import com.example.sennova.application.dto.authDto.LoginResponseDto;
 import com.example.sennova.application.usecasesImpl.AuthServiceImpl;
-import com.example.sennova.domain.model.UserModel;
-import com.example.sennova.web.security.GoogleAuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -12,15 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/v1/auth")

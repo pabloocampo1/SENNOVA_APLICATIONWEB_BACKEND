@@ -165,18 +165,11 @@ public class UserServiceImpl implements UserUseCase {
     public UserPreferenceResponse changePreference(@Valid UserPreferencesRequestDto userPreferencesRequestDto, @Valid String username) {
         UserModel userModel = this.userPersistencePort.findByUsername(username);
 
-        System.out.println("user model qu eme trae: " + userModel);
-
         userModel.setNotifyEquipment(userPreferencesRequestDto.inventoryEquipment());
         userModel.setNotifyReagents(userPreferencesRequestDto.inventoryReagents());
         userModel.setNotifyQuotes(userPreferencesRequestDto.quotations());
         userModel.setNotifyResults(userPreferencesRequestDto.results());
-
-        System.out.println("usermodel que me va a guardar: " + userModel);
-
         UserModel userUpdate = this.userPersistencePort.save(userModel);
-
-        System.out.println("el que se gauardo: " + userUpdate);
         UserPreferenceResponse userPreferenceResponse = new UserPreferenceResponse(userModel.isNotifyEquipment(), userModel.isNotifyReagents(), userModel.isNotifyQuotes(), userModel.isNotifyResults());
         return userPreferenceResponse ;
     }

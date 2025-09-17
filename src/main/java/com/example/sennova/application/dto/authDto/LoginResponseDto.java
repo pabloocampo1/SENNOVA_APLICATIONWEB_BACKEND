@@ -16,6 +16,7 @@ public record LoginResponseDto(
         Boolean userExist,
         String username,
         String name,
-        UserPreferenceResponse userPreferenceResponse
+        UserPreferenceResponse userPreferenceResponse,
+        String email
 ) {
 }

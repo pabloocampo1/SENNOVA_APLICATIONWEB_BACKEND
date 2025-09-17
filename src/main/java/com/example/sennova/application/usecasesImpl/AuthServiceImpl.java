@@ -55,7 +55,7 @@ public class AuthServiceImpl {
 
             UserModel userModel = this.userUseCase.findByUsername(user.getUsername());
             UserPreferenceResponse userPreferenceResponse = new UserPreferenceResponse(userModel.isNotifyEquipment(), userModel.isNotifyReagents(), userModel.isNotifyQuotes(), userModel.isNotifyResults());
-            LoginResponseDto response = new LoginResponseDto(jwt.get("access-token"), userModel.getUserId(), true, "Logged success", userModel.getPosition(), userModel.getImageProfile(), LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName(), userPreferenceResponse);
+            LoginResponseDto response = new LoginResponseDto(jwt.get("access-token"), userModel.getUserId(), true, "Logged success", userModel.getPosition(), userModel.getImageProfile(), LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName(), userPreferenceResponse, userModel.getEmail());
             this.userUseCase.saveRefreshToken(jwt.get("refresh-token"), user.getUsername());
 
             Map<String, Object> objectMap = new HashMap<>();
@@ -83,7 +83,7 @@ public class AuthServiceImpl {
 
         HashMap<String, String> jwt = (HashMap<String, String>) this.jwtUtils.createJwt(userModel.getUsername(), authority);
         UserPreferenceResponse userPreferenceResponse = new UserPreferenceResponse(userModel.isNotifyEquipment(), userModel.isNotifyReagents(), userModel.isNotifyQuotes(), userModel.isNotifyResults());
-        LoginResponseDto response = new LoginResponseDto(jwt.get("access-token"), userModel.getUserId(), true, "Logged success", userModel.getPosition(), userModel.getImageProfile(), LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName(), userPreferenceResponse);
+        LoginResponseDto response = new LoginResponseDto(jwt.get("access-token"), userModel.getUserId(), true, "Logged success", userModel.getPosition(), userModel.getImageProfile(), LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName(), userPreferenceResponse, userModel.getEmail());
 
         Map<String, Object> objectMap = new HashMap<>();
         objectMap.put("response", response);
@@ -137,7 +137,7 @@ public class AuthServiceImpl {
 
 
         Map<String, Object> objectMapResponse = new HashMap<>();
-        objectMapResponse.put("response", new LoginResponseDto(jwt, userModel.getUserId(), true, "Logged success", userModel.getPosition(), userModel.getImageProfile(), LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName(), userPreferenceResponse));
+        objectMapResponse.put("response", new LoginResponseDto(jwt, userModel.getUserId(), true, "Logged success", userModel.getPosition(), userModel.getImageProfile(), LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName(), userPreferenceResponse, userModel.getEmail()));
         objectMapResponse.put("refreshToken", refreshCookie);
 
         return objectMapResponse;

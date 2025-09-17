@@ -71,7 +71,6 @@ public class UserController {
 
     @PostMapping("/changePreferences/{username}")
     public ResponseEntity<UserPreferenceResponse> changePreferences(@RequestBody UserPreferencesRequestDto userPreferencesRequestDto, @PathVariable("username") String username) {
-        System.out.println("lo que me llega al controlador: " + userPreferencesRequestDto);
         return new ResponseEntity<>(this.userUseCase.changePreference(userPreferencesRequestDto, username), HttpStatus.OK);
     }
 
