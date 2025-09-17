@@ -1,5 +1,6 @@
 package com.example.sennova.web.controllers;
 
+import com.example.sennova.application.dto.authDto.ChangePasswordRequest;
 import com.example.sennova.application.dto.authDto.LoginRequestDto;
 import com.example.sennova.application.usecasesImpl.AuthServiceImpl;
 import com.example.sennova.infrastructure.restTemplate.EmailService;
@@ -10,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -147,6 +150,17 @@ public class AuthController {
             throw new RuntimeException(e);
         }
 
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody @Valid ChangePasswordRequest request) {
+
+        String username = userDetails.getUsername();
+
+        Boolean status = this.authService.changePassword(username, request);
+        return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
 

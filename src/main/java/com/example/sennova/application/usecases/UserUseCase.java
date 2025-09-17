@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface UserUseCase {
     UserResponse save(UserSaveRequest userSaveRequest);
+    UserResponse saveModel(UserModel userModel);
     List<UserResponse> findAll();
     UserResponse findById(Long id);
     UserResponse update(Long userId, UserUpdateDto userUpdateDto);

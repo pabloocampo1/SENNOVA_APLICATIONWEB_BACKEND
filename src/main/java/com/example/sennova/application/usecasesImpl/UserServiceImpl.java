@@ -66,6 +66,12 @@ public class UserServiceImpl implements UserUseCase {
     }
 
     @Override
+    public UserResponse saveModel(UserModel userModel) {
+        UserModel userModel1 = this.userPersistencePort.save(userModel);
+        return this.userMapper.toResponse(userModel1);
+    }
+
+    @Override
     public List<UserResponse> findAll() {
         return this.userMapper.toResponse(this.userPersistencePort.findAll());
     }

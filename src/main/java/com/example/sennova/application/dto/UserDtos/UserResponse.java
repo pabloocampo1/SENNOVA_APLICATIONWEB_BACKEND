@@ -2,6 +2,7 @@ package com.example.sennova.application.dto.UserDtos;
 
 import java.time.LocalDate;
 
+
 public record UserResponse(
         Long userId,
         String name,

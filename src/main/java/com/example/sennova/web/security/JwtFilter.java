@@ -60,8 +60,8 @@ public class JwtFilter extends OncePerRequestFilter {
       try{
           UserDetails user = this.userServiceSecurity.loadUserByUsername(username);
           UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                  user.getUsername(),
-                  user.getPassword(),
+                  user, // aquí pasas el UserDetails completo
+                  null,
                   user.getAuthorities()
           );
 

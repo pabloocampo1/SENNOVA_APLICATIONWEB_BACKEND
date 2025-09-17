@@ -1,6 +1,8 @@
 package com.example.sennova.application.usecasesImpl;
 
 import com.example.sennova.application.dto.UserDtos.UserPreferenceResponse;
+import com.example.sennova.application.dto.UserDtos.UserResponse;
+import com.example.sennova.application.dto.authDto.ChangePasswordRequest;
 import com.example.sennova.application.dto.authDto.LoginRequestDto;
 import com.example.sennova.application.dto.authDto.LoginResponseDto;
 import com.example.sennova.application.usecases.AuthUseCase;
@@ -23,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -38,15 +41,17 @@ public class AuthServiceImpl {
     private final UserServiceSecurity userServiceSecurity;
     private final GoogleAuthService googleAuthService;
     private final VerificationEmailRepositoryJpa verificationEmailRepositoryJpa;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthServiceImpl(UserUseCase userUseCase, AuthenticationManager authenticationManager, JwtUtils jwtUtils, UserServiceSecurity userServiceSecurity, GoogleAuthService googleAuthService, VerificationEmailRepositoryJpa verificationEmailRepositoryJpa) {
+    public AuthServiceImpl(UserUseCase userUseCase, AuthenticationManager authenticationManager, JwtUtils jwtUtils, UserServiceSecurity userServiceSecurity, GoogleAuthService googleAuthService, VerificationEmailRepositoryJpa verificationEmailRepositoryJpa, PasswordEncoder passwordEncoder) {
         this.userUseCase = userUseCase;
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.userServiceSecurity = userServiceSecurity;
         this.googleAuthService = googleAuthService;
         this.verificationEmailRepositoryJpa = verificationEmailRepositoryJpa;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -152,7 +157,7 @@ public class AuthServiceImpl {
     @Transactional
     public Integer generateTokenChangeEmail(@Valid String currentEmail, @Valid String newEmail) {
 
-        if(this.userUseCase.existByEmail(newEmail)){
+        if (this.userUseCase.existByEmail(newEmail)) {
             throw new IllegalArgumentException("El correo electronico no esta disponible. ");
         }
 
@@ -173,7 +178,7 @@ public class AuthServiceImpl {
             if (verificationEmail.getExpiryDate().isAfter(LocalDateTime.now())) {
                 System.out.println("no expiro");
                 throw new IllegalArgumentException("El usuario ya tiene un código válido. Intente nuevamente más tarde.");
-            }else {
+            } else {
                 System.out.println("ya expi");
                 this.verificationEmailRepositoryJpa.deleteByUser(userEntity.getUserId());
             }
@@ -207,19 +212,19 @@ public class AuthServiceImpl {
     }
 
     @Transactional
-    public String validateCodeChangeEmail(@Valid Integer code){
+    public String validateCodeChangeEmail(@Valid Integer code) {
 
-        if (!this.verificationEmailRepositoryJpa.existsByCode(code)){
+        if (!this.verificationEmailRepositoryJpa.existsByCode(code)) {
             throw new IllegalArgumentException("El codigo que intentar usar no existe, por favor genera uno nuevo e intentalo nuevamente.");
         }
 
         VerificationEmail verificationEmail = this.verificationEmailRepositoryJpa.findByCode(code);
 
-        if(verificationEmail.getExpiryDate().isBefore(LocalDateTime.now())){
+        if (verificationEmail.getExpiryDate().isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("El codigo que intentas usar ya expiro, genera uno nuevamente.");
         }
 
-        if(!verificationEmail.getCode().equals(code)){
+        if (!verificationEmail.getCode().equals(code)) {
             throw new IllegalArgumentException("El codigo es incorrecto.");
         }
 
@@ -227,6 +232,24 @@ public class AuthServiceImpl {
 
 
         return newEmailUpdated;
+    }
+
+    public boolean changePassword(@Valid String username, ChangePasswordRequest request) {
+        UserModel userModel = this.userUseCase.findByUsername(username);
+
+        if (passwordEncoder.matches(request.newPassword(), userModel.getPassword())) {
+            throw new IllegalArgumentException("La nueva contraseña no puede ser igual a la anterior.");
+        }
+
+        if (!passwordEncoder.matches(request.password(), userModel.getPassword())) {
+            throw new IllegalArgumentException("La contraseña actual es incorrecta.");
+        }
+
+        String passwordEncoded = passwordEncoder.encode(request.newPassword());
+        userModel.setPassword(passwordEncoded);
+        UserResponse userResponse = this.userUseCase.saveModel(userModel);
+
+       return true;
     }
 
 }
