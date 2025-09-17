@@ -83,4 +83,8 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user")
     private List<ReagentsEntity> reagentsEntityList;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private VerificationEmail verificationEmails;
+
 }

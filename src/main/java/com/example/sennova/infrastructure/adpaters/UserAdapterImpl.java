@@ -133,4 +133,14 @@ public class UserAdapterImpl implements UserPersistencePort {
                 .orElseThrow(() -> new UsernameNotFoundException("No se encontro el usuario"));
         return this.userMapperDbo.toModel(user);
     }
+
+    @Override
+    public UserEntity findEntityById(Long userId) {
+        return this.userRepositoryJpa.findById(userId).orElseThrow(() -> new UsernameNotFoundException("No se pudo encontrar el usuario"));
+    }
+
+    @Override
+    public boolean existByEmail(String email) {
+        return this.userRepositoryJpa.existsByEmail(email);
+    }
 }

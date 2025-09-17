@@ -1,6 +1,7 @@
 package com.example.sennova.domain.port;
 
 import com.example.sennova.domain.model.UserModel;
+import com.example.sennova.infrastructure.persistence.entities.UserEntity;
 
 import java.util.List;
 
@@ -19,5 +20,7 @@ public interface UserPersistencePort {
     void saveRefreshToken(String refreshToken, String username);
     void deleteRefreshToken(String username);
     UserModel findByEmail(String email);
+    UserEntity findEntityById(Long userId);
+    boolean existByEmail(String email);
 
 }

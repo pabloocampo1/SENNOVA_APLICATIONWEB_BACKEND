@@ -7,6 +7,7 @@ import com.example.sennova.domain.model.RoleModel;
 import com.example.sennova.domain.model.UserModel;
 import com.example.sennova.domain.port.RolePersistencePort;
 import com.example.sennova.domain.port.UserPersistencePort;
+import com.example.sennova.infrastructure.persistence.entities.UserEntity;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,5 +173,30 @@ public class UserServiceImpl implements UserUseCase {
         UserModel userUpdate = this.userPersistencePort.save(userModel);
         UserPreferenceResponse userPreferenceResponse = new UserPreferenceResponse(userModel.isNotifyEquipment(), userModel.isNotifyReagents(), userModel.isNotifyQuotes(), userModel.isNotifyResults());
         return userPreferenceResponse ;
+    }
+
+    @Override
+    public String changeEmail(String currentEmail, String newEmail) {
+        UserModel userModel = this.userPersistencePort.findByEmail(currentEmail);
+
+        if(this.userPersistencePort.existByEmail(newEmail)){
+            throw new IllegalArgumentException("El nuevo email no esta disponible");
+        }
+
+        userModel.setEmail(newEmail);
+
+       UserModel userUpdated =  this.userPersistencePort.update(userModel);
+
+        return  userUpdated.getEmail();
+    }
+
+    @Override
+    public boolean existByEmail(@Valid  String email) {
+        return this.userPersistencePort.existByEmail(email);
+    }
+
+    @Override
+    public UserEntity getEntity(Long userId) {
+        return this.userPersistencePort.findEntityById(userId);
     }
 }

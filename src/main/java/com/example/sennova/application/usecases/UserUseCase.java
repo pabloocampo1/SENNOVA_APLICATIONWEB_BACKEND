@@ -2,6 +2,7 @@ package com.example.sennova.application.usecases;
 
 import com.example.sennova.application.dto.UserDtos.*;
 import com.example.sennova.domain.model.UserModel;
+import com.example.sennova.infrastructure.persistence.entities.UserEntity;
 
 import java.util.List;
 
@@ -20,4 +21,7 @@ public interface UserUseCase {
     void deleteRefreshToken(String username);
     UserModel getByEmail(String email);
     UserPreferenceResponse changePreference(UserPreferencesRequestDto userPreferencesRequestDto, String username);
+    String changeEmail(String currentEmail, String newEmail);
+    boolean existByEmail(String email);
+    UserEntity getEntity(Long userId);
 }

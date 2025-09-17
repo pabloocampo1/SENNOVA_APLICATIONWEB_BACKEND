@@ -2,6 +2,7 @@ package com.example.sennova.web.controllers;
 
 import com.example.sennova.application.dto.authDto.LoginRequestDto;
 import com.example.sennova.application.usecasesImpl.AuthServiceImpl;
+import com.example.sennova.infrastructure.restTemplate.EmailService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -21,12 +22,14 @@ public class AuthController {
 
 
     private final AuthServiceImpl authService;
+    private final EmailService emailService;
 
 
     @Autowired
-    public AuthController(AuthServiceImpl authService) {
+    public AuthController(AuthServiceImpl authService, EmailService emailService) {
         this.authService = authService;
 
+        this.emailService = emailService;
     }
 
     @PostMapping("/signIn")
@@ -86,7 +89,6 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestParam("username") @Valid String username) {
-        System.out.println("hizo logout");
         try {
             this.authService.logout(username);
             ResponseCookie deleteCookie = ResponseCookie.from("refreshToken", "")
@@ -106,7 +108,6 @@ public class AuthController {
 
     @PostMapping("/refresh/token")
     public ResponseEntity<Object> login(@CookieValue("refreshToken") String refreshToken) {
-        System.out.println("entro aca");
         Map<String, Object> objectMap = this.authService.refreshToken(refreshToken);
         Object loginResponseDto = objectMap.get("response");
         Object cookie = objectMap.get("refreshToken");
@@ -114,6 +115,38 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(loginResponseDto);
+    }
+
+    @PostMapping("/generateToken/change/email/{currentEmail}/{newEmail}")
+    public ResponseEntity<Boolean> generateTokenChangeEmail(
+            @PathVariable("currentEmail") @Valid String currentEmail,
+            @PathVariable("newEmail") @Valid String newEmail
+    ) {
+        try {
+            Integer code = this.authService.generateTokenChangeEmail(currentEmail, newEmail);
+
+            this.emailService.sendVerificationCode(newEmail, code);
+
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @PostMapping("/validate/code/changeEmail/{code}")
+    public ResponseEntity<String> validateTokenChangeEmail(
+            @PathVariable("code") @Valid Integer code
+    ) {
+        try {
+           String status = this.authService.validateCodeChangeEmail(code);
+            return new ResponseEntity<>(status, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
     }
 
 

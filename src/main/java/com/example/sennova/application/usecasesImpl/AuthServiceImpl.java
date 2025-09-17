@@ -6,10 +6,14 @@ import com.example.sennova.application.dto.authDto.LoginResponseDto;
 import com.example.sennova.application.usecases.AuthUseCase;
 import com.example.sennova.application.usecases.UserUseCase;
 import com.example.sennova.domain.model.UserModel;
+import com.example.sennova.infrastructure.persistence.entities.UserEntity;
+import com.example.sennova.infrastructure.persistence.entities.VerificationEmail;
+import com.example.sennova.infrastructure.persistence.repositoryJpa.VerificationEmailRepositoryJpa;
 import com.example.sennova.web.security.GoogleAuthService;
 import com.example.sennova.web.security.JwtUtils;
 import com.example.sennova.web.security.UserServiceSecurity;
 import com.example.sennova.web.security.UserSystemUserDetails;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
@@ -23,9 +27,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 public class AuthServiceImpl {
@@ -34,14 +37,16 @@ public class AuthServiceImpl {
     private final JwtUtils jwtUtils;
     private final UserServiceSecurity userServiceSecurity;
     private final GoogleAuthService googleAuthService;
+    private final VerificationEmailRepositoryJpa verificationEmailRepositoryJpa;
 
     @Autowired
-    public AuthServiceImpl(UserUseCase userUseCase, AuthenticationManager authenticationManager, JwtUtils jwtUtils, UserServiceSecurity userServiceSecurity, GoogleAuthService googleAuthService) {
+    public AuthServiceImpl(UserUseCase userUseCase, AuthenticationManager authenticationManager, JwtUtils jwtUtils, UserServiceSecurity userServiceSecurity, GoogleAuthService googleAuthService, VerificationEmailRepositoryJpa verificationEmailRepositoryJpa) {
         this.userUseCase = userUseCase;
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.userServiceSecurity = userServiceSecurity;
         this.googleAuthService = googleAuthService;
+        this.verificationEmailRepositoryJpa = verificationEmailRepositoryJpa;
     }
 
 
@@ -142,4 +147,86 @@ public class AuthServiceImpl {
 
         return objectMapResponse;
     }
+
+
+    @Transactional
+    public Integer generateTokenChangeEmail(@Valid String currentEmail, @Valid String newEmail) {
+
+        if(this.userUseCase.existByEmail(newEmail)){
+            throw new IllegalArgumentException("El correo electronico no esta disponible. ");
+        }
+
+        UserModel userModel = this.userUseCase.getByEmail(currentEmail);
+
+        if (!userModel.getAvailable()) {
+            throw new IllegalArgumentException("No se puede cambiar el email del usuario porque su cuenta está desactivada.");
+        }
+
+        UserEntity userEntity = this.userUseCase.getEntity(userModel.getUserId());
+
+
+        Optional<VerificationEmail> existingVerification = this.verificationEmailRepositoryJpa.findByUser(userEntity);
+        if (existingVerification.isPresent()) {
+            System.out.println("existe");
+            VerificationEmail verificationEmail = existingVerification.get();
+
+            if (verificationEmail.getExpiryDate().isAfter(LocalDateTime.now())) {
+                System.out.println("no expiro");
+                throw new IllegalArgumentException("El usuario ya tiene un código válido. Intente nuevamente más tarde.");
+            }else {
+                System.out.println("ya expi");
+                this.verificationEmailRepositoryJpa.deleteByUser(userEntity.getUserId());
+            }
+
+
+        }
+
+        Integer token = null;
+        int attempts = 0;
+        Random random = new Random();
+
+        while (attempts < 10) {
+            int tokenGenerated = 1000 + random.nextInt(9000);
+            if (!this.verificationEmailRepositoryJpa.existsByCode(tokenGenerated)) {
+                token = tokenGenerated;
+                break;
+            }
+            attempts++;
+        }
+
+        if (token == null) {
+            throw new RuntimeException("No fue posible generar un token único.");
+        }
+
+        LocalDateTime expiryDate = LocalDateTime.now().plusMinutes(5);
+
+        VerificationEmail newVerification = new VerificationEmail(token, expiryDate, newEmail, userEntity);
+        this.verificationEmailRepositoryJpa.save(newVerification);
+
+        return token;
+    }
+
+    @Transactional
+    public String validateCodeChangeEmail(@Valid Integer code){
+
+        if (!this.verificationEmailRepositoryJpa.existsByCode(code)){
+            throw new IllegalArgumentException("El codigo que intentar usar no existe, por favor genera uno nuevo e intentalo nuevamente.");
+        }
+
+        VerificationEmail verificationEmail = this.verificationEmailRepositoryJpa.findByCode(code);
+
+        if(verificationEmail.getExpiryDate().isBefore(LocalDateTime.now())){
+            throw new IllegalArgumentException("El codigo que intentas usar ya expiro, genera uno nuevamente.");
+        }
+
+        if(!verificationEmail.getCode().equals(code)){
+            throw new IllegalArgumentException("El codigo es incorrecto.");
+        }
+
+        String newEmailUpdated = this.userUseCase.changeEmail(verificationEmail.getUser().getEmail(), verificationEmail.getNewEmail());
+
+
+        return newEmailUpdated;
+    }
+
 }
