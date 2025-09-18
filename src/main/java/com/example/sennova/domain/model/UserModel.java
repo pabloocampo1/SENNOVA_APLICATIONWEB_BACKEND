@@ -2,6 +2,8 @@ package com.example.sennova.domain.model;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 
 @Data
 public class UserModel {
@@ -26,4 +28,6 @@ public class UserModel {
     private boolean notifyQuotes;
 
     private boolean notifyResults;
+
+    private LocalDateTime lastSession;
 }

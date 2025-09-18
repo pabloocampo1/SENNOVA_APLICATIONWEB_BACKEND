@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -204,5 +205,12 @@ public class UserServiceImpl implements UserUseCase {
     @Override
     public UserEntity getEntity(Long userId) {
         return this.userPersistencePort.findEntityById(userId);
+    }
+
+    @Override
+    public void saveTheLastSession(LocalDateTime date, Long userId) {
+        UserModel userModel = this.userPersistencePort.findById(userId);
+        userModel.setLastSession(date);
+        this.userPersistencePort.save(userModel);
     }
 }

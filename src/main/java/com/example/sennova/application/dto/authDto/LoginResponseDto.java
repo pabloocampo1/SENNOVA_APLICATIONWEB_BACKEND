@@ -3,6 +3,7 @@ package com.example.sennova.application.dto.authDto;
 import com.example.sennova.application.dto.UserDtos.UserPreferenceResponse;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record LoginResponseDto(
         String accessToken,
@@ -17,6 +18,7 @@ public record LoginResponseDto(
         String username,
         String name,
         UserPreferenceResponse userPreferenceResponse,
-        String email
+        String email,
+        LocalDateTime lastSession
 ) {
 }

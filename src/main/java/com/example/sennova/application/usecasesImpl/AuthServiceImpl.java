@@ -54,7 +54,7 @@ public class AuthServiceImpl {
         this.passwordEncoder = passwordEncoder;
     }
 
-
+    @Transactional
     public Map<String, Object> login(LoginRequestDto loginRequestDto) {
 
         try {
@@ -65,8 +65,10 @@ public class AuthServiceImpl {
 
             UserModel userModel = this.userUseCase.findByUsername(user.getUsername());
             UserPreferenceResponse userPreferenceResponse = new UserPreferenceResponse(userModel.isNotifyEquipment(), userModel.isNotifyReagents(), userModel.isNotifyQuotes(), userModel.isNotifyResults());
-            LoginResponseDto response = new LoginResponseDto(jwt.get("access-token"), userModel.getUserId(), true, "Logged success", userModel.getPosition(), userModel.getImageProfile(), LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName(), userPreferenceResponse, userModel.getEmail());
+            LoginResponseDto response = new LoginResponseDto(jwt.get("access-token"), userModel.getUserId(), true, "Logged success", userModel.getPosition(), userModel.getImageProfile(), LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName(), userPreferenceResponse, userModel.getEmail(), LocalDateTime.now());
+
             this.userUseCase.saveRefreshToken(jwt.get("refresh-token"), user.getUsername());
+            this.userUseCase.saveTheLastSession(LocalDateTime.now(), userModel.getUserId());
 
             Map<String, Object> objectMap = new HashMap<>();
             objectMap.put("refreshToken", jwt.get("refresh-token"));
@@ -80,6 +82,7 @@ public class AuthServiceImpl {
 
     }
 
+    @Transactional
     public Map<String, Object> signInWithGoogle(Map<String, String> body) {
         String idToken = body.get("token");
 
@@ -93,7 +96,7 @@ public class AuthServiceImpl {
 
         HashMap<String, String> jwt = (HashMap<String, String>) this.jwtUtils.createJwt(userModel.getUsername(), authority);
         UserPreferenceResponse userPreferenceResponse = new UserPreferenceResponse(userModel.isNotifyEquipment(), userModel.isNotifyReagents(), userModel.isNotifyQuotes(), userModel.isNotifyResults());
-        LoginResponseDto response = new LoginResponseDto(jwt.get("access-token"), userModel.getUserId(), true, "Logged success", userModel.getPosition(), userModel.getImageProfile(), LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName(), userPreferenceResponse, userModel.getEmail());
+        LoginResponseDto response = new LoginResponseDto(jwt.get("access-token"), userModel.getUserId(), true, "Logged success", userModel.getPosition(), userModel.getImageProfile(), LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName(), userPreferenceResponse, userModel.getEmail(), LocalDateTime.now());
 
         Map<String, Object> objectMap = new HashMap<>();
         objectMap.put("response", response);
@@ -107,7 +110,9 @@ public class AuthServiceImpl {
                 .build();
 
         objectMap.put("cookie", refreshCookie);
+
         this.userUseCase.saveRefreshToken(jwt.get("refresh-token"), userModel.getUsername());
+        this.userUseCase.saveTheLastSession(LocalDateTime.now(), userModel.getUserId());
         return objectMap;
     }
 
@@ -124,6 +129,7 @@ public class AuthServiceImpl {
         return this.authenticationManager.authenticate(authenticationToken);
     }
 
+    @Transactional
     public Map<String, Object> refreshToken(String refreshToken) {
 
         if (!this.jwtUtils.validateJwt(refreshToken)) {
@@ -147,8 +153,11 @@ public class AuthServiceImpl {
 
 
         Map<String, Object> objectMapResponse = new HashMap<>();
-        objectMapResponse.put("response", new LoginResponseDto(jwt, userModel.getUserId(), true, "Logged success", userModel.getPosition(), userModel.getImageProfile(), LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName(), userPreferenceResponse, userModel.getEmail()));
+        objectMapResponse.put("response", new LoginResponseDto(jwt, userModel.getUserId(), true, "Logged success", userModel.getPosition(), userModel.getImageProfile(), LocalDate.now(), authority, true, userModel.getUsername(), userModel.getName(), userPreferenceResponse, userModel.getEmail(), LocalDateTime.now()));
+
         objectMapResponse.put("refreshToken", refreshCookie);
+
+        this.userUseCase.saveTheLastSession(LocalDateTime.now(), userModel.getUserId());
 
         return objectMapResponse;
     }

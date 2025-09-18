@@ -4,6 +4,7 @@ import com.example.sennova.application.dto.UserDtos.*;
 import com.example.sennova.domain.model.UserModel;
 import com.example.sennova.infrastructure.persistence.entities.UserEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface UserUseCase {
@@ -25,4 +26,5 @@ public interface UserUseCase {
     String changeEmail(String currentEmail, String newEmail);
     boolean existByEmail(String email);
     UserEntity getEntity(Long userId);
+    void saveTheLastSession(LocalDateTime date, Long userId);
 }
