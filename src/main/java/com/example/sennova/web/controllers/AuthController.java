@@ -149,7 +149,6 @@ public class AuthController {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-// add last sesion
     }
 
     @PostMapping("/change-password")

@@ -27,4 +27,6 @@ public interface UserUseCase {
     boolean existByEmail(String email);
     UserEntity getEntity(Long userId);
     void saveTheLastSession(LocalDateTime date, Long userId);
+    Boolean deactiveAccount(String username);
+    Boolean activeAccount(String username);
 }

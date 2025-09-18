@@ -213,4 +213,22 @@ public class UserServiceImpl implements UserUseCase {
         userModel.setLastSession(date);
         this.userPersistencePort.save(userModel);
     }
+
+    @Override
+    public Boolean deactiveAccount(String username) {
+        UserModel userModel = this.userPersistencePort.findByUsername(username);
+        userModel.setAvailable(false);
+        this.userPersistencePort.save(userModel);
+
+        return true;
+    }
+
+    @Override
+    public Boolean activeAccount(String username) {
+        UserModel userModel = this.userPersistencePort.findByUsername(username);
+        userModel.setAvailable(true);
+        this.userPersistencePort.save(userModel);
+
+        return true;
+    }
 }

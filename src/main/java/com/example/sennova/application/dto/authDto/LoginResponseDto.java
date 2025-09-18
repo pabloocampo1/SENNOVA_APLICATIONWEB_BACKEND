@@ -15,6 +15,7 @@ public record LoginResponseDto(
         LocalDate timestamp,
         String authorities,
         Boolean userExist,
+        Boolean available,
         String username,
         String name,
         UserPreferenceResponse userPreferenceResponse,

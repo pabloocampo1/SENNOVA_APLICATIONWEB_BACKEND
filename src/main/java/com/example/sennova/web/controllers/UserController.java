@@ -74,5 +74,15 @@ public class UserController {
         return new ResponseEntity<>(this.userUseCase.changePreference(userPreferencesRequestDto, username), HttpStatus.OK);
     }
 
+    @PostMapping("/deactiveAccount/{username}")
+    public ResponseEntity<Boolean> deactiveAccount(@PathVariable("username") String username){
+        return new ResponseEntity<>( this.userUseCase.deactiveAccount(username) ,HttpStatus.OK);
+    }
+
+    @PostMapping("/activeAccount/{username}")
+    public ResponseEntity<Boolean> activeAccount(@PathVariable("username") String username){
+        return new ResponseEntity<>( this.userUseCase.activeAccount(username) ,HttpStatus.OK);
+    }
+
 
 }
