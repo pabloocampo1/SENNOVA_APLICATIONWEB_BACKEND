@@ -13,5 +13,6 @@ public interface LocationEquipmentUseCase {
     EquipmentLocationModel getById(Long id);
     void deleteById(Long id);
     Page<EquipmentLocationModel> getAllPage(Pageable pageable);
+    List<EquipmentLocationModel> getAll();
 
 }

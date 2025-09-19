@@ -48,6 +48,8 @@ public class EquipmentAdapterImpl implements EquipmentPersistencePort {
         EquipmentEntity equipmentEntity = this.equipmentRepositoryJpa.findById(equipmentModel.getEquipmentId())
                 .orElseThrow(() -> new IllegalArgumentException("No se pudo encontrar el equipo."));
 
+
+
         EquipmentEntity entityToSave = this.equipmentMapperDbo.toEntity(equipmentModel);
         entityToSave.setCreateAt(equipmentEntity.getCreateAt());
         return this.equipmentMapperDbo.toModel(this.equipmentRepositoryJpa.save(entityToSave));

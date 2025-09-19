@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -64,7 +65,7 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
 
         String internalCode = equipmentModel.getInternalCode();
         if (this.equipmentPersistencePort.existsByInternalCode(internalCode)) {
-            throw new IllegalArgumentException("El codigo interno del equipo:" + equipmentModel.getEquipmentName() + "Debe de ser unico");
+            throw new IllegalArgumentException("El codigo interno del equipo: " + equipmentModel.getEquipmentName() + " Debe de ser unico");
         }
 
         UserResponse user = this.userUseCase.findById(responsibleId);
@@ -110,7 +111,9 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
         // obtener la entidad para editar sin cambios para comparar valores y deterkinar la logica
 
         EquipmentModel equipmentToEdit = this.equipmentPersistencePort.findById(id);
-        System.out.println(equipmentToEdit);
+       equipmentModel.setCreateAt(equipmentToEdit.getCreateAt());
+       equipmentToEdit.setUpdateAt(LocalDateTime.now());
+
         // si el numero serial es diferente, entonces buscamos que no exista en la db
         if (!equipmentModel.getSerialNumber().equals(equipmentToEdit.getSerialNumber())) {
             if (this.equipmentPersistencePort.existsBySerialNumber(equipmentModel.getSerialNumber())) {

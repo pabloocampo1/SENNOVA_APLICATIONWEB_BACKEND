@@ -15,5 +15,6 @@ public interface LocationEquipmentPersistencePort {
     void deleteById(Long id);
     Boolean existById(Long id);
     List<EquipmentLocationModel> findAllByName(String name);
+    List<EquipmentLocationModel> findAll();
 
 }

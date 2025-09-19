@@ -67,4 +67,9 @@ public class LocationEquipmentServiceImpl implements LocationEquipmentUseCase {
     public Page<EquipmentLocationModel> getAllPage(Pageable pageable) {
         return this.locationEquipmentPersistencePort.findAllPage(pageable);
     }
+
+    @Override
+    public List<EquipmentLocationModel> getAll() {
+        return this.locationEquipmentPersistencePort.findAll();
+    }
 }

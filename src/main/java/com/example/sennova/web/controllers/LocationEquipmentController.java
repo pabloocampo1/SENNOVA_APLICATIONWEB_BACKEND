@@ -34,6 +34,12 @@ public class LocationEquipmentController {
         return new ResponseEntity<>(this.equipmentLocationMapper.toResponse(this.locationEquipmentUseCase.getById(id)),HttpStatus.OK );
     }
 
+    @GetMapping("/getAll")
+    public ResponseEntity<List<LocationEquipmentResponseDto>> getAll(){
+        List<EquipmentLocationModel> all = this.locationEquipmentUseCase.getAll();
+        return new ResponseEntity<>(all.stream().map(this.equipmentLocationMapper::toResponse).toList(),HttpStatus.OK );
+    }
+
     @GetMapping("/getByName/{name}")
     public ResponseEntity<List<LocationEquipmentResponseDto>> getById(@PathVariable("name") @Valid String name){
         return new ResponseEntity<>(

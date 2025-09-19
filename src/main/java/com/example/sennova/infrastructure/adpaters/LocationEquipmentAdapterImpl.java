@@ -80,4 +80,11 @@ public class LocationEquipmentAdapterImpl implements LocationEquipmentPersistenc
                 .map(this.locationEquipmentMapperDbo::toModel)
                 .toList();
     }
+
+    @Override
+    public List<EquipmentLocationModel> findAll() {
+        List<EquipmentLocationEntity> allEntities = this.locationEquipmentPersistenceJpa.findAll();
+        List<EquipmentLocationModel> allModels = allEntities.stream().map(this.locationEquipmentMapperDbo::toModel).toList();
+        return allModels;
+    }
 }

@@ -25,7 +25,6 @@ public class EquipmentEntity {
     @Column(unique = true, nullable = false, name = "internal_code")
     private String internalCode;
 
-
     @Column(nullable = false)
     private String equipmentName;
 
@@ -42,7 +41,7 @@ public class EquipmentEntity {
 
     private String voltage;
 
-    private double equipment_cost;
+    private double equipmentCost;
 
     @Column(nullable = false)
     private LocalDate maintenanceDate;
@@ -66,6 +65,8 @@ public class EquipmentEntity {
     @ManyToOne()
     @JoinColumn(name = "equipment_location", referencedColumnName = "equipment_location_id", nullable = false)
     private EquipmentLocationEntity location;
+
+
 
     @ManyToOne
     @JoinColumn(name = "usage_id", referencedColumnName = "equipment_usage_id")

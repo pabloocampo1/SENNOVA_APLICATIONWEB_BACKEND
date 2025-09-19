@@ -1,6 +1,5 @@
 package com.example.sennova.web.exception;
 
-import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,95 +10,109 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    // ✅ Errores de validación (DTOs con @Valid)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        HashMap<String, String> errors = new HashMap<>();
+        Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error -> {
             errors.put(error.getField(), error.getDefaultMessage());
         });
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), errors);
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleExceptionGlobal(Exception ex) {
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Ocurrio un error en el servidor",
-                null
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Error de validación", errors),
+                HttpStatus.BAD_REQUEST
         );
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-
     }
 
+    // ✅ Errores de argumentos inválidos
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex){
-        String cleanMessage = ex.getMessage().replace("java.lang.IllegalArgumentException: ", "");
+        Map<String, String> errors = new HashMap<>();
+        errors.put("general", ex.getMessage());
 
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                cleanMessage,
-                null
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Error en la solicitud", errors),
+                HttpStatus.BAD_REQUEST
         );
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-
-
+    // ✅ Errores de integridad (campos únicos, constraints)
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-        String message = "Violación de integridad de datos: valor duplicado.";
+        Map<String, String> errors = new HashMap<>();
+        String message = "Violación de integridad de datos.";
 
-        Throwable rootCause = ex.getMostSpecificCause(); // Obtiene la excepción más profunda
+        Throwable rootCause = ex.getMostSpecificCause();
 
         if (rootCause != null && rootCause.getMessage() != null) {
             String causeMessage = rootCause.getMessage();
 
-            if (causeMessage.contains("Duplicate entry")) {
+            if (causeMessage.contains("internal_code")) {
+                errors.put("internalCode", "El código interno ya existe, debe ser único.");
+            } else if (causeMessage.contains("serial_number")) {
+                errors.put("serialNumber", "El número de serie ya existe, debe ser único.");
+            } else if (causeMessage.contains("Duplicate entry")) {
                 message = "El valor que intentas guardar ya existe y debe ser único.";
             } else if (causeMessage.contains("constraint")) {
                 message = "Se violó una restricción de la base de datos.";
             }
         }
 
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.CONFLICT.value(),
-                message,
-                null
-
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.CONFLICT.value(), message, errors.isEmpty() ? null : errors),
+                HttpStatus.CONFLICT
         );
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
-
+    // ✅ Recurso no encontrado
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage(), null);
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        Map<String, String> errors = new HashMap<>();
+        errors.put("general", ex.getMessage());
+
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.NOT_FOUND.value(), "Recurso no encontrado", errors),
+                HttpStatus.NOT_FOUND
+        );
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUsernameNotFoundException(UsernameNotFoundException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage(), null);
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        Map<String, String> errors = new HashMap<>();
+        errors.put("username", ex.getMessage());
+
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.NOT_FOUND.value(), "Usuario no encontrado", errors),
+                HttpStatus.NOT_FOUND
+        );
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage(), null);
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
-
+    // ✅ Credenciales inválidas
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage(), null);
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        Map<String, String> errors = new HashMap<>();
+        errors.put("credentials", "Usuario o contraseña incorrectos");
+
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), "Error de autenticación", errors),
+                HttpStatus.UNAUTHORIZED
+        );
     }
 
+    // ✅ Cualquier otro error no controlado
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleExceptionGlobal(Exception ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("general", "Ocurrió un error inesperado. Contacte al administrador.");
 
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error interno del servidor", errors),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
 }

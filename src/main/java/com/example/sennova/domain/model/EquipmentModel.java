@@ -52,6 +52,8 @@ public class EquipmentModel {
 
     private LocalDateTime createAt;
 
+    private LocalDateTime updateAt;
+
     public LocalDateTime getUpdateAt() {
         return updateAt;
     }
@@ -68,7 +70,7 @@ public class EquipmentModel {
         this.createAt = createAt;
     }
 
-    private LocalDateTime updateAt;
+
 
     public LocalDate getMaintenanceDate() {
         return maintenanceDate;
