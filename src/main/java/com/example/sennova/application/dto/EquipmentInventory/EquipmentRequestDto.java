@@ -50,5 +50,7 @@ public record EquipmentRequestDto(
         Long locationId,
 
         @NotNull(message = "El ID del uso es obligatorio")
-        Long usageId
+        Long usageId,
+
+        String imageUrl
 ) {}

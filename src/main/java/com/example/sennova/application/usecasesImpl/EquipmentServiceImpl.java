@@ -12,6 +12,7 @@ import com.example.sennova.domain.model.EquipmentModel;
 import com.example.sennova.domain.model.EquipmentUsageModel;
 import com.example.sennova.domain.model.UserModel;
 import com.example.sennova.domain.port.EquipmentPersistencePort;
+import com.example.sennova.infrastructure.restTemplate.CloudinaryService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -20,9 +21,11 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class EquipmentServiceImpl implements EquipmentUseCase {
@@ -32,14 +35,16 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
     private final LocationEquipmentUseCase locationEquipmentUseCase;
     private final UsageEquipmentUseCase usageEquipmentUseCase;
     private final UserUseCase userUseCase;
+    private final CloudinaryService cloudinaryService;
 
     @Autowired
-    public EquipmentServiceImpl(@Lazy UserMapper userMapper, EquipmentPersistencePort equipmentPersistencePort, LocationEquipmentUseCase locationEquipmentUseCase, UsageEquipmentUseCase usageEquipmentUseCase, UserUseCase userUseCase) {
+    public EquipmentServiceImpl(@Lazy UserMapper userMapper, EquipmentPersistencePort equipmentPersistencePort, LocationEquipmentUseCase locationEquipmentUseCase, UsageEquipmentUseCase usageEquipmentUseCase, UserUseCase userUseCase, @Lazy CloudinaryService cloudinaryService) {
         this.userMapper = userMapper;
         this.equipmentPersistencePort = equipmentPersistencePort;
         this.locationEquipmentUseCase = locationEquipmentUseCase;
         this.usageEquipmentUseCase = usageEquipmentUseCase;
         this.userUseCase = userUseCase;
+        this.cloudinaryService = cloudinaryService;
     }
 
     @Override
@@ -111,8 +116,8 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
         // obtener la entidad para editar sin cambios para comparar valores y deterkinar la logica
 
         EquipmentModel equipmentToEdit = this.equipmentPersistencePort.findById(id);
-       equipmentModel.setCreateAt(equipmentToEdit.getCreateAt());
-       equipmentToEdit.setUpdateAt(LocalDateTime.now());
+        equipmentModel.setCreateAt(equipmentToEdit.getCreateAt());
+        equipmentToEdit.setUpdateAt(LocalDateTime.now());
 
         // si el numero serial es diferente, entonces buscamos que no exista en la db
         if (!equipmentModel.getSerialNumber().equals(equipmentToEdit.getSerialNumber())) {
@@ -196,5 +201,34 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
         }
         this.equipmentPersistencePort.changeState(id, state);
 
+    }
+
+    @Override
+    public String changeImage(MultipartFile multipartFile, Long equipmentId) {
+        try {
+            EquipmentModel equipmentModel = this.getById(equipmentId);
+
+            if (equipmentModel.getImageUrl() != null && !equipmentModel.getImageUrl().isEmpty()) {
+                try {
+                    Map imageDelete = this.cloudinaryService.deleteFileByUrl(equipmentModel.getImageUrl());
+                } catch (Exception e) {
+                    throw new RuntimeException("no se pudo eliminar al foto.");
+                }
+            }
+
+            if (multipartFile.isEmpty()) {
+                throw new IllegalArgumentException("no se envio un aimagen en la peticion");
+            }
+
+            String imageUrl = this.cloudinaryService.uploadImage(multipartFile);
+            equipmentModel.setImageUrl(imageUrl);
+
+            EquipmentModel equipmentModelUpdate = this.equipmentPersistencePort.save(equipmentModel);
+
+            return equipmentModelUpdate.getImageUrl();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 }

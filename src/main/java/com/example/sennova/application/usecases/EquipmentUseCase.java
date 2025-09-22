@@ -4,6 +4,7 @@ import com.example.sennova.domain.model.EquipmentLocationModel;
 import com.example.sennova.domain.model.EquipmentModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,6 +20,6 @@ public interface EquipmentUseCase {
     List<EquipmentModel> getByLocation(Long locationId);
     List<EquipmentModel> getByUsage(Long usageId);
     void changeState(Long id, String state);
-
+    String changeImage(MultipartFile multipartFile, Long equipmentId);
 
 }

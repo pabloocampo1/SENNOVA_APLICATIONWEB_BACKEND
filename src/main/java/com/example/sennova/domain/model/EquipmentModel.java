@@ -22,6 +22,8 @@ public class EquipmentModel {
     @Size(max = 100, message = "El modelo no puede superar los 100 caracteres")
     private String model;
 
+    private String imageUrl;
+
     @NotNull(message = "El número de serie es obligatorio")
     @Positive(message = "El número de serie debe ser positivo")
     private Long serialNumber;
@@ -39,6 +41,8 @@ public class EquipmentModel {
     private double equipmentCost;
 
     private String state;
+
+
 
     private Boolean available;
 
@@ -70,8 +74,6 @@ public class EquipmentModel {
         this.createAt = createAt;
     }
 
-
-
     public LocalDate getMaintenanceDate() {
         return maintenanceDate;
     }
@@ -86,6 +88,13 @@ public class EquipmentModel {
     // Getters y Setters}
     public String getState() {
         return state;
+    }
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public void setState(String state) {

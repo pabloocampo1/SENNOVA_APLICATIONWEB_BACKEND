@@ -27,7 +27,8 @@ public record EquipmentResponseDto(
         Long usageId,
         String usageName,
         LocalDateTime createAt,
-        LocalDateTime updateAt
+        LocalDateTime updateAt,
+        String imageUrl
 ) {
 }
 

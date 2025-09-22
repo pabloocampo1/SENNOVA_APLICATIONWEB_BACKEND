@@ -5,6 +5,7 @@ import com.example.sennova.application.dto.EquipmentInventory.EquipmentResponseD
 import com.example.sennova.application.mapper.EquipmentMapper;
 import com.example.sennova.application.usecases.EquipmentUseCase;
 import com.example.sennova.domain.model.EquipmentModel;
+import com.example.sennova.infrastructure.restTemplate.CloudinaryService;
 import jakarta.validation.Valid;
 import org.hibernate.query.Order;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController()
 @RequestMapping("/api/v1/equipment")
@@ -24,16 +31,18 @@ public class EquipmentController {
 
     private final EquipmentMapper equipmentMapper;
     private final EquipmentUseCase equipmentUseCase;
+    private final CloudinaryService cloudinaryService;
 
     @Autowired
-    public EquipmentController(EquipmentMapper equipmentMapper, EquipmentUseCase equipmentUseCase) {
+    public EquipmentController(EquipmentMapper equipmentMapper, EquipmentUseCase equipmentUseCase, CloudinaryService cloudinaryService) {
         this.equipmentMapper = equipmentMapper;
         this.equipmentUseCase = equipmentUseCase;
+        this.cloudinaryService = cloudinaryService;
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<EquipmentResponseDto> save(@RequestBody @Valid EquipmentRequestDto equipmentRequestDto) {
-
+    @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<EquipmentResponseDto> save(@RequestPart("dto") @Valid EquipmentRequestDto equipmentRequestDto,
+                                                     @RequestPart("image") MultipartFile image) {
 
         EquipmentModel equipmentToSave = this.equipmentMapper.toDomain(equipmentRequestDto);
 
@@ -43,6 +52,16 @@ public class EquipmentController {
                 equipmentRequestDto.locationId(),
                 equipmentRequestDto.usageId()
         );
+
+        try {
+            String responseImage = this.cloudinaryService.uploadImage(image);
+            equipmentModelSaved.setImageUrl(responseImage);
+            this.equipmentUseCase.update(equipmentModelSaved, equipmentModelSaved.getEquipmentId(), equipmentModelSaved.getResponsible().getUserId(), equipmentModelSaved.getLocation().getEquipmentLocationId(), equipmentModelSaved.getUsage().getEquipmentUsageId());
+        } catch (Exception e) {
+            System.out.println("no paso");
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
 
         System.out.println(equipmentToSave);
 
@@ -67,24 +86,56 @@ public class EquipmentController {
                 equipmentModelSaved.getUsage() != null ? equipmentModelSaved.getUsage().getEquipmentUsageId() : null,
                 equipmentModelSaved.getUsage() != null ? equipmentModelSaved.getUsage().getUsageName() : null,
                 equipmentModelSaved.getCreateAt(),
-                equipmentModelSaved.getUpdateAt()
+                equipmentModelSaved.getUpdateAt(),
+                equipmentModelSaved.getImageUrl()
         );
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
 
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<EquipmentResponseDto> update(@RequestBody @Valid EquipmentRequestDto equipmentRequestDto, @PathVariable("id") Long id) {
-        EquipmentModel equipmentToSave = this.equipmentMapper.toDomain(equipmentRequestDto);
+    @PutMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<EquipmentResponseDto> update(
+            @RequestPart("dto") @Valid EquipmentRequestDto equipmentRequestDto,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @PathVariable("id") Long id) {
+
+        EquipmentModel currentEquipment = this.equipmentUseCase.getById(id);
+
+
+        EquipmentModel equipmentToUpdate = this.equipmentMapper.toDomain(equipmentRequestDto);
+        equipmentToUpdate.setEquipmentId(id);
+
+        if (image != null && !image.isEmpty()) {
+            try {
+
+                if (currentEquipment.getImageUrl() != null && !currentEquipment.getImageUrl().isEmpty()) {
+                    Map deleteImage = this.cloudinaryService.deleteFileByUrl(currentEquipment.getImageUrl());
+                    System.out.println("Imagen anterior eliminada: " + deleteImage);
+                }
+
+
+                String imageUrl = this.cloudinaryService.uploadImage(image);
+                equipmentToUpdate.setImageUrl(imageUrl);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Error al procesar la imagen en Cloudinary", e);
+            }
+        } else {
+
+            equipmentToUpdate.setImageUrl(currentEquipment.getImageUrl());
+        }
+
 
         EquipmentModel equipmentModelSaved = this.equipmentUseCase.update(
-                equipmentToSave,
+                equipmentToUpdate,
                 id,
                 equipmentRequestDto.responsibleId(),
                 equipmentRequestDto.locationId(),
                 equipmentRequestDto.usageId()
         );
+
 
         EquipmentResponseDto response = new EquipmentResponseDto(
                 equipmentModelSaved.getEquipmentId(),
@@ -107,7 +158,8 @@ public class EquipmentController {
                 equipmentModelSaved.getUsage() != null ? equipmentModelSaved.getUsage().getEquipmentUsageId() : null,
                 equipmentModelSaved.getUsage() != null ? equipmentModelSaved.getUsage().getUsageName() : null,
                 equipmentModelSaved.getCreateAt(),
-                equipmentModelSaved.getUpdateAt()
+                equipmentModelSaved.getUpdateAt(),
+                equipmentModelSaved.getImageUrl()
         );
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -187,6 +239,13 @@ public class EquipmentController {
     public ResponseEntity<Void> changeState(@PathVariable("id") Long id, @PathVariable("state") String state) {
         this.equipmentUseCase.changeState(id, state);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/change-image/{equipmentId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> changeImage(@RequestPart("image") MultipartFile image, @PathVariable("equipmentId") Long equipmentId){
+
+       return new ResponseEntity<>( this.equipmentUseCase.changeImage(image, equipmentId), HttpStatus.OK);
+
     }
 
 

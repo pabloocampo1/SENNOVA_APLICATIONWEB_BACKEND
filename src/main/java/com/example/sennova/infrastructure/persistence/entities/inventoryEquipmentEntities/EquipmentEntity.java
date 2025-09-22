@@ -43,6 +43,8 @@ public class EquipmentEntity {
 
     private double equipmentCost;
 
+    private String imageUrl;
+
     @Column(nullable = false)
     private LocalDate maintenanceDate;
 
