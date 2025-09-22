@@ -93,7 +93,7 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
         if (!equipmentModel.getEquipmentId().equals(id)) {
             throw new IllegalArgumentException("Ocurrio un error en el sistema al intentar editar el elemento: los indentificadores no coinciden");
         }
-        System.out.println("llego hasta aca:");
+
         if (!this.equipmentPersistencePort.existById(equipmentModel.getEquipmentId())) {
             throw new IllegalArgumentException("EL equipo con id: " + equipmentModel.getEquipmentId() + " no existe en la base de datos");
         }

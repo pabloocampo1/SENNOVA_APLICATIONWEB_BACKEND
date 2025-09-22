@@ -30,3 +30,5 @@ public record EquipmentResponseDto(
         LocalDateTime updateAt
 ) {
 }
+
+// falta agregar placa y descripcion, tambien integrar cloudinary de una vez
