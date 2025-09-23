@@ -69,17 +69,21 @@ public class EquipmentEntity {
     private EquipmentLocationEntity location;
 
 
-
     @ManyToOne
     @JoinColumn(name = "usage_id", referencedColumnName = "equipment_usage_id")
     private EquipmentUsageEntity usage;
 
     // instance of reference for relationship
-    @OneToMany(mappedBy = "equipment")
+    @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EquipmentLoanEntity> loanEntities;
 
-    @OneToMany(mappedBy = "equipment")
+    @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MaintenanceRecordsEquipment> maintenanceRecordsEquipments;
+
+    @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EquipmentMediaEntity> equipmentMediaEntities;
+
+
 }
 
 

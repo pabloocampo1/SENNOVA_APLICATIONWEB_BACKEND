@@ -5,6 +5,7 @@ import com.example.sennova.application.dto.EquipmentInventory.EquipmentResponseD
 import com.example.sennova.application.mapper.EquipmentMapper;
 import com.example.sennova.application.usecases.EquipmentUseCase;
 import com.example.sennova.domain.model.EquipmentModel;
+import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentMediaEntity;
 import com.example.sennova.infrastructure.restTemplate.CloudinaryService;
 import jakarta.validation.Valid;
 import org.hibernate.query.Order;
@@ -173,6 +174,16 @@ public class EquipmentController {
                 HttpStatus.OK);
     }
 
+    @GetMapping("/getFiles/{equipmentId}")
+    public ResponseEntity<List<EquipmentMediaEntity>> getFiles (@PathVariable("equipmentId") Long id){
+       try {
+           return new ResponseEntity<>(this.equipmentUseCase.getFiles(id), HttpStatus.OK);
+       } catch (Exception e) {
+           e.printStackTrace();
+           throw new RuntimeException(e);
+       }
+    }
+
     @GetMapping("/get-by-id/{id}")
     public ResponseEntity<EquipmentResponseDto> getById(@PathVariable("id") Long id) {
         return new ResponseEntity<>(
@@ -241,12 +252,34 @@ public class EquipmentController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping(value = "/change-image/{equipmentId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> changeImage(@RequestPart("image") MultipartFile image, @PathVariable("equipmentId") Long equipmentId){
+    @PutMapping(value = "/change-image/{equipmentId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> changeImage(@RequestPart("image") MultipartFile image, @PathVariable("equipmentId") Long equipmentId) {
 
-       return new ResponseEntity<>( this.equipmentUseCase.changeImage(image, equipmentId), HttpStatus.OK);
+        return new ResponseEntity<>(this.equipmentUseCase.changeImage(image, equipmentId), HttpStatus.OK);
 
     }
+
+    @PostMapping(value = "/uploadFile/{equipmentId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<List<EquipmentMediaEntity>> saveFiles(@RequestPart("files") List<MultipartFile> files, @PathVariable("equipmentId") Long equipmentId) {
+        try {
+            List<EquipmentMediaEntity> entities = this.equipmentUseCase.saveFiles(files, equipmentId);
+            return new ResponseEntity<>(entities, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+   @DeleteMapping("/deleteFile/{public_id}")
+    public ResponseEntity<Boolean> deleteFile(@PathVariable("public_id") String public_id){
+      try{
+          return new ResponseEntity<>( this.equipmentUseCase.deleteFile(public_id) ,HttpStatus.OK);
+      } catch (Exception e) {
+          e.printStackTrace();
+          throw new RuntimeException(e);
+      }
+   }
+
 
 
 }

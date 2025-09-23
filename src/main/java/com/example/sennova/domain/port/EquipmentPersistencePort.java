@@ -3,6 +3,7 @@ package com.example.sennova.domain.port;
 import com.example.sennova.domain.model.EquipmentLocationModel;
 import com.example.sennova.domain.model.EquipmentModel;
 import com.example.sennova.domain.model.EquipmentUsageModel;
+import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -24,7 +25,7 @@ public interface EquipmentPersistencePort {
     void delete(Long id);
     Boolean existsBySerialNumber(Long serialNumber);
     Boolean existsByInternalCode(String internalCode);
-
+    EquipmentEntity findEntityById(Long id);
     // add the method for get All detail information
 
 }

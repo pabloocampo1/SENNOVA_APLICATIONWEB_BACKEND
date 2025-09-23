@@ -12,6 +12,9 @@ import com.example.sennova.domain.model.EquipmentModel;
 import com.example.sennova.domain.model.EquipmentUsageModel;
 import com.example.sennova.domain.model.UserModel;
 import com.example.sennova.domain.port.EquipmentPersistencePort;
+import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentEntity;
+import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentMediaEntity;
+import com.example.sennova.infrastructure.persistence.repositoryJpa.EquipmentMediaRepositoryJpa;
 import com.example.sennova.infrastructure.restTemplate.CloudinaryService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -36,15 +39,17 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
     private final UsageEquipmentUseCase usageEquipmentUseCase;
     private final UserUseCase userUseCase;
     private final CloudinaryService cloudinaryService;
+    private final EquipmentMediaRepositoryJpa equipmentMediaRepositoryJpa;
 
     @Autowired
-    public EquipmentServiceImpl(@Lazy UserMapper userMapper, EquipmentPersistencePort equipmentPersistencePort, LocationEquipmentUseCase locationEquipmentUseCase, UsageEquipmentUseCase usageEquipmentUseCase, UserUseCase userUseCase, @Lazy CloudinaryService cloudinaryService) {
+    public EquipmentServiceImpl(@Lazy UserMapper userMapper, EquipmentPersistencePort equipmentPersistencePort, LocationEquipmentUseCase locationEquipmentUseCase, UsageEquipmentUseCase usageEquipmentUseCase, UserUseCase userUseCase, @Lazy CloudinaryService cloudinaryService, EquipmentMediaRepositoryJpa equipmentMediaRepositoryJpa) {
         this.userMapper = userMapper;
         this.equipmentPersistencePort = equipmentPersistencePort;
         this.locationEquipmentUseCase = locationEquipmentUseCase;
         this.usageEquipmentUseCase = usageEquipmentUseCase;
         this.userUseCase = userUseCase;
         this.cloudinaryService = cloudinaryService;
+        this.equipmentMediaRepositoryJpa = equipmentMediaRepositoryJpa;
     }
 
     @Override
@@ -230,5 +235,62 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    @Transactional
+    public List<EquipmentMediaEntity> saveFiles(List<MultipartFile> files, Long equipmentId) {
+        EquipmentEntity equipment = this.equipmentPersistencePort.findEntityById(equipmentId);
+
+        List<EquipmentMediaEntity> equipmentMediaEntities = files
+                .stream()
+                .map(file -> {
+                    try{
+
+                        Map<String, String> fileSaved = this.cloudinaryService.uploadFile(file);
+                        EquipmentMediaEntity equipmentMediaEntity = new EquipmentMediaEntity(
+                                fileSaved.get("secure_url"),
+                                fileSaved.get("public_id"),
+                                fileSaved.get("contentType"),
+                                fileSaved.get("originalFilename"),
+                                equipment
+                        );
+
+                        return  this.equipmentMediaRepositoryJpa.save(equipmentMediaEntity);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+
+
+                })
+                .toList();
+
+
+
+
+
+        return equipmentMediaEntities;
+    }
+
+    @Override
+    public EquipmentEntity returnEntityById(Long id) {
+        return this.equipmentPersistencePort.findEntityById(id);
+    }
+
+    @Override
+    public List<EquipmentMediaEntity> getFiles(Long id) {
+        List<EquipmentMediaEntity> all = this.equipmentMediaRepositoryJpa.findByEquipmentId(id);
+        return all;
+    }
+
+    @Override
+    public Boolean deleteFile(String public_Id) {
+        this.cloudinaryService.deleteFile(public_Id);
+
+      EquipmentMediaEntity equipmentMedia = this.equipmentMediaRepositoryJpa.findByPublicId(public_Id)
+              .orElseThrow(() -> new IllegalArgumentException("No se encontro el archivo"));
+
+      this.equipmentMediaRepositoryJpa.deleteById(equipmentMedia.getEquipmentMediaId());
+        return true;
     }
 }

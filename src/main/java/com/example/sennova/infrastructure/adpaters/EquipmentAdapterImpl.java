@@ -16,6 +16,7 @@ import com.example.sennova.infrastructure.persistence.repositoryJpa.EquipmentRep
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -134,5 +135,12 @@ public class EquipmentAdapterImpl implements EquipmentPersistencePort {
     @Override
     public Boolean existsByInternalCode(String internalCode) {
         return this.equipmentRepositoryJpa.existByInternalCode(internalCode);
+    }
+
+    @Override
+    public EquipmentEntity findEntityById(Long id) {
+        System.out.println("entro a buscarlo");
+        return this.equipmentRepositoryJpa.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("No se encontro el equipo"));
     }
 }
