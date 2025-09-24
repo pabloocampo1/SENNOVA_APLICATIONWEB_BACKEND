@@ -1,19 +1,25 @@
 package com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Table(name = "equipment_loan")
 @Entity
 @Data
 @EntityListeners(AuditingEntityListener.class)
-@AllArgsConstructor
+@NoArgsConstructor   // 👈 genera el constructor vacío requerido por JPA
+@AllArgsConstructor  // 👈 genera el constructor con todos los args
+@Builder
 public class EquipmentLoanEntity {
 
     @Id
@@ -21,13 +27,13 @@ public class EquipmentLoanEntity {
     @Column(name = "equipment_loan_id")
     private Long equipmentLoanId;
 
-    private String loanPurpose;
-
     @Column(nullable = false)
-    private String username;
+    private String nameLoan;
 
     @Column(length = 400)
     private String notes;
+
+    private LocalDate loanDate;
 
     @CreatedDate
     private LocalDate createAt;
@@ -35,8 +41,12 @@ public class EquipmentLoanEntity {
     @LastModifiedDate
     private LocalDate updateAt;
 
+    @Column(nullable = false)
+    private String type;
+
     @ManyToOne()
-    @JoinColumn(name = "equipment_id", referencedColumnName = "equipment_id")
+    @JoinColumn(name = "equipment_id", referencedColumnName = "equipment_id", nullable = false)
+    @JsonIgnore
     private EquipmentEntity equipment;
 
 }

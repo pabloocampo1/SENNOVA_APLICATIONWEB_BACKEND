@@ -2,6 +2,7 @@ package com.example.sennova.infrastructure.persistence.entities.inventoryEquipme
 
 
 import com.example.sennova.infrastructure.persistence.entities.UserEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
@@ -75,6 +76,7 @@ public class EquipmentEntity {
 
     // instance of reference for relationship
     @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<EquipmentLoanEntity> loanEntities;
 
     @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, orphanRemoval = true)
