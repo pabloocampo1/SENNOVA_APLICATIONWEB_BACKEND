@@ -3,6 +3,7 @@ package com.example.sennova.infrastructure.persistence.entities.inventoryEquipme
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,20 +16,24 @@ import java.time.LocalDate;
 @Data
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
+@NoArgsConstructor
 public class MaintenanceRecordsEquipment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "maintenance_record_equipment_id")
-    private Long userId;
+    private Long maintenanceEquipmentId;
 
     @Column(nullable = false)
-    private String performed_by;
+    private String performedBy;
 
-    private String maintenance_type;
+    private String maintenanceType;
 
     @Column(length = 400)
     private String notes;
+
+    @Column(nullable = false)
+    private LocalDate dateMaintenance;
 
     @CreatedDate
     private LocalDate createAt;

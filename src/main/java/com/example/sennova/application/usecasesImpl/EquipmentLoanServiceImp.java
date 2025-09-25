@@ -37,9 +37,6 @@ public class EquipmentLoanServiceImp implements EquipmentLoanUseCase {
         equipmentLoanModel.setLoanDate(equipmentLoanRequest.loanDate());
         equipmentLoanModel.setType(equipmentLoanRequest.type());
 
-        System.out.println("el que se pasa para guardar: " + equipmentLoanModel);
-
-
         return this.equipmentLoanPersistencePort.save(equipmentLoanModel);
     }
 
