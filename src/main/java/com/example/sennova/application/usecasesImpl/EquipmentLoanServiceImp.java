@@ -6,6 +6,7 @@ import com.example.sennova.application.usecases.EquipmentUseCase;
 import com.example.sennova.domain.model.EquipmentLoanModel;
 import com.example.sennova.domain.model.EquipmentModel;
 import com.example.sennova.domain.port.EquipmentLoanPersistencePort;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,14 @@ public class EquipmentLoanServiceImp implements EquipmentLoanUseCase {
         }
     }
 
+    @Override
+    @Transactional
+    public Boolean deleteById( @Valid  Long id) {
+        if(!this.equipmentLoanPersistencePort.existsById(id)){
+            throw new IllegalArgumentException("El prestamo con ese id no existe en el sistema: "+ id);
+        }
+        return this.equipmentLoanPersistencePort.deleteById(id);
+    }
 
 
 }

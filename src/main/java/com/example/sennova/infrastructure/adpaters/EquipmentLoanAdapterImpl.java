@@ -29,21 +29,33 @@ public class EquipmentLoanAdapterImpl implements EquipmentLoanPersistencePort {
     @Override
     public EquipmentLoanModel save(EquipmentLoanModel equipmentLoanModel) {
         EquipmentLoanEntity equipmentLoanEntity = this.equipmentLoanMapperDbo.toEntity(equipmentLoanModel);
-        System.out.println("entity" + equipmentLoanEntity);
         EquipmentLoanEntity equipmentLoanSaved = this.equipmentLoanRepositoryJpa.save(equipmentLoanEntity);
         return this.equipmentLoanMapperDbo.toModel(equipmentLoanSaved);
     }
 
     @Override
     public List<EquipmentLoanModel> findAllByEquipmentId(Long equipmentId) {
-        try {
-            System.out.println("llego aca 1");
-            List<EquipmentLoanEntity> equipmentLoanEntityList = this.equipmentLoanRepositoryJpa.findByEquipment_EquipmentId(equipmentId);
-            System.out.println("adapater");
-            return equipmentLoanEntityList.stream().map(this.equipmentLoanMapperDbo::toModel).toList();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+
+        List<EquipmentLoanEntity> equipmentLoanEntityList = this.equipmentLoanRepositoryJpa.findByEquipment_EquipmentId(equipmentId);
+        return equipmentLoanEntityList.stream().map(this.equipmentLoanMapperDbo::toModel).toList();
+
+    }
+
+    @Override
+    public Boolean deleteById(Long id) {
+        this.equipmentLoanRepositoryJpa.deleteById(id);
+        return true;
+    }
+
+    @Override
+    public EquipmentLoanModel getById(Long id) {
+        EquipmentLoanEntity equipmentLoanEntity = this.equipmentLoanRepositoryJpa.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No se encontro el prestamo con ese id"));
+        return this.equipmentLoanMapperDbo.toModel(equipmentLoanEntity);
+    }
+
+    @Override
+    public Boolean existsById(Long id) {
+        return this.equipmentLoanRepositoryJpa.existsById(id);
     }
 }

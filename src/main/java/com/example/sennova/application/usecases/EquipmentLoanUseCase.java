@@ -9,4 +9,5 @@ import java.util.List;
 public interface EquipmentLoanUseCase {
     EquipmentLoanModel save(EquipmentLoanRequest equipmentLoanRequest);
     List<EquipmentLoanModel> getAllByEquipmentId(Long equipmentId);
+    Boolean deleteById(Long id);
 }

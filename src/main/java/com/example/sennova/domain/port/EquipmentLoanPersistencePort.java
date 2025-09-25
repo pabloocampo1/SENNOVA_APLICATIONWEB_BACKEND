@@ -7,4 +7,7 @@ import java.util.List;
 public interface EquipmentLoanPersistencePort {
     EquipmentLoanModel save(EquipmentLoanModel equipmentLoanModel);
     List<EquipmentLoanModel> findAllByEquipmentId(Long equipmentId);
+    Boolean deleteById(Long id);
+    EquipmentLoanModel getById(Long id);
+    Boolean existsById(Long id);
 }

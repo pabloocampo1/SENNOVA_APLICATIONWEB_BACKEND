@@ -28,12 +28,17 @@ public class EquipmentLoanController {
 
     @PostMapping("/save")
     public ResponseEntity<EquipmentLoanModel> save(@RequestBody EquipmentLoanRequest equipmentLoanRequest){
-        System.out.println("llego aca al controler");
       try {
           return new ResponseEntity<>(this.equipmentLoanUseCase.save(equipmentLoanRequest), HttpStatus.CREATED);
       } catch (Exception e) {
           e.printStackTrace();
           throw new RuntimeException(e);
       }
+    }
+
+    @DeleteMapping("/delete/{loanId}")
+    public ResponseEntity<Boolean> deleteById(@PathVariable("loanId") Long id) {
+
+        return new ResponseEntity<>(this.equipmentLoanUseCase.deleteById(id), HttpStatus.OK);
     }
 }
