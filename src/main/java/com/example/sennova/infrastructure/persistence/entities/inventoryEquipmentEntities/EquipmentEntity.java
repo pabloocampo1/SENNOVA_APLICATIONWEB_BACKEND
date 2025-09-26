@@ -60,6 +60,8 @@ public class EquipmentEntity {
     @LastModifiedDate
     private LocalDateTime updateAt;
 
+    private String description;
+
     // fk with other entities
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)

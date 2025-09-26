@@ -1,12 +1,8 @@
 package com.example.sennova.web.controllers;
 
-import com.example.sennova.application.dto.EquipmentInventory.MaintenanceEquipmentRequest;
+import com.example.sennova.application.dto.EquipmentInventory.request.MaintenanceEquipmentRequest;
 import com.example.sennova.application.usecases.MaintenanceEquipmentUseCase;
 import com.example.sennova.domain.model.MaintenanceRecordEquipmentModel;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

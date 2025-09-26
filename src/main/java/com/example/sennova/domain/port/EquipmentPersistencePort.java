@@ -26,6 +26,9 @@ public interface EquipmentPersistencePort {
     Boolean existsBySerialNumber(Long serialNumber);
     Boolean existsByInternalCode(String internalCode);
     EquipmentEntity findEntityById(Long id);
-    // add the method for get All detail information
+    long countByAvailableTrue();
+    long countByAvailableFalse();
+    long countByMaintenanceMonth();
+    long countTotal();
 
 }

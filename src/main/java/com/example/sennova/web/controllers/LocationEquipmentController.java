@@ -1,7 +1,7 @@
 package com.example.sennova.web.controllers;
 
-import com.example.sennova.application.dto.EquipmentInventory.LocationEquipmentRequestDto;
-import com.example.sennova.application.dto.EquipmentInventory.LocationEquipmentResponseDto;
+import com.example.sennova.application.dto.EquipmentInventory.request.LocationEquipmentRequestDto;
+import com.example.sennova.application.dto.EquipmentInventory.response.LocationEquipmentResponseDto;
 import com.example.sennova.application.mapper.EquipmentLocationMapper;
 import com.example.sennova.application.usecases.LocationEquipmentUseCase;
 import com.example.sennova.domain.model.EquipmentLocationModel;

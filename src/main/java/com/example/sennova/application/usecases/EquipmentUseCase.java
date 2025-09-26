@@ -1,5 +1,6 @@
 package com.example.sennova.application.usecases;
 
+import com.example.sennova.application.dto.EquipmentInventory.response.EquipmentStatisticsSummaryCardResponse;
 import com.example.sennova.domain.model.EquipmentLocationModel;
 import com.example.sennova.domain.model.EquipmentModel;
 import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentEntity;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 public interface EquipmentUseCase {
     EquipmentModel save(EquipmentModel equipmentModel,Long responsibleId, Long locationId, Long usageId);
@@ -27,5 +29,6 @@ public interface EquipmentUseCase {
     EquipmentEntity returnEntityById(Long id);
     List<EquipmentMediaEntity> getFiles(Long id);
     Boolean deleteFile(String public_Id);
+    Map<String, Long> getSummaryStatics();
 
 }

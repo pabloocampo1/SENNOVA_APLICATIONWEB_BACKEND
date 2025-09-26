@@ -42,6 +42,7 @@ public class EquipmentModel {
 
     private String state;
 
+    private String description;
 
 
     private Boolean available;
@@ -58,56 +59,9 @@ public class EquipmentModel {
 
     private LocalDateTime updateAt;
 
-    public LocalDateTime getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(LocalDateTime updateAt) {
-        this.updateAt = updateAt;
-    }
-
-    public LocalDateTime getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(LocalDateTime createAt) {
-        this.createAt = createAt;
-    }
-
-    public LocalDate getMaintenanceDate() {
-        return maintenanceDate;
-    }
-
-    public void setMaintenanceDate(LocalDate maintenanceDate) {
-        this.maintenanceDate = maintenanceDate;
-    }
-
     private LocalDate maintenanceDate;
 
 
-    // Getters y Setters}
-    public String getState() {
-        return state;
-    }
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public Boolean getAvailable() {
-        return available;
-    }
-
-    public void setAvailable(Boolean available) {
-        this.available = available;
-    }
     public Long getEquipmentId() {
         return equipmentId;
     }
@@ -146,6 +100,14 @@ public class EquipmentModel {
 
     public void setModel(String model) {
         this.model = model;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Long getSerialNumber() {
@@ -188,6 +150,30 @@ public class EquipmentModel {
         this.equipmentCost = equipmentCost;
     }
 
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Boolean getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(Boolean available) {
+        this.available = available;
+    }
+
     public UserModel getResponsible() {
         return responsible;
     }
@@ -212,5 +198,27 @@ public class EquipmentModel {
         this.usage = usage;
     }
 
+    public LocalDateTime getCreateAt() {
+        return createAt;
+    }
 
+    public void setCreateAt(LocalDateTime createAt) {
+        this.createAt = createAt;
+    }
+
+    public LocalDateTime getUpdateAt() {
+        return updateAt;
+    }
+
+    public void setUpdateAt(LocalDateTime updateAt) {
+        this.updateAt = updateAt;
+    }
+
+    public LocalDate getMaintenanceDate() {
+        return maintenanceDate;
+    }
+
+    public void setMaintenanceDate(LocalDate maintenanceDate) {
+        this.maintenanceDate = maintenanceDate;
+    }
 }

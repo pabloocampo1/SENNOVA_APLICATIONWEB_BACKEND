@@ -1,11 +1,10 @@
-package com.example.sennova.application.dto.EquipmentInventory;
+package com.example.sennova.application.dto.EquipmentInventory.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public record EquipmentLoanRequest(
         @NotNull(message = "El equipo es obligatorio")

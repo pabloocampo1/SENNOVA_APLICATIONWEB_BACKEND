@@ -1,7 +1,5 @@
-package com.example.sennova.application.dto.EquipmentInventory;
+package com.example.sennova.application.dto.EquipmentInventory.response;
 
-
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,8 +26,7 @@ public record EquipmentResponseDto(
         String usageName,
         LocalDateTime createAt,
         LocalDateTime updateAt,
-        String imageUrl
+        String imageUrl,
+        String description
 ) {
 }
-
-// falta agregar placa y descripcion, tambien integrar cloudinary de una vez

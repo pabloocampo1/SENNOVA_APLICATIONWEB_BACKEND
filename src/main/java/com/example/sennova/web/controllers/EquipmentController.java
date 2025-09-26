@@ -1,14 +1,14 @@
 package com.example.sennova.web.controllers;
 
-import com.example.sennova.application.dto.EquipmentInventory.EquipmentRequestDto;
-import com.example.sennova.application.dto.EquipmentInventory.EquipmentResponseDto;
+import com.example.sennova.application.dto.EquipmentInventory.request.EquipmentRequestDto;
+import com.example.sennova.application.dto.EquipmentInventory.response.EquipmentResponseDto;
+import com.example.sennova.application.dto.EquipmentInventory.response.EquipmentStatisticsSummaryCardResponse;
 import com.example.sennova.application.mapper.EquipmentMapper;
 import com.example.sennova.application.usecases.EquipmentUseCase;
 import com.example.sennova.domain.model.EquipmentModel;
 import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentMediaEntity;
 import com.example.sennova.infrastructure.restTemplate.CloudinaryService;
 import jakarta.validation.Valid;
-import org.hibernate.query.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,11 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController()
 @RequestMapping("/api/v1/equipment")
@@ -43,55 +40,59 @@ public class EquipmentController {
 
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<EquipmentResponseDto> save(@RequestPart("dto") @Valid EquipmentRequestDto equipmentRequestDto,
-                                                     @RequestPart("image") MultipartFile image) {
-
-        EquipmentModel equipmentToSave = this.equipmentMapper.toDomain(equipmentRequestDto);
-
-        EquipmentModel equipmentModelSaved = this.equipmentUseCase.save(
-                equipmentToSave,
-                equipmentRequestDto.responsibleId(),
-                equipmentRequestDto.locationId(),
-                equipmentRequestDto.usageId()
-        );
-
+                                                     @RequestPart(value = "image", required = false) MultipartFile image) {
         try {
-            String responseImage = this.cloudinaryService.uploadImage(image);
-            equipmentModelSaved.setImageUrl(responseImage);
-            this.equipmentUseCase.update(equipmentModelSaved, equipmentModelSaved.getEquipmentId(), equipmentModelSaved.getResponsible().getUserId(), equipmentModelSaved.getLocation().getEquipmentLocationId(), equipmentModelSaved.getUsage().getEquipmentUsageId());
+
+            EquipmentModel equipmentToSave = this.equipmentMapper.toDomain(equipmentRequestDto);
+
+            EquipmentModel equipmentModelSaved = this.equipmentUseCase.save(
+                    equipmentToSave,
+                    equipmentRequestDto.responsibleId(),
+                    equipmentRequestDto.locationId(),
+                    equipmentRequestDto.usageId()
+            );
+            if (image != null && !image.isEmpty()) {
+                try {
+                    String responseImage = this.cloudinaryService.uploadImage(image);
+                    equipmentModelSaved.setImageUrl(responseImage);
+                    this.equipmentUseCase.update(equipmentModelSaved, equipmentModelSaved.getEquipmentId(), equipmentModelSaved.getResponsible().getUserId(), equipmentModelSaved.getLocation().getEquipmentLocationId(), equipmentModelSaved.getUsage().getEquipmentUsageId());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+            }
+
+            EquipmentResponseDto response = new EquipmentResponseDto(
+                    equipmentModelSaved.getEquipmentId(),
+                    equipmentModelSaved.getInternalCode(),
+                    equipmentModelSaved.getEquipmentName(),
+                    equipmentModelSaved.getBrand(),
+                    equipmentModelSaved.getModel(),
+                    equipmentModelSaved.getSerialNumber(),
+                    equipmentModelSaved.getAcquisitionDate(),
+                    equipmentModelSaved.getMaintenanceDate(),
+                    equipmentModelSaved.getAmperage(),
+                    equipmentModelSaved.getVoltage(),
+                    equipmentModelSaved.getEquipmentCost(),
+                    equipmentModelSaved.getState(),
+                    equipmentModelSaved.getAvailable(),
+                    equipmentModelSaved.getResponsible() != null ? equipmentModelSaved.getResponsible().getUserId() : null,
+                    equipmentModelSaved.getResponsible() != null ? equipmentModelSaved.getResponsible().getName() : null,
+                    equipmentModelSaved.getLocation() != null ? equipmentModelSaved.getLocation().getEquipmentLocationId() : null,
+                    equipmentModelSaved.getLocation() != null ? equipmentModelSaved.getLocation().getLocationName() : null,
+                    equipmentModelSaved.getUsage() != null ? equipmentModelSaved.getUsage().getEquipmentUsageId() : null,
+                    equipmentModelSaved.getUsage() != null ? equipmentModelSaved.getUsage().getUsageName() : null,
+                    equipmentModelSaved.getCreateAt(),
+                    equipmentModelSaved.getUpdateAt(),
+                    equipmentModelSaved.getImageUrl(),
+                    equipmentModelSaved.getDescription() != null ? equipmentModelSaved.getDescription() : "No hay descripcion para est equipo"
+            );
+
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (Exception e) {
-            System.out.println("no paso");
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-
-        System.out.println(equipmentToSave);
-
-        EquipmentResponseDto response = new EquipmentResponseDto(
-                equipmentModelSaved.getEquipmentId(),
-                equipmentModelSaved.getInternalCode(),
-                equipmentModelSaved.getEquipmentName(),
-                equipmentModelSaved.getBrand(),
-                equipmentModelSaved.getModel(),
-                equipmentModelSaved.getSerialNumber(),
-                equipmentModelSaved.getAcquisitionDate(),
-                equipmentModelSaved.getMaintenanceDate(),
-                equipmentModelSaved.getAmperage(),
-                equipmentModelSaved.getVoltage(),
-                equipmentModelSaved.getEquipmentCost(),
-                equipmentModelSaved.getState(),
-                equipmentModelSaved.getAvailable(),
-                equipmentModelSaved.getResponsible() != null ? equipmentModelSaved.getResponsible().getUserId() : null,
-                equipmentModelSaved.getResponsible() != null ? equipmentModelSaved.getResponsible().getName() : null,
-                equipmentModelSaved.getLocation() != null ? equipmentModelSaved.getLocation().getEquipmentLocationId() : null,
-                equipmentModelSaved.getLocation() != null ? equipmentModelSaved.getLocation().getLocationName() : null,
-                equipmentModelSaved.getUsage() != null ? equipmentModelSaved.getUsage().getEquipmentUsageId() : null,
-                equipmentModelSaved.getUsage() != null ? equipmentModelSaved.getUsage().getUsageName() : null,
-                equipmentModelSaved.getCreateAt(),
-                equipmentModelSaved.getUpdateAt(),
-                equipmentModelSaved.getImageUrl()
-        );
-
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
 
     }
 
@@ -102,7 +103,6 @@ public class EquipmentController {
             @PathVariable("id") Long id) {
 
         EquipmentModel currentEquipment = this.equipmentUseCase.getById(id);
-
 
         EquipmentModel equipmentToUpdate = this.equipmentMapper.toDomain(equipmentRequestDto);
         equipmentToUpdate.setEquipmentId(id);
@@ -124,7 +124,6 @@ public class EquipmentController {
                 throw new RuntimeException("Error al procesar la imagen en Cloudinary", e);
             }
         } else {
-
             equipmentToUpdate.setImageUrl(currentEquipment.getImageUrl());
         }
 
@@ -160,7 +159,8 @@ public class EquipmentController {
                 equipmentModelSaved.getUsage() != null ? equipmentModelSaved.getUsage().getUsageName() : null,
                 equipmentModelSaved.getCreateAt(),
                 equipmentModelSaved.getUpdateAt(),
-                equipmentModelSaved.getImageUrl()
+                equipmentModelSaved.getImageUrl(),
+                equipmentModelSaved.getDescription() != null ? equipmentModelSaved.getDescription() : "No hay descripcion para est equipo"
         );
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -175,13 +175,13 @@ public class EquipmentController {
     }
 
     @GetMapping("/getFiles/{equipmentId}")
-    public ResponseEntity<List<EquipmentMediaEntity>> getFiles (@PathVariable("equipmentId") Long id){
-       try {
-           return new ResponseEntity<>(this.equipmentUseCase.getFiles(id), HttpStatus.OK);
-       } catch (Exception e) {
-           e.printStackTrace();
-           throw new RuntimeException(e);
-       }
+    public ResponseEntity<List<EquipmentMediaEntity>> getFiles(@PathVariable("equipmentId") Long id) {
+        try {
+            return new ResponseEntity<>(this.equipmentUseCase.getFiles(id), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     @GetMapping("/get-by-id/{id}")
@@ -189,6 +189,11 @@ public class EquipmentController {
         return new ResponseEntity<>(
                 this.equipmentMapper.toResponse(this.equipmentUseCase.getById(id)),
                 HttpStatus.OK);
+    }
+
+    @GetMapping("/summaryStatics/card")
+    public ResponseEntity<Map<String, Long>> getSummaryStatics() {
+        return new ResponseEntity<>(this.equipmentUseCase.getSummaryStatics(), HttpStatus.OK);
     }
 
     @GetMapping("/page")
@@ -270,16 +275,15 @@ public class EquipmentController {
         }
     }
 
-   @DeleteMapping("/deleteFile/{public_id}")
-    public ResponseEntity<Boolean> deleteFile(@PathVariable("public_id") String public_id){
-      try{
-          return new ResponseEntity<>( this.equipmentUseCase.deleteFile(public_id) ,HttpStatus.OK);
-      } catch (Exception e) {
-          e.printStackTrace();
-          throw new RuntimeException(e);
-      }
-   }
-
+    @DeleteMapping("/deleteFile/{public_id}")
+    public ResponseEntity<Boolean> deleteFile(@PathVariable("public_id") String public_id) {
+        try {
+            return new ResponseEntity<>(this.equipmentUseCase.deleteFile(public_id), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
 
 }

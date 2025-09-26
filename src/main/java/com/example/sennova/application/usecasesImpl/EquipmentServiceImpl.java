@@ -1,5 +1,6 @@
 package com.example.sennova.application.usecasesImpl;
 
+import com.example.sennova.application.dto.EquipmentInventory.response.EquipmentStatisticsSummaryCardResponse;
 import com.example.sennova.application.dto.UserDtos.UserResponse;
 import com.example.sennova.application.mapper.UserMapper;
 import com.example.sennova.application.usecases.EquipmentUseCase;
@@ -11,7 +12,9 @@ import com.example.sennova.domain.model.EquipmentLocationModel;
 import com.example.sennova.domain.model.EquipmentModel;
 import com.example.sennova.domain.model.EquipmentUsageModel;
 import com.example.sennova.domain.model.UserModel;
+import com.example.sennova.domain.port.EquipmentLoanPersistencePort;
 import com.example.sennova.domain.port.EquipmentPersistencePort;
+import com.example.sennova.domain.port.MaintenanceEquipmentPersistencePort;
 import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentEntity;
 import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentMediaEntity;
 import com.example.sennova.infrastructure.persistence.repositoryJpa.EquipmentMediaRepositoryJpa;
@@ -27,6 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,9 +45,11 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
     private final UserUseCase userUseCase;
     private final CloudinaryService cloudinaryService;
     private final EquipmentMediaRepositoryJpa equipmentMediaRepositoryJpa;
+    private final MaintenanceEquipmentPersistencePort maintenanceEquipmentPersistencePort;
+    private final EquipmentLoanPersistencePort equipmentLoanPersistencePort;
 
     @Autowired
-    public EquipmentServiceImpl(@Lazy UserMapper userMapper, EquipmentPersistencePort equipmentPersistencePort, LocationEquipmentUseCase locationEquipmentUseCase, UsageEquipmentUseCase usageEquipmentUseCase, UserUseCase userUseCase, @Lazy CloudinaryService cloudinaryService, EquipmentMediaRepositoryJpa equipmentMediaRepositoryJpa) {
+    public EquipmentServiceImpl(@Lazy UserMapper userMapper, EquipmentPersistencePort equipmentPersistencePort, LocationEquipmentUseCase locationEquipmentUseCase, UsageEquipmentUseCase usageEquipmentUseCase, UserUseCase userUseCase, @Lazy CloudinaryService cloudinaryService, EquipmentMediaRepositoryJpa equipmentMediaRepositoryJpa, MaintenanceEquipmentPersistencePort maintenanceEquipmentPersistencePort, EquipmentLoanPersistencePort equipmentLoanPersistencePort) {
         this.userMapper = userMapper;
         this.equipmentPersistencePort = equipmentPersistencePort;
         this.locationEquipmentUseCase = locationEquipmentUseCase;
@@ -50,6 +57,8 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
         this.userUseCase = userUseCase;
         this.cloudinaryService = cloudinaryService;
         this.equipmentMediaRepositoryJpa = equipmentMediaRepositoryJpa;
+        this.maintenanceEquipmentPersistencePort = maintenanceEquipmentPersistencePort;
+        this.equipmentLoanPersistencePort = equipmentLoanPersistencePort;
     }
 
     @Override
@@ -183,6 +192,7 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
             throw new IllegalArgumentException("El equipo que deseas eliminar no existe.");
         }
 
+
         this.equipmentPersistencePort.delete(id);
     }
 
@@ -292,5 +302,21 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
 
       this.equipmentMediaRepositoryJpa.deleteById(equipmentMedia.getEquipmentMediaId());
         return true;
+    }
+
+    @Override
+    public Map<String, Long> getSummaryStatics() {
+        long count = this.equipmentPersistencePort.countTotal();
+        long countAvailableTrue = this.equipmentPersistencePort.countByAvailableTrue();
+        long countAvailableFalse = this.equipmentPersistencePort.countByAvailableFalse();
+        long countMaintenanceMonth = this.equipmentPersistencePort.countByMaintenanceMonth();
+
+       Map<String, Long> mapObject = new HashMap<>();
+       mapObject.put("countAll", count);
+       mapObject.put("countAvailableTrue", countAvailableTrue);
+       mapObject.put("countAvailableFalse", countAvailableFalse);
+       mapObject.put("countMaintenanceMonth", countMaintenanceMonth);
+
+       return mapObject;
     }
 }

@@ -1,15 +1,12 @@
 package com.example.sennova.application.usecasesImpl;
 
-import com.example.sennova.application.dto.EquipmentInventory.MaintenanceEquipmentRequest;
-import com.example.sennova.application.usecases.EquipmentLoanUseCase;
+import com.example.sennova.application.dto.EquipmentInventory.request.MaintenanceEquipmentRequest;
 import com.example.sennova.application.usecases.EquipmentUseCase;
 import com.example.sennova.application.usecases.MaintenanceEquipmentUseCase;
 import com.example.sennova.domain.model.EquipmentModel;
 import com.example.sennova.domain.model.MaintenanceRecordEquipmentModel;
 import com.example.sennova.domain.port.MaintenanceEquipmentPersistencePort;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

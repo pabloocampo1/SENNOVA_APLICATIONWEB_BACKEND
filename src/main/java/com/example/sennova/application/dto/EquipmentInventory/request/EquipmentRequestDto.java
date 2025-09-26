@@ -1,4 +1,4 @@
-package com.example.sennova.application.dto.EquipmentInventory;
+package com.example.sennova.application.dto.EquipmentInventory.request;
 
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
@@ -52,5 +52,7 @@ public record EquipmentRequestDto(
         @NotNull(message = "El ID del uso es obligatorio")
         Long usageId,
 
-        String imageUrl
+        String imageUrl,
+
+        String description
 ) {}

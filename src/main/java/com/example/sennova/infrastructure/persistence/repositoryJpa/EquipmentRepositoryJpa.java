@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface EquipmentRepositoryJpa extends JpaRepository<EquipmentEntity, Long> {
@@ -21,4 +22,19 @@ public interface EquipmentRepositoryJpa extends JpaRepository<EquipmentEntity, L
     List<EquipmentEntity> findAllByUsage(EquipmentUsageEntity equipmentUsageEntity);
     List<EquipmentEntity> findAllByInternalCodeContainingIgnoreCase(String internalCode);
     List<EquipmentEntity> findAllByEquipmentNameContainingIgnoreCase(String name);
+
+
+    // COUNT ALLL
+    long count();
+
+    // creat dto de retorno pa esto
+
+    // manintenance for this month
+    @Query(value = "SELECT COUNT(*) FROM equipment e WHERE MONTH(e.maintenance_date) = :month", nativeQuery = true)
+    long countByMaintenanceDateMonth(@Param("month") int month);
+
+    long countByAvailableTrue();
+
+    long countByAvailableFalse();
+    // actives and inactives
 }

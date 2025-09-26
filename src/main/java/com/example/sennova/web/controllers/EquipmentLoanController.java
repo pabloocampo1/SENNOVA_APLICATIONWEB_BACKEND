@@ -1,6 +1,6 @@
 package com.example.sennova.web.controllers;
 
-import com.example.sennova.application.dto.EquipmentInventory.EquipmentLoanRequest;
+import com.example.sennova.application.dto.EquipmentInventory.request.EquipmentLoanRequest;
 import com.example.sennova.application.usecases.EquipmentLoanUseCase;
 import com.example.sennova.domain.model.EquipmentLoanModel;
 import org.springframework.beans.factory.annotation.Autowired;

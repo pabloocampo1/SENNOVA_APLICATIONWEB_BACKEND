@@ -1,13 +1,9 @@
 package com.example.sennova.web.controllers;
 
-import com.example.sennova.application.dto.EquipmentInventory.LocationEquipmentRequestDto;
-import com.example.sennova.application.dto.EquipmentInventory.LocationEquipmentResponseDto;
-import com.example.sennova.application.dto.EquipmentInventory.UsageEquipmentRequestDto;
-import com.example.sennova.application.dto.EquipmentInventory.UsageEquipmentResponseDto;
+import com.example.sennova.application.dto.EquipmentInventory.request.UsageEquipmentRequestDto;
+import com.example.sennova.application.dto.EquipmentInventory.response.UsageEquipmentResponseDto;
 import com.example.sennova.application.mapper.EquipmentUsageMapper;
-import com.example.sennova.application.usecases.LocationEquipmentUseCase;
 import com.example.sennova.application.usecases.UsageEquipmentUseCase;
-import com.example.sennova.domain.model.EquipmentLocationModel;
 import com.example.sennova.domain.model.EquipmentUsageModel;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

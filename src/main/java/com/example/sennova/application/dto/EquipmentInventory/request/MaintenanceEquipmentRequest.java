@@ -1,4 +1,4 @@
-package com.example.sennova.application.dto.EquipmentInventory;
+package com.example.sennova.application.dto.EquipmentInventory.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

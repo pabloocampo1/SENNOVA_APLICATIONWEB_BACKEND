@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -142,5 +143,27 @@ public class EquipmentAdapterImpl implements EquipmentPersistencePort {
         System.out.println("entro a buscarlo");
         return this.equipmentRepositoryJpa.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("No se encontro el equipo"));
+    }
+
+    @Override
+    public long countByAvailableTrue() {
+        return this.equipmentRepositoryJpa.countByAvailableTrue();
+    }
+
+    @Override
+    public long countByAvailableFalse() {
+        return this.equipmentRepositoryJpa.countByAvailableFalse();
+    }
+
+    @Override
+    public long countByMaintenanceMonth() {
+        LocalDateTime currentTime = LocalDateTime.now();
+        int month = currentTime.getMonthValue();
+        return this.equipmentRepositoryJpa.countByMaintenanceDateMonth(month);
+    }
+
+    @Override
+    public long countTotal() {
+      return  this.equipmentRepositoryJpa.count();
     }
 }

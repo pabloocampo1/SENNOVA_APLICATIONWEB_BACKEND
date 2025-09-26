@@ -1,4 +1,4 @@
-package com.example.sennova.application.dto.EquipmentInventory;
+package com.example.sennova.application.dto.EquipmentInventory.response;
 
 import java.time.LocalDate;
 
