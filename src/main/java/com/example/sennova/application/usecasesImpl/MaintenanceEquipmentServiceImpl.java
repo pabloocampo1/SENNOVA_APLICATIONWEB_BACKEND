@@ -9,6 +9,7 @@ import com.example.sennova.domain.port.MaintenanceEquipmentPersistencePort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -34,8 +35,10 @@ public class MaintenanceEquipmentServiceImpl implements MaintenanceEquipmentUseC
         maintenanceRecordEquipmentModel.setNotes(maintenanceEquipmentRequest.notes());
 
 
-        // change the maintenance date for the same day but the next year
-
+        LocalDate currentMaintenanceDate = equipmentModel.getMaintenanceDate();
+        LocalDate nextMaintenanceDate = currentMaintenanceDate.plusYears(1);
+        equipmentModel.setMaintenanceDate(nextMaintenanceDate);
+        this.equipmentUseCase.update(equipmentModel, equipmentModel.getEquipmentId(), equipmentModel.getResponsible().getUserId(), equipmentModel.getLocation().getEquipmentLocationId(), equipmentModel.getUsage().getEquipmentUsageId());
 
         return this.maintenanceEquipmentPersistencePort.save(maintenanceRecordEquipmentModel);
     }

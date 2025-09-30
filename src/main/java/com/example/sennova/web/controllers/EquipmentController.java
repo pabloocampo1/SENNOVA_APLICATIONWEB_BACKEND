@@ -44,7 +44,7 @@ public class EquipmentController {
 
 
         EquipmentModel equipmentToSave = this.equipmentMapper.toDomain(equipmentRequestDto);
-
+        equipmentToSave.setImageUrl(null);
         EquipmentModel equipmentModelSaved = this.equipmentUseCase.save(
                 equipmentToSave,
                 equipmentRequestDto.responsibleId(),
@@ -117,7 +117,6 @@ public class EquipmentController {
                 equipmentToUpdate.setImageUrl(imageUrl);
 
             } catch (Exception e) {
-                e.printStackTrace();
                 throw new RuntimeException("Error al procesar la imagen en Cloudinary", e);
             }
         } else {

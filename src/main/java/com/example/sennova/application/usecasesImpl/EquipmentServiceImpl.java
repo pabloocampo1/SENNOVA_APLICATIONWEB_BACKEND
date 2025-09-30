@@ -189,32 +189,45 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
     @Override
     @Transactional
     public void deleteById(Long id) {
+
         if (!this.equipmentPersistencePort.existById(id)) {
+
             throw new IllegalArgumentException("El equipo que deseas eliminar no existe.");
         }
+
+        System.out.println("pasa aca 1");
 
         EquipmentModel currentEquipment = this.equipmentPersistencePort.findById(id);
         List<EquipmentMediaEntity> equipmentMediaEntityList = this.equipmentMediaRepositoryJpa.findByEquipmentId(id);
 
+        System.out.println("pasa aca 2");
         try {
             // delete image in cloudinary
             if (currentEquipment.getImageUrl() != null) {
                 cloudinaryService.deleteFileByUrl(currentEquipment.getImageUrl());
             }
 
+            System.out.println("pasa aca 3");
+
             // delete files
-            for (EquipmentMediaEntity file : equipmentMediaEntityList) {
-                cloudinaryService.deleteFile(file.getPublicId());
+            if (!equipmentMediaEntityList.isEmpty()) {
+                for (EquipmentMediaEntity file : equipmentMediaEntityList) {
+                    cloudinaryService.deleteFile(file.getPublicId());
+                }
             }
+            System.out.println("pasa aca 4");
 
             // 2. delete relationships
             this.equipmentLoanPersistencePort.deleteByEquipmentId(currentEquipment.getEquipmentId());
             this.maintenanceEquipmentPersistencePort.deleteByEquipmentId(currentEquipment.getEquipmentId());
 
+            System.out.println("pasa aca 5");
+
             // 3. delete the equipment
             this.equipmentPersistencePort.delete(currentEquipment.getEquipmentId());
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("Error al eliminar el equipo y sus archivos asociados", e);
         }
     }
@@ -238,7 +251,7 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
         if (id == null || state == null) {
             throw new IllegalArgumentException("Ocurrio un error en el sistema, por favor intentalo mas tarde.");
         }
-      return this.equipmentPersistencePort.changeState(id, state);
+        return this.equipmentPersistencePort.changeState(id, state);
 
     }
 
@@ -279,7 +292,7 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
         List<EquipmentMediaEntity> equipmentMediaEntities = files
                 .stream()
                 .map(file -> {
-                    try{
+                    try {
 
                         Map<String, String> fileSaved = this.cloudinaryService.uploadFile(file);
                         EquipmentMediaEntity equipmentMediaEntity = new EquipmentMediaEntity(
@@ -290,7 +303,7 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
                                 equipment
                         );
 
-                        return  this.equipmentMediaRepositoryJpa.save(equipmentMediaEntity);
+                        return this.equipmentMediaRepositoryJpa.save(equipmentMediaEntity);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -298,9 +311,6 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
 
                 })
                 .toList();
-
-
-
 
 
         return equipmentMediaEntities;
@@ -321,10 +331,10 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
     public Boolean deleteFile(String public_Id) {
         this.cloudinaryService.deleteFile(public_Id);
 
-      EquipmentMediaEntity equipmentMedia = this.equipmentMediaRepositoryJpa.findByPublicId(public_Id)
-              .orElseThrow(() -> new IllegalArgumentException("No se encontro el archivo"));
+        EquipmentMediaEntity equipmentMedia = this.equipmentMediaRepositoryJpa.findByPublicId(public_Id)
+                .orElseThrow(() -> new IllegalArgumentException("No se encontro el archivo"));
 
-      this.equipmentMediaRepositoryJpa.deleteById(equipmentMedia.getEquipmentMediaId());
+        this.equipmentMediaRepositoryJpa.deleteById(equipmentMedia.getEquipmentMediaId());
         return true;
     }
 
@@ -335,12 +345,12 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
         long countAvailableFalse = this.equipmentPersistencePort.countByAvailableFalse();
         long countMaintenanceMonth = this.equipmentPersistencePort.countByMaintenanceMonth();
 
-       Map<String, Long> mapObject = new HashMap<>();
-       mapObject.put("countAll", count);
-       mapObject.put("countAvailableTrue", countAvailableTrue);
-       mapObject.put("countAvailableFalse", countAvailableFalse);
-       mapObject.put("countMaintenanceMonth", countMaintenanceMonth);
+        Map<String, Long> mapObject = new HashMap<>();
+        mapObject.put("countAll", count);
+        mapObject.put("countAvailableTrue", countAvailableTrue);
+        mapObject.put("countAvailableFalse", countAvailableFalse);
+        mapObject.put("countMaintenanceMonth", countMaintenanceMonth);
 
-       return mapObject;
+        return mapObject;
     }
 }
