@@ -25,15 +25,17 @@ public class MaintenanceEquipmentServiceImpl implements MaintenanceEquipmentUseC
 
     @Override
     public MaintenanceRecordEquipmentModel save(MaintenanceEquipmentRequest maintenanceEquipmentRequest) {
-
         EquipmentModel equipmentModel = this.equipmentUseCase.getById(maintenanceEquipmentRequest.equipmentId());
-
         MaintenanceRecordEquipmentModel maintenanceRecordEquipmentModel = new MaintenanceRecordEquipmentModel();
         maintenanceRecordEquipmentModel.setEquipment(equipmentModel);
         maintenanceRecordEquipmentModel.setDateMaintenance(maintenanceEquipmentRequest.dateMaintenance());
         maintenanceRecordEquipmentModel.setMaintenanceType(maintenanceEquipmentRequest.maintenanceType());
         maintenanceRecordEquipmentModel.setPerformedBy(maintenanceEquipmentRequest.performedBy());
         maintenanceRecordEquipmentModel.setNotes(maintenanceEquipmentRequest.notes());
+
+
+        // change the maintenance date for the same day but the next year
+
 
         return this.maintenanceEquipmentPersistencePort.save(maintenanceRecordEquipmentModel);
     }

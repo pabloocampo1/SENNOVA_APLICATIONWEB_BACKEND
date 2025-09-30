@@ -10,4 +10,5 @@ public interface EquipmentLoanPersistencePort {
     Boolean deleteById(Long id);
     EquipmentLoanModel getById(Long id);
     Boolean existsById(Long id);
+    void deleteByEquipmentId(Long equipmentId);
 }

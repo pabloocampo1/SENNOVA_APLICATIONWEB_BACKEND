@@ -19,7 +19,7 @@ public interface EquipmentPersistencePort {
     List<EquipmentModel> findAll();
     List<EquipmentModel> findAllByName(String name);
     Boolean existById(Long id);
-    void changeState(Long id, String state);
+    EquipmentModel changeState(Long id, String state);
     List<EquipmentModel> findAllByLocation(EquipmentLocationModel equipmentLocationModel);
     List<EquipmentModel> findAllByUsage(EquipmentUsageModel equipmentUsageModel);
     void delete(Long id);

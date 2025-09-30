@@ -29,6 +29,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -192,9 +193,32 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
             throw new IllegalArgumentException("El equipo que deseas eliminar no existe.");
         }
 
+        EquipmentModel currentEquipment = this.equipmentPersistencePort.findById(id);
+        List<EquipmentMediaEntity> equipmentMediaEntityList = this.equipmentMediaRepositoryJpa.findByEquipmentId(id);
 
-        this.equipmentPersistencePort.delete(id);
+        try {
+            // delete image in cloudinary
+            if (currentEquipment.getImageUrl() != null) {
+                cloudinaryService.deleteFileByUrl(currentEquipment.getImageUrl());
+            }
+
+            // delete files
+            for (EquipmentMediaEntity file : equipmentMediaEntityList) {
+                cloudinaryService.deleteFile(file.getPublicId());
+            }
+
+            // 2. delete relationships
+            this.equipmentLoanPersistencePort.deleteByEquipmentId(currentEquipment.getEquipmentId());
+            this.maintenanceEquipmentPersistencePort.deleteByEquipmentId(currentEquipment.getEquipmentId());
+
+            // 3. delete the equipment
+            this.equipmentPersistencePort.delete(currentEquipment.getEquipmentId());
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error al eliminar el equipo y sus archivos asociados", e);
+        }
     }
+
 
     @Override
     public List<EquipmentModel> getByLocation(Long locationId) {
@@ -210,11 +234,11 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
 
     @Override
     @Transactional
-    public void changeState(Long id, String state) {
+    public EquipmentModel changeState(Long id, String state) {
         if (id == null || state == null) {
             throw new IllegalArgumentException("Ocurrio un error en el sistema, por favor intentalo mas tarde.");
         }
-        this.equipmentPersistencePort.changeState(id, state);
+      return this.equipmentPersistencePort.changeState(id, state);
 
     }
 

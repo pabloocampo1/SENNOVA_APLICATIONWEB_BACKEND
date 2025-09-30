@@ -41,58 +41,55 @@ public class EquipmentController {
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<EquipmentResponseDto> save(@RequestPart("dto") @Valid EquipmentRequestDto equipmentRequestDto,
                                                      @RequestPart(value = "image", required = false) MultipartFile image) {
-        try {
 
-            EquipmentModel equipmentToSave = this.equipmentMapper.toDomain(equipmentRequestDto);
 
-            EquipmentModel equipmentModelSaved = this.equipmentUseCase.save(
-                    equipmentToSave,
-                    equipmentRequestDto.responsibleId(),
-                    equipmentRequestDto.locationId(),
-                    equipmentRequestDto.usageId()
-            );
-            if (image != null && !image.isEmpty()) {
-                try {
-                    String responseImage = this.cloudinaryService.uploadImage(image);
-                    equipmentModelSaved.setImageUrl(responseImage);
-                    this.equipmentUseCase.update(equipmentModelSaved, equipmentModelSaved.getEquipmentId(), equipmentModelSaved.getResponsible().getUserId(), equipmentModelSaved.getLocation().getEquipmentLocationId(), equipmentModelSaved.getUsage().getEquipmentUsageId());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                }
+        EquipmentModel equipmentToSave = this.equipmentMapper.toDomain(equipmentRequestDto);
+
+        EquipmentModel equipmentModelSaved = this.equipmentUseCase.save(
+                equipmentToSave,
+                equipmentRequestDto.responsibleId(),
+                equipmentRequestDto.locationId(),
+                equipmentRequestDto.usageId()
+        );
+        if (image != null && !image.isEmpty()) {
+            try {
+                String responseImage = this.cloudinaryService.uploadImage(image);
+                equipmentModelSaved.setImageUrl(responseImage);
+                this.equipmentUseCase.update(equipmentModelSaved, equipmentModelSaved.getEquipmentId(), equipmentModelSaved.getResponsible().getUserId(), equipmentModelSaved.getLocation().getEquipmentLocationId(), equipmentModelSaved.getUsage().getEquipmentUsageId());
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
             }
-
-            EquipmentResponseDto response = new EquipmentResponseDto(
-                    equipmentModelSaved.getEquipmentId(),
-                    equipmentModelSaved.getInternalCode(),
-                    equipmentModelSaved.getEquipmentName(),
-                    equipmentModelSaved.getBrand(),
-                    equipmentModelSaved.getModel(),
-                    equipmentModelSaved.getSerialNumber(),
-                    equipmentModelSaved.getAcquisitionDate(),
-                    equipmentModelSaved.getMaintenanceDate(),
-                    equipmentModelSaved.getAmperage(),
-                    equipmentModelSaved.getVoltage(),
-                    equipmentModelSaved.getEquipmentCost(),
-                    equipmentModelSaved.getState(),
-                    equipmentModelSaved.getAvailable(),
-                    equipmentModelSaved.getResponsible() != null ? equipmentModelSaved.getResponsible().getUserId() : null,
-                    equipmentModelSaved.getResponsible() != null ? equipmentModelSaved.getResponsible().getName() : null,
-                    equipmentModelSaved.getLocation() != null ? equipmentModelSaved.getLocation().getEquipmentLocationId() : null,
-                    equipmentModelSaved.getLocation() != null ? equipmentModelSaved.getLocation().getLocationName() : null,
-                    equipmentModelSaved.getUsage() != null ? equipmentModelSaved.getUsage().getEquipmentUsageId() : null,
-                    equipmentModelSaved.getUsage() != null ? equipmentModelSaved.getUsage().getUsageName() : null,
-                    equipmentModelSaved.getCreateAt(),
-                    equipmentModelSaved.getUpdateAt(),
-                    equipmentModelSaved.getImageUrl(),
-                    equipmentModelSaved.getDescription() != null ? equipmentModelSaved.getDescription() : "No hay descripcion para est equipo"
-            );
-
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
         }
+
+        EquipmentResponseDto response = new EquipmentResponseDto(
+                equipmentModelSaved.getEquipmentId(),
+                equipmentModelSaved.getInternalCode(),
+                equipmentModelSaved.getEquipmentName(),
+                equipmentModelSaved.getBrand(),
+                equipmentModelSaved.getModel(),
+                equipmentModelSaved.getSerialNumber(),
+                equipmentModelSaved.getAcquisitionDate(),
+                equipmentModelSaved.getMaintenanceDate(),
+                equipmentModelSaved.getAmperage(),
+                equipmentModelSaved.getVoltage(),
+                equipmentModelSaved.getEquipmentCost(),
+                equipmentModelSaved.getState(),
+                equipmentModelSaved.getAvailable(),
+                equipmentModelSaved.getResponsible() != null ? equipmentModelSaved.getResponsible().getUserId() : null,
+                equipmentModelSaved.getResponsible() != null ? equipmentModelSaved.getResponsible().getName() : null,
+                equipmentModelSaved.getLocation() != null ? equipmentModelSaved.getLocation().getEquipmentLocationId() : null,
+                equipmentModelSaved.getLocation() != null ? equipmentModelSaved.getLocation().getLocationName() : null,
+                equipmentModelSaved.getUsage() != null ? equipmentModelSaved.getUsage().getEquipmentUsageId() : null,
+                equipmentModelSaved.getUsage() != null ? equipmentModelSaved.getUsage().getUsageName() : null,
+                equipmentModelSaved.getCreateAt(),
+                equipmentModelSaved.getUpdateAt(),
+                equipmentModelSaved.getImageUrl(),
+                equipmentModelSaved.getDescription() != null ? equipmentModelSaved.getDescription() : "No hay descripcion para est equipo"
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+
 
     }
 
@@ -252,9 +249,35 @@ public class EquipmentController {
     }
 
     @PutMapping("/change-status/{id}/{state}")
-    public ResponseEntity<Void> changeState(@PathVariable("id") Long id, @PathVariable("state") String state) {
-        this.equipmentUseCase.changeState(id, state);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<EquipmentResponseDto> changeState(@PathVariable("id") Long id, @PathVariable("state") String state) {
+        System.out.println(state);
+         EquipmentModel equipmentModelSaved = this.equipmentUseCase.changeState(id, state);
+        EquipmentResponseDto response = new EquipmentResponseDto(
+                equipmentModelSaved.getEquipmentId(),
+                equipmentModelSaved.getInternalCode(),
+                equipmentModelSaved.getEquipmentName(),
+                equipmentModelSaved.getBrand(),
+                equipmentModelSaved.getModel(),
+                equipmentModelSaved.getSerialNumber(),
+                equipmentModelSaved.getAcquisitionDate(),
+                equipmentModelSaved.getMaintenanceDate(),
+                equipmentModelSaved.getAmperage(),
+                equipmentModelSaved.getVoltage(),
+                equipmentModelSaved.getEquipmentCost(),
+                equipmentModelSaved.getState(),
+                equipmentModelSaved.getAvailable(),
+                equipmentModelSaved.getResponsible() != null ? equipmentModelSaved.getResponsible().getUserId() : null,
+                equipmentModelSaved.getResponsible() != null ? equipmentModelSaved.getResponsible().getName() : null,
+                equipmentModelSaved.getLocation() != null ? equipmentModelSaved.getLocation().getEquipmentLocationId() : null,
+                equipmentModelSaved.getLocation() != null ? equipmentModelSaved.getLocation().getLocationName() : null,
+                equipmentModelSaved.getUsage() != null ? equipmentModelSaved.getUsage().getEquipmentUsageId() : null,
+                equipmentModelSaved.getUsage() != null ? equipmentModelSaved.getUsage().getUsageName() : null,
+                equipmentModelSaved.getCreateAt(),
+                equipmentModelSaved.getUpdateAt(),
+                equipmentModelSaved.getImageUrl(),
+                equipmentModelSaved.getDescription() != null ? equipmentModelSaved.getDescription() : "No hay descripcion para est equipo"
+        );
+        return new ResponseEntity<>( response ,HttpStatus.OK);
     }
 
     @PutMapping(value = "/change-image/{equipmentId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

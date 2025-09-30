@@ -58,4 +58,9 @@ public class EquipmentLoanAdapterImpl implements EquipmentLoanPersistencePort {
     public Boolean existsById(Long id) {
         return this.equipmentLoanRepositoryJpa.existsById(id);
     }
+
+    @Override
+    public void deleteByEquipmentId(Long equipmentId) {
+        this.equipmentLoanRepositoryJpa.deleteByEquipmentId(equipmentId);
+    }
 }

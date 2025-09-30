@@ -94,7 +94,7 @@ public class EquipmentAdapterImpl implements EquipmentPersistencePort {
     }
 
     @Override
-    public void changeState(Long id, String state) {
+    public EquipmentModel changeState(Long id, String state) {
         EquipmentEntity equipmentEntity = this.equipmentRepositoryJpa.findById(id)
                 .orElseThrow( () -> new IllegalArgumentException("Error : No se encontro el equipo"));
 
@@ -106,7 +106,9 @@ public class EquipmentAdapterImpl implements EquipmentPersistencePort {
 
         // change the attribute available according the state
         equipmentEntity.setAvailable(!state.equals(EquipmentConstants.STATUS_DECOMMISSIONED) && !state.equals(EquipmentConstants.STATUS_OUT_OF_SERVICE));
+        equipmentEntity.setState(state);
 
+        return this.equipmentMapperDbo.toModel(equipmentEntity);
     }
 
     @Override

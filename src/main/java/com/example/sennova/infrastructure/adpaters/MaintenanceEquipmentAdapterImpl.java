@@ -52,4 +52,9 @@ public class MaintenanceEquipmentAdapterImpl implements MaintenanceEquipmentPers
         this.maintenanceEquipmentRepositoryJpa.deleteById(id);
         return true;
     }
+
+    @Override
+    public void deleteByEquipmentId(Long equipmentId) {
+            this.maintenanceEquipmentRepositoryJpa.deleteByEquipmentId(equipmentId);
+    }
 }

@@ -11,4 +11,5 @@ public interface MaintenanceEquipmentPersistencePort {
     List<MaintenanceRecordEquipmentModel> findAllByEquipmentId(Long equipmentId);
     Boolean existById(Long id);
     Boolean deleteById(Long id);
+    void deleteByEquipmentId(Long equipmentId);
 }

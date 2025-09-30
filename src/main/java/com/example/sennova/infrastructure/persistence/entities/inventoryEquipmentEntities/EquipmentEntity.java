@@ -82,9 +82,11 @@ public class EquipmentEntity {
     private List<EquipmentLoanEntity> loanEntities;
 
     @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<MaintenanceRecordsEquipment> maintenanceRecordsEquipments;
 
     @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<EquipmentMediaEntity> equipmentMediaEntities;
 
 
