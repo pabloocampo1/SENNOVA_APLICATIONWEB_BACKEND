@@ -16,6 +16,7 @@ public interface EquipmentPersistencePort {
     Page<EquipmentModel> getAllPage(Pageable pageable);
     EquipmentModel findById(Long id);
     List<EquipmentModel> findAllByInternalCode(String internalCode);
+    List<EquipmentModel> findAllBySenaInventoryTag(String code);
     List<EquipmentModel> findAll();
     List<EquipmentModel> findAllByName(String name);
     Boolean existById(Long id);

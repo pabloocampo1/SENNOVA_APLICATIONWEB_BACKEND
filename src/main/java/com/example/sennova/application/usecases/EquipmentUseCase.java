@@ -18,6 +18,7 @@ public interface EquipmentUseCase {
     EquipmentModel getById(Long id);
     List<EquipmentModel> getAllByName(String name);
     List<EquipmentModel> getAllByInternalCode(String internalCode);
+    List<EquipmentModel> getAllBySenaInventoryTag(String code);
     Page<EquipmentModel> getAll(Pageable pageable);
     List<EquipmentModel> getAll();
     void deleteById(Long id);

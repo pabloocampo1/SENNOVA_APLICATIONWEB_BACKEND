@@ -177,6 +177,11 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
     }
 
     @Override
+    public List<EquipmentModel> getAllBySenaInventoryTag(String code) {
+        return this.equipmentPersistencePort.findAllBySenaInventoryTag(code);
+    }
+
+    @Override
     public Page<EquipmentModel> getAll(Pageable pageable) {
         return this.equipmentPersistencePort.getAllPage(pageable);
     }
@@ -195,19 +200,17 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
             throw new IllegalArgumentException("El equipo que deseas eliminar no existe.");
         }
 
-        System.out.println("pasa aca 1");
 
         EquipmentModel currentEquipment = this.equipmentPersistencePort.findById(id);
         List<EquipmentMediaEntity> equipmentMediaEntityList = this.equipmentMediaRepositoryJpa.findByEquipmentId(id);
 
-        System.out.println("pasa aca 2");
         try {
             // delete image in cloudinary
             if (currentEquipment.getImageUrl() != null) {
                 cloudinaryService.deleteFileByUrl(currentEquipment.getImageUrl());
             }
 
-            System.out.println("pasa aca 3");
+
 
             // delete files
             if (!equipmentMediaEntityList.isEmpty()) {
@@ -215,13 +218,13 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
                     cloudinaryService.deleteFile(file.getPublicId());
                 }
             }
-            System.out.println("pasa aca 4");
+
 
             // 2. delete relationships
             this.equipmentLoanPersistencePort.deleteByEquipmentId(currentEquipment.getEquipmentId());
             this.maintenanceEquipmentPersistencePort.deleteByEquipmentId(currentEquipment.getEquipmentId());
 
-            System.out.println("pasa aca 5");
+
 
             // 3. delete the equipment
             this.equipmentPersistencePort.delete(currentEquipment.getEquipmentId());

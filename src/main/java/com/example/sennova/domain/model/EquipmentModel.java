@@ -24,6 +24,8 @@ public class EquipmentModel {
 
     private String imageUrl;
 
+    private String senaInventoryTag;
+
     @NotNull(message = "El número de serie es obligatorio")
     @Positive(message = "El número de serie debe ser positivo")
     private Long serialNumber;
@@ -61,6 +63,13 @@ public class EquipmentModel {
 
     private LocalDate maintenanceDate;
 
+    public String getSenaInventoryTag() {
+        return senaInventoryTag;
+    }
+
+    public void setSenaInventoryTag(String senaInventoryTag) {
+        this.senaInventoryTag = senaInventoryTag;
+    }
 
     public Long getEquipmentId() {
         return equipmentId;

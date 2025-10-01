@@ -40,6 +40,9 @@ public class EquipmentEntity {
 
     private String amperage;
 
+    @Column(unique = true)
+    private String senaInventoryTag;
+
     private String voltage;
 
     private double equipmentCost;
@@ -77,15 +80,15 @@ public class EquipmentEntity {
     private EquipmentUsageEntity usage;
 
     // instance of reference for relationship
-    @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<EquipmentLoanEntity> loanEntities;
 
-    @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<MaintenanceRecordsEquipment> maintenanceRecordsEquipments;
 
-    @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<EquipmentMediaEntity> equipmentMediaEntities;
 

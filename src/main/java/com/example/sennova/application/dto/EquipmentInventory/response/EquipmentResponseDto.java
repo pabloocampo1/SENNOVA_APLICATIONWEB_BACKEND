@@ -13,6 +13,7 @@ public record EquipmentResponseDto(
         Long serialNumber,
         LocalDate acquisitionDate,
         LocalDate maintenanceDate,
+         String senaInventoryTag,
         String amperage,
         String voltage,
         double equipmentCost,

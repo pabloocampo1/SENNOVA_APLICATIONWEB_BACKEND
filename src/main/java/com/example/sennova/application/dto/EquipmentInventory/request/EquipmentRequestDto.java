@@ -24,6 +24,8 @@ public record EquipmentRequestDto(
         @Positive(message = "El número de serie debe ser un valor positivo")
         Long serialNumber,
 
+        String senaInventoryTag,
+
         @PastOrPresent(message = "La fecha de adquisición no puede estar en el futuro")
         LocalDate acquisitionDate,
 

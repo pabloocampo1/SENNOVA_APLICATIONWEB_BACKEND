@@ -27,6 +27,7 @@ public class MaintenanceEquipmentServiceImpl implements MaintenanceEquipmentUseC
     @Override
     public MaintenanceRecordEquipmentModel save(MaintenanceEquipmentRequest maintenanceEquipmentRequest) {
         EquipmentModel equipmentModel = this.equipmentUseCase.getById(maintenanceEquipmentRequest.equipmentId());
+
         MaintenanceRecordEquipmentModel maintenanceRecordEquipmentModel = new MaintenanceRecordEquipmentModel();
         maintenanceRecordEquipmentModel.setEquipment(equipmentModel);
         maintenanceRecordEquipmentModel.setDateMaintenance(maintenanceEquipmentRequest.dateMaintenance());
@@ -34,13 +35,14 @@ public class MaintenanceEquipmentServiceImpl implements MaintenanceEquipmentUseC
         maintenanceRecordEquipmentModel.setPerformedBy(maintenanceEquipmentRequest.performedBy());
         maintenanceRecordEquipmentModel.setNotes(maintenanceEquipmentRequest.notes());
 
+        MaintenanceRecordEquipmentModel maintenanceRecordEquipmentModelReturn =  this.maintenanceEquipmentPersistencePort.save(maintenanceRecordEquipmentModel);
 
-        LocalDate currentMaintenanceDate = equipmentModel.getMaintenanceDate();
-        LocalDate nextMaintenanceDate = currentMaintenanceDate.plusYears(1);
+        LocalDate currentDate = LocalDate.now();
+        LocalDate nextMaintenanceDate = currentDate.plusYears(1);
         equipmentModel.setMaintenanceDate(nextMaintenanceDate);
         this.equipmentUseCase.update(equipmentModel, equipmentModel.getEquipmentId(), equipmentModel.getResponsible().getUserId(), equipmentModel.getLocation().getEquipmentLocationId(), equipmentModel.getUsage().getEquipmentUsageId());
 
-        return this.maintenanceEquipmentPersistencePort.save(maintenanceRecordEquipmentModel);
+        return maintenanceRecordEquipmentModelReturn;
     }
 
     @Override

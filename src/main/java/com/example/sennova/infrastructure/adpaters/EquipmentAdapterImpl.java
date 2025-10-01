@@ -77,6 +77,12 @@ public class EquipmentAdapterImpl implements EquipmentPersistencePort {
     }
 
     @Override
+    public List<EquipmentModel> findAllBySenaInventoryTag(String code) {
+        List<EquipmentEntity> equipmentEntityList = this.equipmentRepositoryJpa.findAllBySenaInventoryTagContainingIgnoreCase(code);
+        return equipmentEntityList.stream().map(this.equipmentMapperDbo::toModel).toList();
+    }
+
+    @Override
     public List<EquipmentModel> findAll() {
         List<EquipmentEntity> equipmentEntities = this.equipmentRepositoryJpa.findAll();
         return equipmentEntities.stream().map(this.equipmentMapperDbo::toModel).toList();

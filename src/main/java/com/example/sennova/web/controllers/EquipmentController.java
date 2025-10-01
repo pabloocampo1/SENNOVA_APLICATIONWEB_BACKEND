@@ -71,6 +71,7 @@ public class EquipmentController {
                 equipmentModelSaved.getSerialNumber(),
                 equipmentModelSaved.getAcquisitionDate(),
                 equipmentModelSaved.getMaintenanceDate(),
+                equipmentModelSaved.getSenaInventoryTag(),
                 equipmentModelSaved.getAmperage(),
                 equipmentModelSaved.getVoltage(),
                 equipmentModelSaved.getEquipmentCost(),
@@ -85,6 +86,7 @@ public class EquipmentController {
                 equipmentModelSaved.getCreateAt(),
                 equipmentModelSaved.getUpdateAt(),
                 equipmentModelSaved.getImageUrl(),
+
                 equipmentModelSaved.getDescription() != null ? equipmentModelSaved.getDescription() : "No hay descripcion para est equipo"
         );
 
@@ -142,6 +144,7 @@ public class EquipmentController {
                 equipmentModelSaved.getSerialNumber(),
                 equipmentModelSaved.getAcquisitionDate(),
                 equipmentModelSaved.getMaintenanceDate(),
+                equipmentModelSaved.getSenaInventoryTag(),
                 equipmentModelSaved.getAmperage(),
                 equipmentModelSaved.getVoltage(),
                 equipmentModelSaved.getEquipmentCost(),
@@ -213,6 +216,14 @@ public class EquipmentController {
                 HttpStatus.OK);
     }
 
+    @GetMapping("/get-all-by-sena-inventory-tag/{code}")
+    public ResponseEntity<List<EquipmentResponseDto>> getAllByISenaInventoryTag(@PathVariable("code") String code) {
+        List<EquipmentModel> equipmentModelList = this.equipmentUseCase.getAllBySenaInventoryTag(code);
+        return new ResponseEntity<>(
+                equipmentModelList.stream().map(this.equipmentMapper::toResponse).toList(),
+                HttpStatus.OK);
+    }
+
 
     @GetMapping("/get-all-by-name/{name}")
     public ResponseEntity<List<EquipmentResponseDto>> getAllByName(@PathVariable("name") String name) {
@@ -260,6 +271,7 @@ public class EquipmentController {
                 equipmentModelSaved.getSerialNumber(),
                 equipmentModelSaved.getAcquisitionDate(),
                 equipmentModelSaved.getMaintenanceDate(),
+                equipmentModelSaved.getSenaInventoryTag(),
                 equipmentModelSaved.getAmperage(),
                 equipmentModelSaved.getVoltage(),
                 equipmentModelSaved.getEquipmentCost(),

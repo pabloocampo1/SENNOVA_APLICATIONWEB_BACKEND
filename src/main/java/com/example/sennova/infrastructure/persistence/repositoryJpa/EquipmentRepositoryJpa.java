@@ -22,6 +22,7 @@ public interface EquipmentRepositoryJpa extends JpaRepository<EquipmentEntity, L
     List<EquipmentEntity> findAllByUsage(EquipmentUsageEntity equipmentUsageEntity);
     List<EquipmentEntity> findAllByInternalCodeContainingIgnoreCase(String internalCode);
     List<EquipmentEntity> findAllByEquipmentNameContainingIgnoreCase(String name);
+    List<EquipmentEntity> findAllBySenaInventoryTagContainingIgnoreCase(String name);
 
 
     // COUNT ALLL
