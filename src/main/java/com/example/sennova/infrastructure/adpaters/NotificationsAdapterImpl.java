@@ -6,6 +6,7 @@ import com.example.sennova.infrastructure.persistence.repositoryJpa.Notification
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -29,9 +30,10 @@ public class NotificationsAdapterImpl implements NotificationsPort {
     }
 
     @Override
-    public void deleteNotification(Long id) {
-        this.notificationsRepositoryJpa.deleteById(id);
+    public void deleteByDateBefore(LocalDateTime date) {
+        this.notificationsRepositoryJpa.deleteByDateBefore(date);
     }
+
 
     @Override
     public List<Notifications> getAll() {

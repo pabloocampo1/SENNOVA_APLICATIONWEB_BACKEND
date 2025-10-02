@@ -5,9 +5,11 @@ import com.example.sennova.application.usecases.UserUseCase;
 import com.example.sennova.domain.model.UserModel;
 import com.example.sennova.domain.port.NotificationsPort;
 import com.example.sennova.infrastructure.persistence.entities.Notifications;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,14 +35,10 @@ public class NotificationsService {
         System.out.println("NUEVA NOTIFICACION: " + notification);
     }
 
+    @Transactional
     public void  deleteByDateBefore(){
-        List<Notifications> allNotifications = this.notificationsPort.getAll();
-
-        // addd logic
-        for (Notifications notification : allNotifications) {
-
-        }
-
+        LocalDateTime limitDate = LocalDate.now().minusDays(30).atStartOfDay();
+        this.notificationsPort.deleteByDateBefore(limitDate);
     }
 
 

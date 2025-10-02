@@ -27,12 +27,12 @@ public class SchedulerEquipment {
         this.equipmentEmail = equipmentEmail;
     }
 
-    @Scheduled(cron = "0 */5 * * * ?")
+    // @Scheduled(cron = "0 */1 * * * ?")
+    @Scheduled(cron = "0 0 4 * * ?")
     public void checkMaintenanceEquipment() {
-        List<EquipmentModel> equipos = this.equipmentUseCase.getAllEquipmentToMaintenance();
+        List<EquipmentModel> equipments = this.equipmentUseCase.getAllEquipmentToMaintenance();
 
-        if (equipos.isEmpty()) {
-            System.out.println("No hay equipos para mantenimiento.");
+        if (equipments.isEmpty()) {
             return;
         }
 
@@ -43,13 +43,12 @@ public class SchedulerEquipment {
                 .forEach(user -> {
                     String email = user.getEmail();
                     try {
-                        this.equipmentEmail.sendEmailMaintenance(email, equipos);
+                        this.equipmentEmail.sendEmailMaintenance(email, equipments);
                     } catch (Exception e) {
                         System.err.println("Error al enviar correo a " + email + ": " + e.getMessage());
                     }
                 });
     }
-
 
 
 }
