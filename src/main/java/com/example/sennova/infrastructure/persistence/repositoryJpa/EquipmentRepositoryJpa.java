@@ -24,6 +24,7 @@ public interface EquipmentRepositoryJpa extends JpaRepository<EquipmentEntity, L
     List<EquipmentEntity> findAllByEquipmentNameContainingIgnoreCase(String name);
     List<EquipmentEntity> findAllBySenaInventoryTagContainingIgnoreCase(String name);
 
+    List<EquipmentEntity> findAllByMaintenanceDate(LocalDate currentDate);
 
     // COUNT ALLL
     long count();
@@ -37,5 +38,5 @@ public interface EquipmentRepositoryJpa extends JpaRepository<EquipmentEntity, L
     long countByAvailableTrue();
 
     long countByAvailableFalse();
-    // actives and inactives
+
 }

@@ -8,6 +8,8 @@ import com.example.sennova.application.usecases.LocationEquipmentUseCase;
 import com.example.sennova.application.usecases.UsageEquipmentUseCase;
 import com.example.sennova.application.usecases.UserUseCase;
 import com.example.sennova.domain.constants.EquipmentConstants;
+import com.example.sennova.domain.constants.RoleConstantsNotification;
+import com.example.sennova.domain.constants.TypeNotifications;
 import com.example.sennova.domain.model.EquipmentLocationModel;
 import com.example.sennova.domain.model.EquipmentModel;
 import com.example.sennova.domain.model.EquipmentUsageModel;
@@ -15,6 +17,7 @@ import com.example.sennova.domain.model.UserModel;
 import com.example.sennova.domain.port.EquipmentLoanPersistencePort;
 import com.example.sennova.domain.port.EquipmentPersistencePort;
 import com.example.sennova.domain.port.MaintenanceEquipmentPersistencePort;
+import com.example.sennova.infrastructure.persistence.entities.Notifications;
 import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentEntity;
 import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentMediaEntity;
 import com.example.sennova.infrastructure.persistence.repositoryJpa.EquipmentMediaRepositoryJpa;
@@ -30,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,9 +52,10 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
     private final EquipmentMediaRepositoryJpa equipmentMediaRepositoryJpa;
     private final MaintenanceEquipmentPersistencePort maintenanceEquipmentPersistencePort;
     private final EquipmentLoanPersistencePort equipmentLoanPersistencePort;
+    private final NotificationsService notificationsService;
 
     @Autowired
-    public EquipmentServiceImpl(@Lazy UserMapper userMapper, EquipmentPersistencePort equipmentPersistencePort, LocationEquipmentUseCase locationEquipmentUseCase, UsageEquipmentUseCase usageEquipmentUseCase, UserUseCase userUseCase, @Lazy CloudinaryService cloudinaryService, EquipmentMediaRepositoryJpa equipmentMediaRepositoryJpa, MaintenanceEquipmentPersistencePort maintenanceEquipmentPersistencePort, EquipmentLoanPersistencePort equipmentLoanPersistencePort) {
+    public EquipmentServiceImpl(@Lazy UserMapper userMapper, EquipmentPersistencePort equipmentPersistencePort, LocationEquipmentUseCase locationEquipmentUseCase, UsageEquipmentUseCase usageEquipmentUseCase, UserUseCase userUseCase, @Lazy CloudinaryService cloudinaryService, EquipmentMediaRepositoryJpa equipmentMediaRepositoryJpa, MaintenanceEquipmentPersistencePort maintenanceEquipmentPersistencePort, EquipmentLoanPersistencePort equipmentLoanPersistencePort, NotificationsService notificationsService) {
         this.userMapper = userMapper;
         this.equipmentPersistencePort = equipmentPersistencePort;
         this.locationEquipmentUseCase = locationEquipmentUseCase;
@@ -60,6 +65,7 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
         this.equipmentMediaRepositoryJpa = equipmentMediaRepositoryJpa;
         this.maintenanceEquipmentPersistencePort = maintenanceEquipmentPersistencePort;
         this.equipmentLoanPersistencePort = equipmentLoanPersistencePort;
+        this.notificationsService = notificationsService;
     }
 
     @Override
@@ -96,6 +102,14 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
 
         EquipmentUsageModel equipmentUsageModel = this.usageEquipmentUseCase.getById(usageId);
         equipmentModel.setUsage(equipmentUsageModel);
+
+        // save one notification
+        Notifications newNotification = new Notifications();
+        newNotification.setMessage("Se agrego un nuevo equipo : " + equipmentModel.getEquipmentName());
+        newNotification.setType(TypeNotifications.NEW_EQUIPMENT);
+        newNotification.setTags(List.of(RoleConstantsNotification.ROLE_ADMIN, RoleConstantsNotification.ROLE_SUPERADMIN));
+
+        this.notificationsService.saveNotification(newNotification, user.userId());
 
         // validate the date
         return this.equipmentPersistencePort.save(equipmentModel);
@@ -356,4 +370,11 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
 
         return mapObject;
     }
+
+    @Override
+    public List<EquipmentModel> getAllEquipmentToMaintenance() {
+        LocalDate currentDate = LocalDate.now();
+        return this.equipmentPersistencePort.findAllByMaintenanceDate(currentDate);
+    }
+
 }

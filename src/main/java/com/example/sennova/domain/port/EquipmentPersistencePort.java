@@ -7,6 +7,7 @@ import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmen
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface EquipmentPersistencePort {
@@ -31,5 +32,6 @@ public interface EquipmentPersistencePort {
     long countByAvailableFalse();
     long countByMaintenanceMonth();
     long countTotal();
+    List<EquipmentModel> findAllByMaintenanceDate(LocalDate currentDate);
 
 }

@@ -11,6 +11,7 @@ public interface UserUseCase {
     UserResponse save(UserSaveRequest userSaveRequest);
     UserResponse saveModel(UserModel userModel);
     List<UserResponse> findAll();
+    List<UserModel> findAllModels();
     UserResponse findById(Long id);
     UserResponse update(Long userId, UserUpdateDto userUpdateDto);
     void deleteUser(Long userId);

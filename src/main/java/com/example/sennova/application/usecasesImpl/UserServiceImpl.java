@@ -78,6 +78,11 @@ public class UserServiceImpl implements UserUseCase {
     }
 
     @Override
+    public List<UserModel> findAllModels() {
+        return this.userPersistencePort.findAll();
+    }
+
+    @Override
     public UserResponse findById(@Valid Long id) {
            UserModel userModel = this.userPersistencePort.findById(id);
            return this.userMapper.toResponse(userModel);

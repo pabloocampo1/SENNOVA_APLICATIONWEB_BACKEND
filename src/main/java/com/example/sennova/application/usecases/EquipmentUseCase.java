@@ -31,5 +31,6 @@ public interface EquipmentUseCase {
     List<EquipmentMediaEntity> getFiles(Long id);
     Boolean deleteFile(String public_Id);
     Map<String, Long> getSummaryStatics();
+    List<EquipmentModel> getAllEquipmentToMaintenance();
 
 }

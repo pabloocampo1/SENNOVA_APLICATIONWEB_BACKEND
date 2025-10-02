@@ -174,4 +174,13 @@ public class EquipmentAdapterImpl implements EquipmentPersistencePort {
     public long countTotal() {
       return  this.equipmentRepositoryJpa.count();
     }
+
+    @Override
+    public List<EquipmentModel> findAllByMaintenanceDate(LocalDate currentDate) {
+        List<EquipmentEntity> equipmentEntityList = this.equipmentRepositoryJpa.findAllByMaintenanceDate(currentDate);
+        return  equipmentEntityList.stream().map(
+                this.equipmentMapperDbo::toModel
+        ).toList();
+    }
+
 }
