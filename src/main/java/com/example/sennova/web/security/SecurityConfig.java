@@ -1,5 +1,6 @@
 package com.example.sennova.web.security;
 
+import com.example.sennova.domain.constants.RoleConstantsNotification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,10 +27,10 @@ import java.util.List;
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
-    private final String ROLE_ADMIN = "ADMIN";
-    private final String ROLE_SUPERADMIN = "SUPERADMIN";
-    private final String ROLE_ANALYST = "ANALYST";
-    private final JwtFilter jwtFilter;
+    private final String ROLE_ADMIN = RoleConstantsNotification.ROLE_ADMIN;
+    private final String ROLE_SUPERADMIN = RoleConstantsNotification.ROLE_SUPERADMIN;
+    private final  String ROLE_ANALYST = RoleConstantsNotification.ROLE_ANALYSIS;
+    private  JwtFilter jwtFilter;
     @Autowired
     private CorsConfig corsConfig;
 
@@ -45,6 +46,9 @@ public class SecurityConfig {
                     httpSecurityCorsConfigurer.configurationSource(corsConfig.corsConfigurationSource());
                 }).
                 authorizeHttpRequests(request -> {
+
+
+                            request.requestMatchers("/ws-notifications/**").permitAll();
                             // Auth request
                             request.requestMatchers(HttpMethod.POST, "/api/v1/auth/signIn").permitAll();
                             request.requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh/token").permitAll();
@@ -63,7 +67,7 @@ public class SecurityConfig {
                             // products
 
 
-                    // change everithing and authotities in some paths
+                            // change everithing and authotities in some paths
                             request.requestMatchers(HttpMethod.POST, "/api/v1/product/**").hasAnyRole(ROLE_SUPERADMIN, ROLE_ADMIN);
                             request.requestMatchers(HttpMethod.PUT, "/api/v1/product/**").hasRole(ROLE_SUPERADMIN);
                             request.requestMatchers(HttpMethod.GET, "/api/v1/product/**").hasAnyRole(ROLE_SUPERADMIN, ROLE_ADMIN, ROLE_ANALYST);

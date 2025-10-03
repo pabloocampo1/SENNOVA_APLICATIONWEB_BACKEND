@@ -88,6 +88,7 @@ public class UserServiceImpl implements UserUseCase {
            return this.userMapper.toResponse(userModel);
     }
 
+
     @Override
     @Transactional
     public UserResponse update(@Valid  Long userId, @Valid UserUpdateDto userUpdateDto) {

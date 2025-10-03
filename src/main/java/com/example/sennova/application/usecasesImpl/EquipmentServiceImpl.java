@@ -81,17 +81,18 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
         }
 
         // change the attribute available according the state
-        equipmentModel.setAvailable(!state.equals(EquipmentConstants.STATUS_DECOMMISSIONED) && !state.equals(EquipmentConstants.STATUS_OUT_OF_SERVICE));
+        equipmentModel.setAvailable(!state.equals(EquipmentConstants.STATUS_DECOMMISSIONED)
+                && !state.equals(EquipmentConstants.STATUS_OUT_OF_SERVICE));
 
         // validate if the number serial is unique
         Long serialNumber = equipmentModel.getSerialNumber();
         if (this.equipmentPersistencePort.existsBySerialNumber(serialNumber)) {
-            throw new IllegalArgumentException("El numero serial ya existe. debe de ser unico");
+            throw new IllegalArgumentException("El numero serial ya existe. Debe de ser unico.");
         }
 
         String internalCode = equipmentModel.getInternalCode();
         if (this.equipmentPersistencePort.existsByInternalCode(internalCode)) {
-            throw new IllegalArgumentException("El codigo interno del equipo: " + equipmentModel.getEquipmentName() + " Debe de ser unico");
+            throw new IllegalArgumentException("El codigo interno del equipo: " + equipmentModel.getEquipmentName() + " debe de ser unico.");
         }
 
         UserResponse user = this.userUseCase.findById(responsibleId);
@@ -103,16 +104,25 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
         EquipmentUsageModel equipmentUsageModel = this.usageEquipmentUseCase.getById(usageId);
         equipmentModel.setUsage(equipmentUsageModel);
 
-        // save one notification
+        // primero guardamos el equipo
+        EquipmentModel savedEquipment = this.equipmentPersistencePort.save(equipmentModel);
+
+        // si se guardó correctamente, creamos la notificación
+        this.saveNotification(savedEquipment, user);
+
+        return savedEquipment;
+    }
+
+    @Transactional
+    public void saveNotification(EquipmentModel equipmentModel, UserResponse user) {
         Notifications newNotification = new Notifications();
-        newNotification.setMessage("Se agrego un nuevo equipo : " + equipmentModel.getEquipmentName());
+        newNotification.setMessage("Se agregó un nuevo equipo: " + equipmentModel.getEquipmentName());
         newNotification.setType(TypeNotifications.NEW_EQUIPMENT);
+        newNotification.setActorUser(user.name());
+        newNotification.setImageUser(user.imageProfile());
         newNotification.setTags(List.of(RoleConstantsNotification.ROLE_ADMIN, RoleConstantsNotification.ROLE_SUPERADMIN));
 
-        this.notificationsService.saveNotification(newNotification, user.userId());
-
-        // validate the date
-        return this.equipmentPersistencePort.save(equipmentModel);
+        this.notificationsService.saveNotification(newNotification);
     }
 
 
