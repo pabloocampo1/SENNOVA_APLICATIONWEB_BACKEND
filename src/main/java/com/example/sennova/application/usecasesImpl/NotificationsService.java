@@ -30,11 +30,8 @@ public class NotificationsService {
     }
 
     public void saveNotification(Notifications notifications) {
-
         Notifications notification = this.notificationsPort.save(notifications);
         messagingTemplate.convertAndSend("/topic/notifications", notification);
-
-        System.out.println("NUEVA NOTIFICACION: " + notification);
     }
 
     @Transactional

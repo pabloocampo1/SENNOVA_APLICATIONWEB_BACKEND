@@ -3,12 +3,13 @@ package com.example.sennova.application.usecases;
 import com.example.sennova.application.dto.UserDtos.*;
 import com.example.sennova.domain.model.UserModel;
 import com.example.sennova.infrastructure.persistence.entities.UserEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface UserUseCase {
-    UserResponse save(UserSaveRequest userSaveRequest);
+    UserResponse save(UserSaveRequest userSaveRequest, MultipartFile multipartFile);
     UserResponse saveModel(UserModel userModel);
     List<UserResponse> findAll();
     List<UserModel> findAllModels();

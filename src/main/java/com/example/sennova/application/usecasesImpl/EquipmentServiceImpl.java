@@ -104,10 +104,9 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
         EquipmentUsageModel equipmentUsageModel = this.usageEquipmentUseCase.getById(usageId);
         equipmentModel.setUsage(equipmentUsageModel);
 
-        // primero guardamos el equipo
         EquipmentModel savedEquipment = this.equipmentPersistencePort.save(equipmentModel);
 
-        // si se guardó correctamente, creamos la notificación
+
         this.saveNotification(savedEquipment, user);
 
         return savedEquipment;

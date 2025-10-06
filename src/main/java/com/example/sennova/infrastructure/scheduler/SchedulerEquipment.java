@@ -36,14 +36,16 @@ public class SchedulerEquipment {
         this.notificationsService = notificationsService;
     }
 
-    // @Scheduled(cron = "0 */1 * * * ?")
-    @Scheduled(cron = "0 0 4 * * ?")
+    @Scheduled(cron = "0 30 5 * * ?", zone = "America/Bogota")
     public void checkMaintenanceEquipment() {
+        System.out.println("empezo");
         List<EquipmentModel> equipments = this.equipmentUseCase.getAllEquipmentToMaintenance();
-
+        System.out.println("entro aca: " + equipments.size());
         if (equipments.isEmpty()) {
             return;
         }
+
+        System.out.println("paso 12");
 
         List<UserModel> users = this.userUseCase.findAllModels();
 
@@ -54,12 +56,12 @@ public class SchedulerEquipment {
                     try {
                         this.equipmentEmail.sendEmailMaintenance(email, equipments);
 
-
                     } catch (Exception e) {
                         System.err.println("Error al enviar correo a " + email + ": " + e.getMessage());
                     }
                 });
 
+        System.out.println("paso 13");
         equipments.stream().forEach(equipment -> {
             Notifications notifications = new Notifications();
             notifications.setMessage("EL equipo " + equipment.getEquipmentName() + " tiene mantenimiento hoy.");
@@ -69,6 +71,7 @@ public class SchedulerEquipment {
             notifications.setImageUser(null);
 
             this.notificationsService.saveNotification(notifications);
+            System.out.println("paso 14");
         });
 
     }

@@ -2,6 +2,7 @@ package com.example.sennova.domain.model;
 
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -19,6 +20,7 @@ public class UserModel {
     private Boolean available;
     private String password;
     private RoleModel role;
+    private LocalDate createAt;
 
     // preferences
     private boolean notifyEquipment;

@@ -8,6 +8,7 @@ import com.example.sennova.domain.model.UserModel;
 import com.example.sennova.domain.port.RolePersistencePort;
 import com.example.sennova.domain.port.UserPersistencePort;
 import com.example.sennova.infrastructure.persistence.entities.UserEntity;
+import com.example.sennova.infrastructure.restTemplate.CloudinaryService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,21 +30,24 @@ public class UserServiceImpl implements UserUseCase {
     private final UserMapper userMapper;
     private final RolePersistencePort rolePersistencePort;
     private final PasswordEncoder passwordEncoder;
+    private final CloudinaryService cloudinaryService;
 
 
     @Autowired
-    public UserServiceImpl(UserPersistencePort userPersistencePort, UserMapper userMapper, RolePersistencePort rolePersistencePort, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserPersistencePort userPersistencePort, UserMapper userMapper, RolePersistencePort rolePersistencePort, PasswordEncoder passwordEncoder, CloudinaryService cloudinaryService) {
         this.userPersistencePort = userPersistencePort;
         this.userMapper = userMapper;
         this.rolePersistencePort = rolePersistencePort;
         this.passwordEncoder = passwordEncoder;
+        this.cloudinaryService = cloudinaryService;
     }
 
 
     @Override
     @Transactional
-    public UserResponse save(UserSaveRequest userSaveRequest) {
-        try{
+    public UserResponse save(UserSaveRequest userSaveRequest, MultipartFile multipartFile) {
+
+        try {
             UserModel userModel = this.userMapper.toModel(userSaveRequest);
 
             // search y  validate if the role exist.
@@ -51,15 +56,21 @@ public class UserServiceImpl implements UserUseCase {
             // add the role to the user
             userModel.setRole(roleModel);
 
+            // if have one image save in cloudinary.
+            if(multipartFile != null){
+                userModel.setImageProfile(this.cloudinaryService.uploadImage(multipartFile));
+            }
+
             // encrip one password by default (the user can change after)
             userModel.setPassword(passwordEncoder.encode(userModel.getDni().toString()));
+            userModel.setUsername(userModel.getDni().toString());
 
             // save the user
             UserModel userSaved = this.userPersistencePort.save(userModel);
 
             // return the response
             return this.userMapper.toResponse(userSaved);
-        }catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("");
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -84,17 +95,17 @@ public class UserServiceImpl implements UserUseCase {
 
     @Override
     public UserResponse findById(@Valid Long id) {
-           UserModel userModel = this.userPersistencePort.findById(id);
-           return this.userMapper.toResponse(userModel);
+        UserModel userModel = this.userPersistencePort.findById(id);
+        return this.userMapper.toResponse(userModel);
     }
 
 
     @Override
     @Transactional
-    public UserResponse update(@Valid  Long userId, @Valid UserUpdateDto userUpdateDto) {
+    public UserResponse update(@Valid Long userId, @Valid UserUpdateDto userUpdateDto) {
 
-        if(!this.userPersistencePort.existsById(userUpdateDto.userId())){
-            throw  new UsernameNotFoundException("El usuario " + userUpdateDto.name() + " no existe.");
+        if (!this.userPersistencePort.existsById(userUpdateDto.userId())) {
+            throw new UsernameNotFoundException("El usuario " + userUpdateDto.name() + " no existe.");
         }
 
         UserModel user = new UserModel();
@@ -113,7 +124,7 @@ public class UserServiceImpl implements UserUseCase {
 
     @Override
     public void deleteUser(@Valid Long userId) {
-        if(!this.userPersistencePort.existsById(userId)){
+        if (!this.userPersistencePort.existsById(userId)) {
             throw new UsernameNotFoundException("No se encontro ese usuario para eliminar");
         }
 
@@ -122,10 +133,10 @@ public class UserServiceImpl implements UserUseCase {
 
     @Override
     public List<UserResponse> findByName(String name) {
-       List<UserResponse> userResponseList = this.userPersistencePort.findByName(name)
-               .stream()
-               .map(this.userMapper::toResponse)
-               .toList();
+        List<UserResponse> userResponseList = this.userPersistencePort.findByName(name)
+                .stream()
+                .map(this.userMapper::toResponse)
+                .toList();
 
         return userResponseList;
     }
@@ -162,11 +173,11 @@ public class UserServiceImpl implements UserUseCase {
 
     @Override
     public void saveRefreshToken(String refreshToken, String username) {
-        this.userPersistencePort.saveRefreshToken(refreshToken,username);
+        this.userPersistencePort.saveRefreshToken(refreshToken, username);
     }
 
     @Override
-    public void deleteRefreshToken( @Valid String username) {
+    public void deleteRefreshToken(@Valid String username) {
         this.userPersistencePort.deleteRefreshToken(username);
     }
 
@@ -185,26 +196,26 @@ public class UserServiceImpl implements UserUseCase {
         userModel.setNotifyResults(userPreferencesRequestDto.results());
         UserModel userUpdate = this.userPersistencePort.save(userModel);
         UserPreferenceResponse userPreferenceResponse = new UserPreferenceResponse(userModel.isNotifyEquipment(), userModel.isNotifyReagents(), userModel.isNotifyQuotes(), userModel.isNotifyResults());
-        return userPreferenceResponse ;
+        return userPreferenceResponse;
     }
 
     @Override
     public String changeEmail(String currentEmail, String newEmail) {
         UserModel userModel = this.userPersistencePort.findByEmail(currentEmail);
 
-        if(this.userPersistencePort.existByEmail(newEmail)){
+        if (this.userPersistencePort.existByEmail(newEmail)) {
             throw new IllegalArgumentException("El nuevo email no esta disponible");
         }
 
         userModel.setEmail(newEmail);
 
-       UserModel userUpdated =  this.userPersistencePort.update(userModel);
+        UserModel userUpdated = this.userPersistencePort.update(userModel);
 
-        return  userUpdated.getEmail();
+        return userUpdated.getEmail();
     }
 
     @Override
-    public boolean existByEmail(@Valid  String email) {
+    public boolean existByEmail(@Valid String email) {
         return this.userPersistencePort.existByEmail(email);
     }
 

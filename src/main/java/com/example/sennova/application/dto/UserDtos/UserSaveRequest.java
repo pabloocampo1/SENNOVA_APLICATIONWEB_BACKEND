@@ -5,9 +5,6 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 
 public record UserSaveRequest(
-        @NotBlank(message = "El nombre de usuario es obligatorio")
-        @Size(min = 3, max = 20, message = "El nombre de usuario debe tener entre 3 y 20 caracteres")
-        String username,
 
 
         @NotBlank(message = "El nombre es obligatorio")
@@ -19,7 +16,6 @@ public record UserSaveRequest(
 
         boolean available,
 
-        LocalDate dateOfBirth,
 
         @NotNull(message = "El número de teléfono es obligatorio")
         @Digits(integer = 10, fraction = 0, message = "Número de teléfono inválido")

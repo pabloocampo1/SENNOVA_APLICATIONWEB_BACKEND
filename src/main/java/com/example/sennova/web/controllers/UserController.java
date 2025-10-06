@@ -5,11 +5,13 @@ import com.example.sennova.application.usecases.UserUseCase;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -48,9 +50,9 @@ public class UserController {
         return new ResponseEntity<>(this.userUseCase.findByRole(roleId), HttpStatus.OK);
     }
 
-    @PostMapping(path = "/save")
-    public ResponseEntity<UserResponse> saveUser(@RequestBody @Valid UserSaveRequest userSaveRequest) {
-        return new ResponseEntity<>(this.userUseCase.save(userSaveRequest), HttpStatus.OK);
+    @PostMapping(path = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<UserResponse> saveUser(@RequestPart("dto") @Valid UserSaveRequest userSaveRequest, @RequestPart(value = "image", required = false) MultipartFile imageFile) {
+        return new ResponseEntity<>(this.userUseCase.save(userSaveRequest, imageFile), HttpStatus.OK);
 
     }
 

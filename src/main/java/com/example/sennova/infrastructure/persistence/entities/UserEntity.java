@@ -41,8 +41,6 @@ public class UserEntity {
 
     private boolean available;
 
-    private LocalDate dateOfBirth;
-
     @Column(nullable = false)
     private Long phoneNumber;
 

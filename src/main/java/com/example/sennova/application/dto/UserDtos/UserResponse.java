@@ -10,5 +10,7 @@ public record UserResponse(
         boolean available,
         Long phoneNumber,
         String email,
-        String imageProfile
+         String position,
+        String imageProfile,
+        LocalDate createAt
 ) {}
