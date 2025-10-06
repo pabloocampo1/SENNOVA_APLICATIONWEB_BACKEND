@@ -9,5 +9,4 @@ public class RoleModel {
     private Long roleId;
     private String nameRole;
 
-
 }

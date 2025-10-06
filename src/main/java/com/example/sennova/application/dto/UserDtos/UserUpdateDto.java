@@ -27,13 +27,11 @@ public record UserUpdateDto(
         @Email(message = "El correo debe tener un formato válido")
         String email,
 
-        @Size(max = 255, message = "La URL de la imagen no debe exceder 255 caracteres")
-        String imageProfile,
 
         @Size(max = 100, message = "El cargo no debe exceder 100 caracteres")
         String position,
 
-        @NotNull(message = "El rol es obligatorio")
-        RoleModel role
+        @NotBlank(message = "El rol es obligatorio")
+        String roleName
 ) {}
 

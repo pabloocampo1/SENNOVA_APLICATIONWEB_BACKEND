@@ -57,9 +57,17 @@ public class UserServiceImpl implements UserUseCase {
             userModel.setRole(roleModel);
 
             // if have one image save in cloudinary.
-            if(multipartFile != null){
+            if (multipartFile != null) {
                 userModel.setImageProfile(this.cloudinaryService.uploadImage(multipartFile));
             }
+
+            // active everything
+            userModel.setNotifyResults(true);
+            userModel.setAvailable(true);
+            userModel.setNotifyEquipment(true);
+            userModel.setNotifyResults(true);
+            userModel.setNotifyQuotes(true);
+            userModel.setNotifyReagents(true);
 
             // encrip one password by default (the user can change after)
             userModel.setPassword(passwordEncoder.encode(userModel.getDni().toString()));
@@ -71,7 +79,7 @@ public class UserServiceImpl implements UserUseCase {
             // return the response
             return this.userMapper.toResponse(userSaved);
         } catch (DataIntegrityViolationException e) {
-            throw new DataIntegrityViolationException("");
+            throw new DataIntegrityViolationException("Duplicate entry");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -102,24 +110,40 @@ public class UserServiceImpl implements UserUseCase {
 
     @Override
     @Transactional
-    public UserResponse update(@Valid Long userId, @Valid UserUpdateDto userUpdateDto) {
+    public UserResponse update(@Valid Long userId, @Valid UserUpdateDto userUpdateDto, MultipartFile imageFile) {
+
 
         if (!this.userPersistencePort.existsById(userUpdateDto.userId())) {
             throw new UsernameNotFoundException("El usuario " + userUpdateDto.name() + " no existe.");
         }
 
+
+        UserModel currentUserInfo = this.userPersistencePort.findById(userId);
         UserModel user = new UserModel();
+
+        RoleModel roleModel = this.rolePersistencePort.findByName(userUpdateDto.roleName());
+
+        // add the role to the user
+        user.setRole(roleModel);
+
         user.setUserId(userUpdateDto.userId());
         user.setName(userUpdateDto.name());
         user.setDni(userUpdateDto.dni());
         user.setAvailable(userUpdateDto.available());
         user.setPhoneNumber(userUpdateDto.phoneNumber());
         user.setEmail(userUpdateDto.email());
-        user.setImageProfile(userUpdateDto.imageProfile());
         user.setPosition(userUpdateDto.position());
-        user.setRole(userUpdateDto.role());
+
+
+        if (imageFile != null) {
+            user.setImageProfile(this.cloudinaryService.uploadImage(imageFile));
+        } else {
+            user.setImageProfile(currentUserInfo.getImageProfile());
+        }
+
 
         return this.userMapper.toResponse(this.userPersistencePort.update(user));
+
     }
 
     @Override

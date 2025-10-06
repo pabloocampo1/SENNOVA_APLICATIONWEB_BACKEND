@@ -14,7 +14,7 @@ public interface UserUseCase {
     List<UserResponse> findAll();
     List<UserModel> findAllModels();
     UserResponse findById(Long id);
-    UserResponse update(Long userId, UserUpdateDto userUpdateDto);
+    UserResponse update(Long userId, UserUpdateDto userUpdateDto, MultipartFile imageFile);
     void deleteUser(Long userId);
     List<UserResponse> findByName(String name);
     UserModel findByUsername(String username);

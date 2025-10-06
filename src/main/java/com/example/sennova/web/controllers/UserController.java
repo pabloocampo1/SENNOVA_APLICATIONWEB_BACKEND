@@ -52,13 +52,17 @@ public class UserController {
 
     @PostMapping(path = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<UserResponse> saveUser(@RequestPart("dto") @Valid UserSaveRequest userSaveRequest, @RequestPart(value = "image", required = false) MultipartFile imageFile) {
-        return new ResponseEntity<>(this.userUseCase.save(userSaveRequest, imageFile), HttpStatus.OK);
+        return new ResponseEntity<>(this.userUseCase.save(userSaveRequest, imageFile), HttpStatus.CREATED);
 
     }
 
-    @PutMapping(path = "/update/{userId}")
-    public ResponseEntity<UserResponse> update(@RequestBody @Valid UserUpdateDto userUpdateDto, @PathVariable("userId") Long userId) {
-        return new ResponseEntity<>(this.userUseCase.update(userId, userUpdateDto), HttpStatus.OK);
+    @PutMapping(path = "/update/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<UserResponse> update(
+            @RequestPart("dto") @Valid UserUpdateDto userUpdateDto,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile,
+            @PathVariable("userId") Long userId) {
+
+        return new ResponseEntity<>(this.userUseCase.update(userId, userUpdateDto, imageFile), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{userId}")

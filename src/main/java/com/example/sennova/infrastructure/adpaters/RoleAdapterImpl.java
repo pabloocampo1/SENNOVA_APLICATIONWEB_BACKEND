@@ -8,6 +8,8 @@ import com.example.sennova.infrastructure.persistence.repositoryJpa.RoleReposito
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class RoleAdapterImpl implements RolePersistencePort {
 
@@ -25,5 +27,11 @@ public class RoleAdapterImpl implements RolePersistencePort {
         RoleEntity roleEntity = this.roleRepositoryJpa.findByNameRole(nameRole)
                 .orElseThrow(() -> new IllegalArgumentException("El rol de " + nameRole + "no existe."));
         return this.roleMapperDbo.toModel(roleEntity);
+    }
+
+    @Override
+    public List<RoleModel> getAll() {
+        List<RoleEntity> entities = (List<RoleEntity>) this.roleRepositoryJpa.findAll();
+        return entities.stream().map(this.roleMapperDbo::toModel).toList();
     }
 }
