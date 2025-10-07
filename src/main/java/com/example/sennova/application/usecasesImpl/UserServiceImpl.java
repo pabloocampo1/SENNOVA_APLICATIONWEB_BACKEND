@@ -46,6 +46,8 @@ public class UserServiceImpl implements UserUseCase {
     @Override
     @Transactional
     public UserResponse save(UserSaveRequest userSaveRequest, MultipartFile multipartFile) {
+        System.out.println("el que llego brou: ");
+        System.out.println(userSaveRequest);
 
         try {
             UserModel userModel = this.userMapper.toModel(userSaveRequest);
@@ -63,7 +65,7 @@ public class UserServiceImpl implements UserUseCase {
 
             // active everything
             userModel.setNotifyResults(true);
-            userModel.setAvailable(true);
+            userModel.setAvailable(userSaveRequest.available());
             userModel.setNotifyEquipment(true);
             userModel.setNotifyResults(true);
             userModel.setNotifyQuotes(true);
@@ -102,6 +104,12 @@ public class UserServiceImpl implements UserUseCase {
     }
 
     @Override
+    public List<UserResponse> getAllAvailable() {
+        List<UserModel> allAvailable = this.userPersistencePort.findAllByAvailableTrue();
+        return allAvailable.stream().map(this.userMapper::toResponse).toList();
+    }
+
+    @Override
     public UserResponse findById(@Valid Long id) {
         UserModel userModel = this.userPersistencePort.findById(id);
         return this.userMapper.toResponse(userModel);
@@ -111,7 +119,6 @@ public class UserServiceImpl implements UserUseCase {
     @Override
     @Transactional
     public UserResponse update(@Valid Long userId, @Valid UserUpdateDto userUpdateDto, MultipartFile imageFile) {
-
 
         if (!this.userPersistencePort.existsById(userUpdateDto.userId())) {
             throw new UsernameNotFoundException("El usuario " + userUpdateDto.name() + " no existe.");

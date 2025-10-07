@@ -9,6 +9,7 @@ public interface UserPersistencePort {
     UserModel findById(Long id);
     UserModel save(UserModel userModel);
     List<UserModel> findAll();
+    List<UserModel> findAllByAvailableTrue();
     UserModel update(UserModel userModel);
     void deleteUser(Long userId);
     List<UserModel> findByName(String name);

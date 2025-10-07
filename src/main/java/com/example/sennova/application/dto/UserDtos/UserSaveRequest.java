@@ -14,7 +14,7 @@ public record UserSaveRequest(
         @Min(value = 1000000, message = "DNI no válido")
         Long dni,
 
-        boolean available,
+        Boolean available,
 
 
         @NotNull(message = "El número de teléfono es obligatorio")
@@ -28,6 +28,7 @@ public record UserSaveRequest(
         String position,
 
         String imageProfile,
+
 
         @NotBlank(message = "El usuario no puede ser guardado sin especificar su rol.")
         String roleName

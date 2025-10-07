@@ -60,10 +60,17 @@ public class AuthServiceImpl {
         try {
             Authentication authentication = this.authentication(loginRequestDto.username(), loginRequestDto.password());
             UserSystemUserDetails user = (UserSystemUserDetails) authentication.getPrincipal();
+
+            UserModel userModel = this.userUseCase.findByUsername(user.getUsername());
+
+            if(!userModel.getAvailable()){
+                throw new IllegalArgumentException("Tu cuenta esta desactivada.");
+            }
+
             String authority = user.getAuthorities().iterator().next().getAuthority();
             HashMap<String, String> jwt = (HashMap<String, String>) this.jwtUtils.createJwt(user.getUsername(), authority);
 
-            UserModel userModel = this.userUseCase.findByUsername(user.getUsername());
+
             UserPreferenceResponse userPreferenceResponse = new UserPreferenceResponse(userModel.isNotifyEquipment(), userModel.isNotifyReagents(), userModel.isNotifyQuotes(), userModel.isNotifyResults());
             LoginResponseDto response = new LoginResponseDto(jwt.get("access-token"), userModel.getUserId(), true, "Logged success", userModel.getPosition(), userModel.getImageProfile(), LocalDate.now(), authority, true, userModel.getAvailable() , userModel.getUsername(), userModel.getName(), userPreferenceResponse, userModel.getEmail(), LocalDateTime.now());
 

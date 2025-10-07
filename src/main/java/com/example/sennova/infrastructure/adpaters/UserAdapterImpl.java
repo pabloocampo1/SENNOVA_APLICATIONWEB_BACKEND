@@ -55,6 +55,12 @@ public class UserAdapterImpl implements UserPersistencePort {
     }
 
     @Override
+    public List<UserModel> findAllByAvailableTrue() {
+        List<UserEntity> users = this.userRepositoryJpa.findAllByAvailableTrue();
+        return users.stream().map(this.userMapperDbo::toModel).toList();
+    }
+
+    @Override
     public UserModel update(UserModel userModel) {
         UserEntity userWithDataImportant = this.userRepositoryJpa.findById(userModel.getUserId()).orElseThrow();
         UserEntity userEntity = this.userMapperDbo.toEntity(userModel);

@@ -1,10 +1,13 @@
 package com.example.sennova.web.security;
 
+import com.example.sennova.application.usecases.UserUseCase;
+import com.example.sennova.domain.model.UserModel;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,11 +23,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
     private final UserServiceSecurity userServiceSecurity;
+    private final UserUseCase userUseCase;
 
     @Autowired
-    public JwtFilter(JwtUtils jwtUtils, UserServiceSecurity userServiceSecurity) {
+    public JwtFilter(JwtUtils jwtUtils, UserServiceSecurity userServiceSecurity, @Lazy UserUseCase userUseCase) {
         this.jwtUtils = jwtUtils;
         this.userServiceSecurity = userServiceSecurity;
+        this.userUseCase = userUseCase;
     }
 
 
@@ -59,8 +64,17 @@ public class JwtFilter extends OncePerRequestFilter {
 
       try{
           UserDetails user = this.userServiceSecurity.loadUserByUsername(username);
+
+          UserModel userModel = this.userUseCase.findByUsername(user.getUsername());
+
+          if(!userModel.getAvailable()){
+              SecurityContextHolder.clearContext();
+              response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+              return;
+          }
+
           UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                  user, // aquí pasas el UserDetails completo
+                  user,
                   null,
                   user.getAuthorities()
           );
@@ -68,7 +82,7 @@ public class JwtFilter extends OncePerRequestFilter {
           SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
       } catch (Exception e) {
-          System.out.println("fue aca bro");
+
           response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
           return;

@@ -17,7 +17,7 @@ public record UserUpdateDto(
         @Digits(integer = 10, fraction = 0, message = "El DNI debe ser numérico y tener hasta 10 dígitos")
         Long dni,
 
-        boolean available,
+        Boolean available,
 
         @NotNull(message = "El número de teléfono es obligatorio")
         @Digits(integer = 10, fraction = 0, message = "El teléfono debe ser numérico y tener hasta 10 dígitos")

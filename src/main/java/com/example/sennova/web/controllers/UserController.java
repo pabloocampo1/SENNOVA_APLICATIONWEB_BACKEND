@@ -26,27 +26,32 @@ public class UserController {
     }
 
     @GetMapping(path = "/getAll")
-    public ResponseEntity<List<UserResponse>> getAll(){
+    public ResponseEntity<List<UserResponse>> getAll() {
         return new ResponseEntity<>(this.userUseCase.findAll(), HttpStatus.OK);
     }
 
+    @GetMapping(path = "/getAllAvailable")
+    public ResponseEntity<List<UserResponse>> getAllAvailable() {
+        return new ResponseEntity<>(this.userUseCase.getAllAvailable(), HttpStatus.OK);
+    }
+
     @GetMapping(path = "/getById/{id}")
-    public ResponseEntity<UserResponse> findById(@PathVariable("id") @Valid Long id){
+    public ResponseEntity<UserResponse> findById(@PathVariable("id") @Valid Long id) {
         return new ResponseEntity<>(this.userUseCase.findById(id), HttpStatus.OK);
     }
 
     @GetMapping(path = "/getByName/{name}")
-    public ResponseEntity<List<UserResponse>> findByName(@PathVariable("name") @Valid String name){
+    public ResponseEntity<List<UserResponse>> findByName(@PathVariable("name") @Valid String name) {
         return new ResponseEntity<>(this.userUseCase.findByName(name), HttpStatus.OK);
     }
 
     @GetMapping(path = "/getByDni/{dni}")
-    public ResponseEntity<List<UserResponse>> findByDni(@PathVariable("dni") @Valid Long dni){
+    public ResponseEntity<List<UserResponse>> findByDni(@PathVariable("dni") @Valid Long dni) {
         return new ResponseEntity<>(this.userUseCase.findByDni(dni), HttpStatus.OK);
     }
 
     @GetMapping(path = "/getByRole/{roleId}")
-    public ResponseEntity<List<UserResponse>> findByRole(@PathVariable("roleId") @Valid Long roleId){
+    public ResponseEntity<List<UserResponse>> findByRole(@PathVariable("roleId") @Valid Long roleId) {
         return new ResponseEntity<>(this.userUseCase.findByRole(roleId), HttpStatus.OK);
     }
 
@@ -66,12 +71,12 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable("userId") Long userId ){
-        try{
+    public ResponseEntity<Void> deleteUser(@PathVariable("userId") Long userId) {
+        try {
             this.userUseCase.deleteUser(userId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (UsernameNotFoundException e) {
-           return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -81,13 +86,13 @@ public class UserController {
     }
 
     @PostMapping("/deactiveAccount/{username}")
-    public ResponseEntity<Boolean> deactiveAccount(@PathVariable("username") String username){
-        return new ResponseEntity<>( this.userUseCase.deactiveAccount(username) ,HttpStatus.OK);
+    public ResponseEntity<Boolean> deactiveAccount(@PathVariable("username") String username) {
+        return new ResponseEntity<>(this.userUseCase.deactiveAccount(username), HttpStatus.OK);
     }
 
     @PostMapping("/activeAccount/{username}")
-    public ResponseEntity<Boolean> activeAccount(@PathVariable("username") String username){
-        return new ResponseEntity<>( this.userUseCase.activeAccount(username) ,HttpStatus.OK);
+    public ResponseEntity<Boolean> activeAccount(@PathVariable("username") String username) {
+        return new ResponseEntity<>(this.userUseCase.activeAccount(username), HttpStatus.OK);
     }
 
 
