@@ -50,7 +50,7 @@ public class LocationServiceImpl implements LocationUseCase {
     @Override
     public LocationModel getById(@Valid Long id) {
         if(!this.locationPersistencePort.existById(id)){
-            throw new UsernameNotFoundException("No se pudo encontrar la ubicacion con id : " + id);
+            throw new IllegalArgumentException("No se pudo encontrar la ubicacion con id : " + id);
         }
         return this.locationPersistencePort.findById(id);
     }

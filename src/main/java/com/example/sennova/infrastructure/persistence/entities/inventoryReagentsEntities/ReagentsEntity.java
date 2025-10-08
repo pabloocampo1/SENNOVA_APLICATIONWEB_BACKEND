@@ -38,12 +38,19 @@ public class ReagentsEntity {
     @Column(nullable = false)
     private Integer quantity;
 
+    private String imageUrl;
+
+    private String unitOfMeasure;
+
     private String measurementUnit;
 
     private String batch;
 
     @Column(nullable = false)
     private LocalDate expirationDate;
+
+    @Column(unique = true)
+    private String senaInventoryTag;
 
     @CreatedDate
     private LocalDate createAt;

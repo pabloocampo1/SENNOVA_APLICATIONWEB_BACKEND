@@ -1,0 +1,24 @@
+package com.example.sennova.domain.port;
+
+import com.example.sennova.domain.model.LocationModel;
+import com.example.sennova.domain.model.ReagentModel;
+import com.example.sennova.infrastructure.persistence.entities.inventoryReagentsEntities.ReagentsEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+
+public interface ReagentPersistencePort {
+    ReagentModel save(ReagentModel reagentModel);
+    ReagentModel update(ReagentModel reagentModel);
+
+    List<ReagentModel> findAll();
+    Page<ReagentModel> findAll(Pageable pageable);
+    List<ReagentModel> findAllByName(String name);
+    List<ReagentModel> findAllByLocation(LocationModel locationModel);
+    List<ReagentModel> findAllByInventoryTag(String inventoryTag);
+    ReagentModel findById(Long id);
+    ReagentsEntity findEntityById(Long id);
+    void deleteById(Long id);
+
+}
