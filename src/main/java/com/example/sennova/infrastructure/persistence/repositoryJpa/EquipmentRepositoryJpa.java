@@ -1,8 +1,8 @@
 package com.example.sennova.infrastructure.persistence.repositoryJpa;
 
 import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentEntity;
-import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentLocationEntity;
-import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentUsageEntity;
+import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.LocationEntity;
+import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.UsageEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,8 +18,8 @@ public interface EquipmentRepositoryJpa extends JpaRepository<EquipmentEntity, L
     @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM EquipmentEntity e WHERE e.internalCode = :internalCode")
     boolean existByInternalCode(@Param("internalCode") String InternalCode);
 
-    List<EquipmentEntity> findAllByLocation(EquipmentLocationEntity equipmentLocationEntity);
-    List<EquipmentEntity> findAllByUsage(EquipmentUsageEntity equipmentUsageEntity);
+    List<EquipmentEntity> findAllByLocation(LocationEntity locationEntity);
+    List<EquipmentEntity> findAllByUsage(UsageEntity usageEntity);
     List<EquipmentEntity> findAllByInternalCodeContainingIgnoreCase(String internalCode);
     List<EquipmentEntity> findAllByEquipmentNameContainingIgnoreCase(String name);
     List<EquipmentEntity> findAllBySenaInventoryTagContainingIgnoreCase(String name);

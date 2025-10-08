@@ -3,8 +3,7 @@ package com.example.sennova.infrastructure.adpaters;
 import com.example.sennova.domain.model.EquipmentUsageModel;
 import com.example.sennova.domain.port.UsageEquipmentPersistencePort;
 import com.example.sennova.infrastructure.mapperDbo.UsageEquipmentMapperDbo;
-import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentLocationEntity;
-import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentUsageEntity;
+import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.UsageEntity;
 import com.example.sennova.infrastructure.persistence.repositoryJpa.UsageEquipmentRepositoryJpa;
 import com.example.sennova.web.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
@@ -28,30 +27,30 @@ public class UsageEquipmentAdapterImpl implements UsageEquipmentPersistencePort 
 
     @Override
     public EquipmentUsageModel save(@Valid EquipmentUsageModel equipmentUsageModel) {
-        EquipmentUsageEntity equipmentLocationEntity = this.usageEquipmentMapperDbo.toEntity(equipmentUsageModel);
-        EquipmentUsageEntity equipmentUsageEntitySaved = this.usageEquipmentRepositoryJpa.save(equipmentLocationEntity);
-        return this.usageEquipmentMapperDbo.toModel(equipmentUsageEntitySaved);
+        UsageEntity equipmentLocationEntity = this.usageEquipmentMapperDbo.toEntity(equipmentUsageModel);
+        UsageEntity usageEntitySaved = this.usageEquipmentRepositoryJpa.save(equipmentLocationEntity);
+        return this.usageEquipmentMapperDbo.toModel(usageEntitySaved);
     }
 
     @Override
     public EquipmentUsageModel update(EquipmentUsageModel equipmentUsageModel, Long id) {
 
         // get the original entity for get data important
-        EquipmentUsageEntity equipmentUsageEntityOriginal = this.usageEquipmentRepositoryJpa.findById(id)
+        UsageEntity usageEntityOriginal = this.usageEquipmentRepositoryJpa.findById(id)
                 .orElseThrow();
 
         // change the model to entity
-        EquipmentUsageEntity equipmentUsageEntity = this.usageEquipmentMapperDbo.toEntity(equipmentUsageModel);
-        equipmentUsageEntity.setCreateAt(equipmentUsageEntityOriginal.getCreateAt());
+        UsageEntity usageEntity = this.usageEquipmentMapperDbo.toEntity(equipmentUsageModel);
+        usageEntity.setCreateAt(usageEntityOriginal.getCreateAt());
 
-        EquipmentUsageEntity equipmentUsageEntitySaved = this.usageEquipmentRepositoryJpa.save(equipmentUsageEntity);
-        return this.usageEquipmentMapperDbo.toModel(equipmentUsageEntitySaved);
+        UsageEntity usageEntitySaved = this.usageEquipmentRepositoryJpa.save(usageEntity);
+        return this.usageEquipmentMapperDbo.toModel(usageEntitySaved);
     }
 
     @Override
     public List<EquipmentUsageModel> findAll() {
-        List<EquipmentUsageEntity> equipmentUsageEntityList = this.usageEquipmentRepositoryJpa.findAll();
-        return equipmentUsageEntityList.stream().map(this.usageEquipmentMapperDbo::toModel).toList();
+        List<UsageEntity> usageEntityList = this.usageEquipmentRepositoryJpa.findAll();
+        return usageEntityList.stream().map(this.usageEquipmentMapperDbo::toModel).toList();
     }
 
     @Override
@@ -66,15 +65,15 @@ public class UsageEquipmentAdapterImpl implements UsageEquipmentPersistencePort 
 
     @Override
     public List<EquipmentUsageModel> findAllByName(String name) {
-        List<EquipmentUsageEntity> equipmentUsageEntityList = this.usageEquipmentRepositoryJpa.findAllByUsageNameContainingIgnoreCase(name);
-        return equipmentUsageEntityList.stream().map(this.usageEquipmentMapperDbo::toModel).toList();
+        List<UsageEntity> usageEntityList = this.usageEquipmentRepositoryJpa.findAllByUsageNameContainingIgnoreCase(name);
+        return usageEntityList.stream().map(this.usageEquipmentMapperDbo::toModel).toList();
     }
 
     @Override
     public EquipmentUsageModel findById(Long id) {
-       EquipmentUsageEntity equipmentUsageEntity =  this.usageEquipmentRepositoryJpa.findById(id)
+       UsageEntity usageEntity =  this.usageEquipmentRepositoryJpa.findById(id)
                .orElseThrow(() -> new ResourceNotFoundException("No se pudo encontrar el uso,  con id : " + id));
-        return this.usageEquipmentMapperDbo.toModel(equipmentUsageEntity);
+        return this.usageEquipmentMapperDbo.toModel(usageEntity);
     }
 
     @Override

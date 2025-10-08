@@ -7,17 +7,16 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
-@Table(name = "equipment_location")
+@Table(name = "location_entity")
 @Data
 @EntityListeners(AuditingEntityListener.class)
-public class EquipmentLocationEntity {
+public class LocationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="equipment_location_id" )
+    @Column(name ="location_id" )
     private Long equipmentLocationId;
 
     @Column(nullable = false)
@@ -29,6 +28,5 @@ public class EquipmentLocationEntity {
     @LastModifiedDate
     private LocalDate updateAt;
 
-    @OneToMany(mappedBy = "location")
-    private List<EquipmentEntity> equipmentEntityList;
+
 }

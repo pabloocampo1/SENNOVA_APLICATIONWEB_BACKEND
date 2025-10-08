@@ -6,12 +6,11 @@ import com.example.sennova.domain.model.EquipmentModel;
 import com.example.sennova.domain.model.EquipmentUsageModel;
 import com.example.sennova.domain.port.EquipmentPersistencePort;
 import com.example.sennova.infrastructure.mapperDbo.EquipmentMapperDbo;
-import com.example.sennova.infrastructure.mapperDbo.EquipmentMapperDboImpl;
 import com.example.sennova.infrastructure.mapperDbo.LocationEquipmentMapperDbo;
 import com.example.sennova.infrastructure.mapperDbo.UsageEquipmentMapperDbo;
 import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentEntity;
-import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentLocationEntity;
-import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentUsageEntity;
+import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.LocationEntity;
+import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.UsageEntity;
 import com.example.sennova.infrastructure.persistence.repositoryJpa.EquipmentRepositoryJpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -119,15 +118,15 @@ public class EquipmentAdapterImpl implements EquipmentPersistencePort {
 
     @Override
     public List<EquipmentModel> findAllByLocation(EquipmentLocationModel equipmentLocationModel) {
-        EquipmentLocationEntity equipmentLocationEntity = this.locationEquipmentMapperDbo.toEntity(equipmentLocationModel);
-        List<EquipmentEntity> equipmentEntityList = this.equipmentRepositoryJpa.findAllByLocation(equipmentLocationEntity);
+        LocationEntity locationEntity = this.locationEquipmentMapperDbo.toEntity(equipmentLocationModel);
+        List<EquipmentEntity> equipmentEntityList = this.equipmentRepositoryJpa.findAllByLocation(locationEntity);
         return equipmentEntityList.stream().map(this.equipmentMapperDbo::toModel).toList();
     }
 
     @Override
     public List<EquipmentModel> findAllByUsage(EquipmentUsageModel equipmentUsageModel) {
-        EquipmentUsageEntity equipmentUsageEntity = this.usageEquipmentMapperDbo.toEntity(equipmentUsageModel);
-        List<EquipmentEntity> equipmentEntityList = this.equipmentRepositoryJpa.findAllByUsage(equipmentUsageEntity);
+        UsageEntity usageEntity = this.usageEquipmentMapperDbo.toEntity(equipmentUsageModel);
+        List<EquipmentEntity> equipmentEntityList = this.equipmentRepositoryJpa.findAllByUsage(usageEntity);
         return equipmentEntityList.stream().map(this.equipmentMapperDbo::toModel).toList();
     }
 

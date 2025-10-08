@@ -24,6 +24,5 @@ public class LocationReagents {
 
     private String notes;
 
-    @OneToMany(mappedBy = "location")
-    private List<ReagentsEntity> reagentsEntityList;
+
 }

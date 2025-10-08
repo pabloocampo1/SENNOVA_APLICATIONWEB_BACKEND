@@ -71,13 +71,13 @@ public class EquipmentEntity {
     private UserEntity responsible;
 
     @ManyToOne()
-    @JoinColumn(name = "equipment_location", referencedColumnName = "equipment_location_id", nullable = false)
-    private EquipmentLocationEntity location;
+    @JoinColumn(name = "location_id", referencedColumnName = "location_id", nullable = false)
+    private LocationEntity location;
 
 
     @ManyToOne
-    @JoinColumn(name = "usage_id", referencedColumnName = "equipment_usage_id")
-    private EquipmentUsageEntity usage;
+    @JoinColumn(name = "usage_id", referencedColumnName = "usage_id")
+    private UsageEntity usage;
 
     // instance of reference for relationship
     @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL)

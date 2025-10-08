@@ -1,6 +1,8 @@
 package com.example.sennova.infrastructure.persistence.entities.inventoryReagentsEntities;
 
 import com.example.sennova.infrastructure.persistence.entities.UserEntity;
+import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.LocationEntity;
+import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.UsageEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -54,12 +56,12 @@ public class ReagentsEntity {
     private UserEntity user;
 
     @ManyToOne
-    @JoinColumn(name = "usage_reagent_id", referencedColumnName = "usage_reagent_id")
-    private UsageReagentsEntity usage;
+    @JoinColumn(name = "usage_id", referencedColumnName = "usage_id")
+    private UsageEntity usage;
 
     @ManyToOne
-    @JoinColumn(name = "location_reagent_id", referencedColumnName = "location_reagent_id")
-    private LocationReagents location;
+    @JoinColumn(name = "location_id", referencedColumnName = "location_id")
+    private LocationEntity location;
 
     @OneToMany(mappedBy = "reagent")
     private List<ReagentsUsageRecords> reagentsUsageRecordsList;

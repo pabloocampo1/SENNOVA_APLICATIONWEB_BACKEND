@@ -98,11 +98,13 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
         UserResponse user = this.userUseCase.findById(responsibleId);
         equipmentModel.setResponsible(this.userMapper.toModel(user));
 
+
         EquipmentLocationModel equipmentLocationModel = this.locationEquipmentUseCase.getById(locationId);
         equipmentModel.setLocation(equipmentLocationModel);
 
         EquipmentUsageModel equipmentUsageModel = this.usageEquipmentUseCase.getById(usageId);
         equipmentModel.setUsage(equipmentUsageModel);
+
 
         EquipmentModel savedEquipment = this.equipmentPersistencePort.save(equipmentModel);
 

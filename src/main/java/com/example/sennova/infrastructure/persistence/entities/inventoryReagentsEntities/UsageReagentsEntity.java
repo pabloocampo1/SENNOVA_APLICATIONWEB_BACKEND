@@ -22,6 +22,4 @@ public class UsageReagentsEntity {
     @Column(nullable = false)
     private String usage_name;
 
-    @OneToMany(mappedBy = "usage")
-    private List<ReagentsEntity> reagentsEntityList;
 }
