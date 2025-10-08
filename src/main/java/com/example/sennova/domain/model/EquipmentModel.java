@@ -1,7 +1,6 @@
 package com.example.sennova.domain.model;
 
 import jakarta.validation.constraints.*;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -53,9 +52,9 @@ public class EquipmentModel {
     private UserModel responsible;
 
     @NotNull(message = "Debe estar asignado a una ubicación")
-    private EquipmentLocationModel location;
+    private LocationModel location;
 
-    private EquipmentUsageModel usage;
+    private UsageModel usage;
 
     private LocalDateTime createAt;
 
@@ -191,19 +190,19 @@ public class EquipmentModel {
         this.responsible = responsible;
     }
 
-    public EquipmentLocationModel getLocation() {
+    public LocationModel getLocation() {
         return location;
     }
 
-    public void setLocation(EquipmentLocationModel location) {
+    public void setLocation(LocationModel location) {
         this.location = location;
     }
 
-    public EquipmentUsageModel getUsage() {
+    public UsageModel getUsage() {
         return usage;
     }
 
-    public void setUsage(EquipmentUsageModel usage) {
+    public void setUsage(UsageModel usage) {
         this.usage = usage;
     }
 

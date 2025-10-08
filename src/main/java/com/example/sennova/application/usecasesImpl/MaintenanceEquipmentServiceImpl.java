@@ -1,6 +1,6 @@
 package com.example.sennova.application.usecasesImpl;
 
-import com.example.sennova.application.dto.EquipmentInventory.request.MaintenanceEquipmentRequest;
+import com.example.sennova.application.dto.inventory.EquipmentInventory.request.MaintenanceEquipmentRequest;
 import com.example.sennova.application.usecases.EquipmentUseCase;
 import com.example.sennova.application.usecases.MaintenanceEquipmentUseCase;
 import com.example.sennova.domain.model.EquipmentModel;

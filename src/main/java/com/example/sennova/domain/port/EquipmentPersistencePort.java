@@ -1,8 +1,8 @@
 package com.example.sennova.domain.port;
 
-import com.example.sennova.domain.model.EquipmentLocationModel;
+import com.example.sennova.domain.model.LocationModel;
 import com.example.sennova.domain.model.EquipmentModel;
-import com.example.sennova.domain.model.EquipmentUsageModel;
+import com.example.sennova.domain.model.UsageModel;
 import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,8 +22,8 @@ public interface EquipmentPersistencePort {
     List<EquipmentModel> findAllByName(String name);
     Boolean existById(Long id);
     EquipmentModel changeState(Long id, String state);
-    List<EquipmentModel> findAllByLocation(EquipmentLocationModel equipmentLocationModel);
-    List<EquipmentModel> findAllByUsage(EquipmentUsageModel equipmentUsageModel);
+    List<EquipmentModel> findAllByLocation(LocationModel locationModel);
+    List<EquipmentModel> findAllByUsage(UsageModel usageModel);
     void delete(Long id);
     Boolean existsBySerialNumber(Long serialNumber);
     Boolean existsByInternalCode(String internalCode);

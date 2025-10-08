@@ -1,6 +1,8 @@
 package com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities;
 
 
+import com.example.sennova.infrastructure.persistence.entities.LocationEntity;
+import com.example.sennova.infrastructure.persistence.entities.UsageEntity;
 import com.example.sennova.infrastructure.persistence.entities.UserEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

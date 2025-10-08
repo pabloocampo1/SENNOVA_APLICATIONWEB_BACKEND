@@ -1,19 +1,17 @@
 package com.example.sennova.application.usecasesImpl;
 
-import com.example.sennova.application.dto.EquipmentInventory.response.EquipmentStatisticsSummaryCardResponse;
 import com.example.sennova.application.dto.UserDtos.UserResponse;
 import com.example.sennova.application.mapper.UserMapper;
 import com.example.sennova.application.usecases.EquipmentUseCase;
-import com.example.sennova.application.usecases.LocationEquipmentUseCase;
-import com.example.sennova.application.usecases.UsageEquipmentUseCase;
+import com.example.sennova.application.usecases.LocationUseCase;
+import com.example.sennova.application.usecases.UsageUseCase;
 import com.example.sennova.application.usecases.UserUseCase;
 import com.example.sennova.domain.constants.EquipmentConstants;
 import com.example.sennova.domain.constants.RoleConstantsNotification;
 import com.example.sennova.domain.constants.TypeNotifications;
-import com.example.sennova.domain.model.EquipmentLocationModel;
+import com.example.sennova.domain.model.LocationModel;
 import com.example.sennova.domain.model.EquipmentModel;
-import com.example.sennova.domain.model.EquipmentUsageModel;
-import com.example.sennova.domain.model.UserModel;
+import com.example.sennova.domain.model.UsageModel;
 import com.example.sennova.domain.port.EquipmentLoanPersistencePort;
 import com.example.sennova.domain.port.EquipmentPersistencePort;
 import com.example.sennova.domain.port.MaintenanceEquipmentPersistencePort;
@@ -24,7 +22,6 @@ import com.example.sennova.infrastructure.persistence.repositoryJpa.EquipmentMed
 import com.example.sennova.infrastructure.restTemplate.CloudinaryService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -32,10 +29,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,8 +40,8 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
 
     private final UserMapper userMapper;
     private final EquipmentPersistencePort equipmentPersistencePort;
-    private final LocationEquipmentUseCase locationEquipmentUseCase;
-    private final UsageEquipmentUseCase usageEquipmentUseCase;
+    private final LocationUseCase locationUseCase;
+    private final UsageUseCase usageUseCase;
     private final UserUseCase userUseCase;
     private final CloudinaryService cloudinaryService;
     private final EquipmentMediaRepositoryJpa equipmentMediaRepositoryJpa;
@@ -55,11 +50,11 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
     private final NotificationsService notificationsService;
 
     @Autowired
-    public EquipmentServiceImpl(@Lazy UserMapper userMapper, EquipmentPersistencePort equipmentPersistencePort, LocationEquipmentUseCase locationEquipmentUseCase, UsageEquipmentUseCase usageEquipmentUseCase, UserUseCase userUseCase, @Lazy CloudinaryService cloudinaryService, EquipmentMediaRepositoryJpa equipmentMediaRepositoryJpa, MaintenanceEquipmentPersistencePort maintenanceEquipmentPersistencePort, EquipmentLoanPersistencePort equipmentLoanPersistencePort, NotificationsService notificationsService) {
+    public EquipmentServiceImpl(@Lazy UserMapper userMapper, EquipmentPersistencePort equipmentPersistencePort, LocationUseCase locationUseCase, UsageUseCase usageUseCase, UserUseCase userUseCase, @Lazy CloudinaryService cloudinaryService, EquipmentMediaRepositoryJpa equipmentMediaRepositoryJpa, MaintenanceEquipmentPersistencePort maintenanceEquipmentPersistencePort, EquipmentLoanPersistencePort equipmentLoanPersistencePort, NotificationsService notificationsService) {
         this.userMapper = userMapper;
         this.equipmentPersistencePort = equipmentPersistencePort;
-        this.locationEquipmentUseCase = locationEquipmentUseCase;
-        this.usageEquipmentUseCase = usageEquipmentUseCase;
+        this.locationUseCase = locationUseCase;
+        this.usageUseCase = usageUseCase;
         this.userUseCase = userUseCase;
         this.cloudinaryService = cloudinaryService;
         this.equipmentMediaRepositoryJpa = equipmentMediaRepositoryJpa;
@@ -99,11 +94,11 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
         equipmentModel.setResponsible(this.userMapper.toModel(user));
 
 
-        EquipmentLocationModel equipmentLocationModel = this.locationEquipmentUseCase.getById(locationId);
-        equipmentModel.setLocation(equipmentLocationModel);
+        LocationModel locationModel = this.locationUseCase.getById(locationId);
+        equipmentModel.setLocation(locationModel);
 
-        EquipmentUsageModel equipmentUsageModel = this.usageEquipmentUseCase.getById(usageId);
-        equipmentModel.setUsage(equipmentUsageModel);
+        UsageModel usageModel = this.usageUseCase.getById(usageId);
+        equipmentModel.setUsage(usageModel);
 
 
         EquipmentModel savedEquipment = this.equipmentPersistencePort.save(equipmentModel);
@@ -176,11 +171,11 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
         UserResponse user = this.userUseCase.findById(responsibleId);
         equipmentModel.setResponsible(this.userMapper.toModel(user));
 
-        EquipmentLocationModel equipmentLocationModel = this.locationEquipmentUseCase.getById(locationId);
-        equipmentModel.setLocation(equipmentLocationModel);
+        LocationModel locationModel = this.locationUseCase.getById(locationId);
+        equipmentModel.setLocation(locationModel);
 
-        EquipmentUsageModel equipmentUsageModel = this.usageEquipmentUseCase.getById(usageId);
-        equipmentModel.setUsage(equipmentUsageModel);
+        UsageModel usageModel = this.usageUseCase.getById(usageId);
+        equipmentModel.setUsage(usageModel);
 
         return this.equipmentPersistencePort.update(equipmentModel);
     }
@@ -263,14 +258,14 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
 
     @Override
     public List<EquipmentModel> getByLocation(Long locationId) {
-        EquipmentLocationModel equipmentLocationModel = this.locationEquipmentUseCase.getById(locationId);
-        return this.equipmentPersistencePort.findAllByLocation(equipmentLocationModel);
+        LocationModel locationModel = this.locationUseCase.getById(locationId);
+        return this.equipmentPersistencePort.findAllByLocation(locationModel);
     }
 
     @Override
     public List<EquipmentModel> getByUsage(Long usageId) {
-        EquipmentUsageModel equipmentUsageModel = this.usageEquipmentUseCase.getById(usageId);
-        return this.equipmentPersistencePort.findAllByUsage(equipmentUsageModel);
+        UsageModel usageModel = this.usageUseCase.getById(usageId);
+        return this.equipmentPersistencePort.findAllByUsage(usageModel);
     }
 
     @Override

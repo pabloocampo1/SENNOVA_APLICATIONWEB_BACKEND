@@ -1,6 +1,6 @@
 package com.example.sennova.application.usecases;
 
-import com.example.sennova.application.dto.EquipmentInventory.request.EquipmentLoanRequest;
+import com.example.sennova.application.dto.inventory.EquipmentInventory.request.EquipmentLoanRequest;
 import com.example.sennova.domain.model.EquipmentLoanModel;
 
 import java.util.List;

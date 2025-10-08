@@ -1,8 +1,8 @@
 package com.example.sennova.infrastructure.persistence.repositoryJpa;
 
 import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentEntity;
-import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.LocationEntity;
-import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.UsageEntity;
+import com.example.sennova.infrastructure.persistence.entities.LocationEntity;
+import com.example.sennova.infrastructure.persistence.entities.UsageEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

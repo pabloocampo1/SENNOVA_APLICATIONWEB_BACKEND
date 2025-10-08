@@ -4,7 +4,7 @@ import com.example.sennova.domain.model.EquipmentModel;
 import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentEntity;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring", uses = {UsageEquipmentMapperDbo.class, LocationEquipmentMapperDbo.class, UserMapperDbo.class})
+@Mapper(componentModel = "spring", uses = {UsageMapperDbo.class, LocationMapperDbo.class, UserMapperDbo.class})
 public interface EquipmentMapperDbo {
 
     EquipmentModel toModel(EquipmentEntity equipmentEntity);

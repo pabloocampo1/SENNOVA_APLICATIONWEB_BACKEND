@@ -1,0 +1,10 @@
+package com.example.sennova.infrastructure.persistence.repositoryJpa;
+
+import com.example.sennova.infrastructure.persistence.entities.LocationEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface LocationPersistenceJpa extends JpaRepository<LocationEntity, Long> {
+    List<LocationEntity> findAllByLocationNameContainingIgnoreCase(String name);
+}

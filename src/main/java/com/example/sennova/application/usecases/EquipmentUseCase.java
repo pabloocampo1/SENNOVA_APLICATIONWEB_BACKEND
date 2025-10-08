@@ -1,7 +1,5 @@
 package com.example.sennova.application.usecases;
 
-import com.example.sennova.application.dto.EquipmentInventory.response.EquipmentStatisticsSummaryCardResponse;
-import com.example.sennova.domain.model.EquipmentLocationModel;
 import com.example.sennova.domain.model.EquipmentModel;
 import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentEntity;
 import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentMediaEntity;

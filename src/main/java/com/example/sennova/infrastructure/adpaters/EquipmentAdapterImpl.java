@@ -1,16 +1,16 @@
 package com.example.sennova.infrastructure.adpaters;
 
 import com.example.sennova.domain.constants.EquipmentConstants;
-import com.example.sennova.domain.model.EquipmentLocationModel;
+import com.example.sennova.domain.model.LocationModel;
 import com.example.sennova.domain.model.EquipmentModel;
-import com.example.sennova.domain.model.EquipmentUsageModel;
+import com.example.sennova.domain.model.UsageModel;
 import com.example.sennova.domain.port.EquipmentPersistencePort;
 import com.example.sennova.infrastructure.mapperDbo.EquipmentMapperDbo;
-import com.example.sennova.infrastructure.mapperDbo.LocationEquipmentMapperDbo;
-import com.example.sennova.infrastructure.mapperDbo.UsageEquipmentMapperDbo;
+import com.example.sennova.infrastructure.mapperDbo.LocationMapperDbo;
+import com.example.sennova.infrastructure.mapperDbo.UsageMapperDbo;
 import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentEntity;
-import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.LocationEntity;
-import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.UsageEntity;
+import com.example.sennova.infrastructure.persistence.entities.LocationEntity;
+import com.example.sennova.infrastructure.persistence.entities.UsageEntity;
 import com.example.sennova.infrastructure.persistence.repositoryJpa.EquipmentRepositoryJpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,15 +27,15 @@ public class EquipmentAdapterImpl implements EquipmentPersistencePort {
 
     private final EquipmentRepositoryJpa equipmentRepositoryJpa;
     private final EquipmentMapperDbo equipmentMapperDbo;
-    private final UsageEquipmentMapperDbo usageEquipmentMapperDbo;
-    private final LocationEquipmentMapperDbo locationEquipmentMapperDbo;
+    private final UsageMapperDbo usageMapperDbo;
+    private final LocationMapperDbo locationMapperDbo;
 
     @Autowired
-    public EquipmentAdapterImpl(EquipmentRepositoryJpa equipmentRepositoryJpa, EquipmentMapperDbo equipmentMapperDbo, UsageEquipmentMapperDbo usageEquipmentMapperDbo, LocationEquipmentMapperDbo locationEquipmentMapperDbo) {
+    public EquipmentAdapterImpl(EquipmentRepositoryJpa equipmentRepositoryJpa, EquipmentMapperDbo equipmentMapperDbo, UsageMapperDbo usageMapperDbo, LocationMapperDbo locationMapperDbo) {
         this.equipmentRepositoryJpa = equipmentRepositoryJpa;
         this.equipmentMapperDbo = equipmentMapperDbo;
-        this.usageEquipmentMapperDbo = usageEquipmentMapperDbo;
-        this.locationEquipmentMapperDbo = locationEquipmentMapperDbo;
+        this.usageMapperDbo = usageMapperDbo;
+        this.locationMapperDbo = locationMapperDbo;
     }
 
     @Override
@@ -117,15 +117,15 @@ public class EquipmentAdapterImpl implements EquipmentPersistencePort {
     }
 
     @Override
-    public List<EquipmentModel> findAllByLocation(EquipmentLocationModel equipmentLocationModel) {
-        LocationEntity locationEntity = this.locationEquipmentMapperDbo.toEntity(equipmentLocationModel);
+    public List<EquipmentModel> findAllByLocation(LocationModel locationModel) {
+        LocationEntity locationEntity = this.locationMapperDbo.toEntity(locationModel);
         List<EquipmentEntity> equipmentEntityList = this.equipmentRepositoryJpa.findAllByLocation(locationEntity);
         return equipmentEntityList.stream().map(this.equipmentMapperDbo::toModel).toList();
     }
 
     @Override
-    public List<EquipmentModel> findAllByUsage(EquipmentUsageModel equipmentUsageModel) {
-        UsageEntity usageEntity = this.usageEquipmentMapperDbo.toEntity(equipmentUsageModel);
+    public List<EquipmentModel> findAllByUsage(UsageModel usageModel) {
+        UsageEntity usageEntity = this.usageMapperDbo.toEntity(usageModel);
         List<EquipmentEntity> equipmentEntityList = this.equipmentRepositoryJpa.findAllByUsage(usageEntity);
         return equipmentEntityList.stream().map(this.equipmentMapperDbo::toModel).toList();
     }

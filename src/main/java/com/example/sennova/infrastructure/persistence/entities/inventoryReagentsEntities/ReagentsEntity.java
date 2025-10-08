@@ -1,8 +1,8 @@
 package com.example.sennova.infrastructure.persistence.entities.inventoryReagentsEntities;
 
 import com.example.sennova.infrastructure.persistence.entities.UserEntity;
-import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.LocationEntity;
-import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.UsageEntity;
+import com.example.sennova.infrastructure.persistence.entities.LocationEntity;
+import com.example.sennova.infrastructure.persistence.entities.UsageEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

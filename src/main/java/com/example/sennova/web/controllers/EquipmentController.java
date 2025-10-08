@@ -1,8 +1,7 @@
 package com.example.sennova.web.controllers;
 
-import com.example.sennova.application.dto.EquipmentInventory.request.EquipmentRequestDto;
-import com.example.sennova.application.dto.EquipmentInventory.response.EquipmentResponseDto;
-import com.example.sennova.application.dto.EquipmentInventory.response.EquipmentStatisticsSummaryCardResponse;
+import com.example.sennova.application.dto.inventory.EquipmentInventory.request.EquipmentRequestDto;
+import com.example.sennova.application.dto.inventory.EquipmentInventory.response.EquipmentResponseDto;
 import com.example.sennova.application.mapper.EquipmentMapper;
 import com.example.sennova.application.usecases.EquipmentUseCase;
 import com.example.sennova.domain.model.EquipmentModel;
