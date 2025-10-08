@@ -24,7 +24,7 @@ public class ReagentsEntity {
     private Long reagentsId;
 
     @Column(nullable = false)
-    private String reagent_name;
+    private String reagentName;
 
     private String brand;
 
@@ -36,12 +36,12 @@ public class ReagentsEntity {
     @Column(nullable = false)
     private Integer quantity;
 
-    private String measurement_unit;
+    private String measurementUnit;
 
     private String batch;
 
     @Column(nullable = false)
-    private LocalDate expiration_date;
+    private LocalDate expirationDate;
 
     @CreatedDate
     private LocalDate createAt;
