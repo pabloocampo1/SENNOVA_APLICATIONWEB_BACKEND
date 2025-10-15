@@ -9,38 +9,38 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-@Table(name = "reagent_usage_records")
+@Table(name = "reagent_media_files")
 @Entity
+@AllArgsConstructor
 @Data
 @EntityListeners(AuditingEntityListener.class)
-@AllArgsConstructor
 @NoArgsConstructor
-public class ReagentsUsageRecords {
+public class ReagentMediaFilesEntity {
 
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "reagents_usage_records_id")
-    private Long reagentUsageRecordsId;
+    @Id
+    private Long reagentFileId;
 
     @Column(nullable = false)
-    private String usedBy;
+    private String url;
 
     @Column(nullable = false)
-    private Integer quantity_used;
+    private String publicId;
 
-    @Column(length = 400)
-    private String notes;
+    private String type;
+
+    private String nameFile;
 
     @CreatedDate
-    private LocalDate createAt;
+    private LocalDateTime createAt;
 
     @LastModifiedDate
-    private LocalDate updateAt;
+    private LocalDateTime updateAt;
 
-    @ManyToOne
-    @JoinColumn(name = "reagents_id", referencedColumnName = "reagents_id")
+    @ManyToOne()
+    @JoinColumn(name = "reagent_id", referencedColumnName = "reagents_id")
     @JsonIgnore
-    private ReagentsEntity reagent;
+    private ReagentsEntity reagentEntity;
 }

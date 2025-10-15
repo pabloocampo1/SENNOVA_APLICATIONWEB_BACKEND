@@ -188,14 +188,11 @@ public class AuthServiceImpl {
 
         Optional<VerificationEmail> existingVerification = this.verificationEmailRepositoryJpa.findByUser(userEntity);
         if (existingVerification.isPresent()) {
-            System.out.println("existe");
             VerificationEmail verificationEmail = existingVerification.get();
 
             if (verificationEmail.getExpiryDate().isAfter(LocalDateTime.now())) {
-                System.out.println("no expiro");
                 throw new IllegalArgumentException("El usuario ya tiene un código válido. Intente nuevamente más tarde.");
             } else {
-                System.out.println("ya expi");
                 this.verificationEmailRepositoryJpa.deleteByUser(userEntity.getUserId());
             }
 

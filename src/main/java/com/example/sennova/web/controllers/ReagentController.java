@@ -2,9 +2,13 @@ package com.example.sennova.web.controllers;
 
 import com.example.sennova.application.dto.inventory.ReagentInventory.ReagentRequestDto;
 import com.example.sennova.application.dto.inventory.ReagentInventory.ReagentResponseDto;
+import com.example.sennova.application.dto.inventory.ReagentInventory.UsageReagentRequest;
 import com.example.sennova.application.mapper.ReagentMapper;
 import com.example.sennova.application.usecases.ReagentUseCase;
 import com.example.sennova.domain.model.ReagentModel;
+import com.example.sennova.infrastructure.persistence.entities.inventoryReagentsEntities.ReagentMediaFilesEntity;
+import com.example.sennova.infrastructure.persistence.entities.inventoryReagentsEntities.ReagentsUsageRecords;
+import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -54,9 +58,21 @@ public class ReagentController {
     }
 
     @GetMapping("/getAllByName/{name}")
-    public ResponseEntity<List<ReagentResponseDto>> getAllByName(@PathVariable("locationId") String name) {
+    public ResponseEntity<List<ReagentResponseDto>> getAllByName(@PathVariable("name") String name) {
         List<ReagentModel> reagents = this.reagentUseCase.getAllByName(name);
         return new ResponseEntity<>(reagents.stream().map(this.reagentMapper::toResponse).toList(), HttpStatus.OK);
+    }
+
+    @GetMapping("/get-files/{reagentId}")
+    public ResponseEntity<List<ReagentMediaFilesEntity>> getFiles(@PathVariable("reagentId") Long reagentId) {
+        List<ReagentMediaFilesEntity> files = this.reagentUseCase.getFiles(reagentId);
+        return new ResponseEntity<>(files, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-usages/{reagentId}")
+    public ResponseEntity<List<ReagentsUsageRecords>> getUsages(@PathVariable("reagentId") Long reagentId) {
+        List<ReagentsUsageRecords> files = this.reagentUseCase.getUsagesByReagentId(reagentId);
+        return new ResponseEntity<>(files, HttpStatus.OK);
     }
 
     @GetMapping("/getById/{id}")
@@ -69,25 +85,59 @@ public class ReagentController {
     public ResponseEntity<ReagentResponseDto> save(
             @RequestPart("dto") ReagentRequestDto reagentRequestDto,
             @RequestPart(name = "image", required = false) MultipartFile imageFile,
-            @PathVariable(name = "performedBy") Long performedBy
+            @PathVariable(name = "performedBy") String performedBy
     ) {
-        System.out.println("pepepeppepe");
-        try {
-            ReagentModel reagentModel = this.reagentMapper.toModel(reagentRequestDto);
-            ReagentModel reagentSaved = this.reagentUseCase.save(
-                    reagentModel,
-                    imageFile,
-                    performedBy,
-                    reagentRequestDto.responsibleId(),
-                    reagentRequestDto.locationId(),
-                    reagentRequestDto.usageId()
-            );
-            return new ResponseEntity<>(this.reagentMapper.toResponse(reagentSaved), HttpStatus.CREATED);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+
+        ReagentModel reagentModel = this.reagentMapper.toModel(reagentRequestDto);
+        ReagentModel reagentSaved = this.reagentUseCase.save(
+                reagentModel,
+                imageFile,
+                performedBy,
+                reagentRequestDto.responsibleId(),
+                reagentRequestDto.locationId(),
+                reagentRequestDto.usageId()
+        );
+
+        return new ResponseEntity<>(this.reagentMapper.toResponse(reagentSaved), HttpStatus.CREATED);
+
     }
+
+    @PostMapping(path = "/upload-files/{reagentId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<List<ReagentMediaFilesEntity>> uploadFiles(
+            @RequestPart(name = "files") List<MultipartFile> files,
+            @PathVariable("reagentId") Long reagentId
+    ) {
+        List<ReagentMediaFilesEntity> filesEntity = this.reagentUseCase.uploadFiles(reagentId, files);
+        return new ResponseEntity<>(filesEntity, HttpStatus.CREATED);
+    }
+
+    @PostMapping(path = "/save-usage")
+    public ResponseEntity<ReagentsUsageRecords> saveUsage(
+           @Valid @RequestBody UsageReagentRequest usage
+    ) {
+        return new ResponseEntity<>(this.reagentUseCase.saveUsage(usage), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/change-state/{reagentId}/{state}")
+    public ResponseEntity<ReagentResponseDto> changeState(
+            @PathVariable("reagentId") Long reagentId,
+            @PathVariable("state") String state
+
+    ) {
+        ReagentModel reagentModel = this.reagentUseCase.changeState(reagentId, state);
+        return new ResponseEntity<>(this.reagentMapper.toResponse(reagentModel), HttpStatus.OK);
+    }
+
+    @PutMapping("/change-quantity/{reagentId}/{quantity}")
+    public ResponseEntity<ReagentResponseDto> changeQuantity(
+            @PathVariable("reagentId") Long reagentId,
+            @PathVariable("quantity") Integer quantity
+
+    ) {
+        ReagentModel reagentModel = this.reagentUseCase.changeQuantity(reagentId, quantity);
+        return new ResponseEntity<>(this.reagentMapper.toResponse(reagentModel), HttpStatus.OK);
+    }
+
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {

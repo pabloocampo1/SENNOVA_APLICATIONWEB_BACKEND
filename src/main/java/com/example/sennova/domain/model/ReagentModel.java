@@ -36,10 +36,14 @@ public class ReagentModel {
     @Min(value = 1, message = "La cantidad debe ser al menos 1.")
     private Integer quantity;
 
+    @NotBlank(message = "La unidad de medida es obligatoria.")
     private String unitOfMeasure;
 
-    @NotBlank(message = "La unidad de medida es obligatoria.")
-    private String measurementUnit;
+    private String stateExpiration;
+
+    private String state;
+
+    private String senaInventoryTag;
 
     private String imageUrl;
 
@@ -52,7 +56,7 @@ public class ReagentModel {
 
     private LocalDate updateAt;
 
-    private UserModel userModel;
+    private UserModel user;
 
     private LocationModel location;
 

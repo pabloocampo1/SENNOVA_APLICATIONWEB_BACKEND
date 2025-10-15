@@ -46,9 +46,6 @@ public class UserServiceImpl implements UserUseCase {
     @Override
     @Transactional
     public UserResponse save(UserSaveRequest userSaveRequest, MultipartFile multipartFile) {
-        System.out.println("el que llego brou: ");
-        System.out.println(userSaveRequest);
-
         try {
             UserModel userModel = this.userMapper.toModel(userSaveRequest);
 

@@ -11,10 +11,19 @@ public record ReagentResponseDto(
         Integer units,
         Integer quantity,
         String unitOfMeasure,
+        String senaInventoryTag,
+        String responsibleName,
+        Long responsibleId,
+        Long locationId,
+        Long usageId,
+        String stateExpiration,
+        String state,
+        String locationName,
+        String usageName,
         String imageUrl,
         String batch,
         LocalDate expirationDate,
         LocalDate createAt,
-        LocalDate updateAt,
-        String createdBy
-) {}
+        LocalDate updateAt
+) {
+}

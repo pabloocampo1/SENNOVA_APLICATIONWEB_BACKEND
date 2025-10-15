@@ -6,6 +6,7 @@ import com.example.sennova.infrastructure.persistence.entities.UsageEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -18,6 +19,7 @@ import java.util.List;
 @Data
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
+@NoArgsConstructor
 public class ReagentsEntity {
 
     @Id
@@ -42,8 +44,6 @@ public class ReagentsEntity {
 
     private String unitOfMeasure;
 
-    private String measurementUnit;
-
     private String batch;
 
     @Column(nullable = false)
@@ -52,6 +52,10 @@ public class ReagentsEntity {
     @Column(unique = true)
     private String senaInventoryTag;
 
+    private String stateExpiration;
+
+    private String state;
+
     @CreatedDate
     private LocalDate createAt;
 
@@ -59,7 +63,7 @@ public class ReagentsEntity {
     private LocalDate updateAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private UserEntity user;
 
     @ManyToOne
@@ -69,6 +73,9 @@ public class ReagentsEntity {
     @ManyToOne
     @JoinColumn(name = "location_id", referencedColumnName = "location_id")
     private LocationEntity location;
+
+    @OneToMany(mappedBy = "reagentEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReagentMediaFilesEntity> mediaFiles;
 
     @OneToMany(mappedBy = "reagent")
     private List<ReagentsUsageRecords> reagentsUsageRecordsList;

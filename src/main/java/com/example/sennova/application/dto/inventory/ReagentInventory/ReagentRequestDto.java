@@ -11,6 +11,8 @@ import java.time.LocalDate;
 
 public record ReagentRequestDto(
 
+        Long reagentId,
+
         @NotBlank(message = "El nombre del reactivo es obligatorio.")
         @Size(max = 100, message = "El nombre del reactivo no puede superar los 100 caracteres.")
         String reagentName,
@@ -30,7 +32,7 @@ public record ReagentRequestDto(
         Integer quantity,
 
         @NotBlank(message = "La unidad de medida es obligatoria.")
-        String measurementUnit,
+        String unitOfMeasure,
 
         @Size(max = 50, message = "El lote no puede superar los 50 caracteres.")
         String batch,

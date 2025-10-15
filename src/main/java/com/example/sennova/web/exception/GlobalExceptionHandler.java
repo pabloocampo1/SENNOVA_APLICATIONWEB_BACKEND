@@ -104,15 +104,4 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ✅ Cualquier otro error no controlado
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleExceptionGlobal(Exception ex) {
-        Map<String, String> errors = new HashMap<>();
-        errors.put("general", "Ocurrió un error inesperado. Contacte al administrador.");
-
-        return new ResponseEntity<>(
-                new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error interno del servidor", errors),
-                HttpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
 }

@@ -56,6 +56,7 @@ public class ReagentAdapterImpl implements ReagentPersistencePort {
     @Override
     public List<ReagentModel> findAllByName(String name) {
         List<ReagentsEntity> reagentsEntities = this.reagentRepositoryJpa.findAllByReagentNameContainingIgnoreCase(name);
+        System.out.println(reagentsEntities);
         return reagentsEntities.stream().map(this.reagentMapperDbo::toModel).toList();
     }
 

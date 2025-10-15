@@ -79,11 +79,6 @@ public class UserEntity {
     @ManyToMany(mappedBy = "members")
     private List<TestRequestEntity> testRequestEntities;
 
-    @OneToMany(mappedBy = "responsible")
-    private List<EquipmentEntity> equipmentEntityList;
-
-    @OneToMany(mappedBy = "user")
-    private List<ReagentsEntity> reagentsEntityList;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private VerificationEmail verificationEmails;
