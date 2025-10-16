@@ -138,10 +138,15 @@ public class ReagentController {
         return new ResponseEntity<>(this.reagentMapper.toResponse(reagentModel), HttpStatus.OK);
     }
 
-
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         this.reagentUseCase.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete-file/{publicId}")
+    public ResponseEntity<Void> deleteFile(@PathVariable("publicId") String id) {
+        this.reagentUseCase.deleteFile(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

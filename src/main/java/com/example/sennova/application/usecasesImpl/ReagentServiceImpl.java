@@ -181,9 +181,22 @@ public class ReagentServiceImpl implements ReagentUseCase {
     }
 
     @Override
+    @Transactional
+    public boolean deleteFile(String publicId) {
+        System.out.println("llego esto bro: " + publicId);
+        ReagentMediaFilesEntity file = this.reagentMediaFileRepository.findByPublicId(publicId);
+        if (file != null) {
+            file.setReagentEntity(null);
+            reagentMediaFileRepository.deleteById(file.getReagentFileId());
+            cloudinaryService.deleteFile(publicId);
+        }
+
+        return true;
+    }
+
+    @Override
     public List<ReagentMediaFilesEntity> getFiles(@Valid Long reagentId) {
         ReagentModel reagentModel = this.reagentPersistencePort.findById(reagentId);
-        // create logic
         return this.reagentMediaFileRepository.findAllByReagentEntity_ReagentsId(reagentModel.getReagentsId());
     }
 

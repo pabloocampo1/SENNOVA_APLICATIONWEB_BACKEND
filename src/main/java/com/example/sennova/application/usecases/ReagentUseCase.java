@@ -21,6 +21,7 @@ public interface ReagentUseCase {
     List<ReagentModel> getAllByName(String name);
     List<ReagentModel> getAllByLocation(Long locationId);
     void deleteById(Long id);
+    boolean deleteFile(String id);
     List<ReagentMediaFilesEntity> getFiles(Long reagentId);
     List<ReagentMediaFilesEntity> uploadFiles(Long reagentId, List<MultipartFile> multipartFiles);
     ReagentModel changeQuantity(Long reagentId, Integer quantity);

@@ -41,7 +41,6 @@ public class EquipmentController {
     public ResponseEntity<EquipmentResponseDto> save(@RequestPart("dto") @Valid EquipmentRequestDto equipmentRequestDto,
                                                      @RequestPart(value = "image", required = false) MultipartFile image) {
 
-
         EquipmentModel equipmentToSave = this.equipmentMapper.toDomain(equipmentRequestDto);
         equipmentToSave.setImageUrl(null);
         EquipmentModel equipmentModelSaved = this.equipmentUseCase.save(

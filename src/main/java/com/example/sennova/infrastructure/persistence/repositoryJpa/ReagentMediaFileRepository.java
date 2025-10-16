@@ -9,5 +9,6 @@ import java.util.List;
 public interface ReagentMediaFileRepository extends JpaRepository<ReagentMediaFilesEntity, Long> {
 
     List<ReagentMediaFilesEntity> findAllByReagentEntity_ReagentsId(Long reagentId);
+    ReagentMediaFilesEntity findByPublicId(String publicId);
 
 }
