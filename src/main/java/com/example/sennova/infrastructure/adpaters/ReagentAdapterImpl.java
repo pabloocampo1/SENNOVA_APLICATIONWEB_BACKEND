@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -37,6 +38,13 @@ public class ReagentAdapterImpl implements ReagentPersistencePort {
     }
 
     @Override
+    public ReagentModel saveDirect(ReagentModel reagentModel) {
+        return this.reagentMapperDbo.toModel(
+                this.reagentRepositoryJpa.save(
+                        this.reagentMapperDbo.toEntity(reagentModel)));
+    }
+
+    @Override
     public ReagentModel update(ReagentModel reagentModel) {
         return null;
     }
@@ -58,6 +66,12 @@ public class ReagentAdapterImpl implements ReagentPersistencePort {
         List<ReagentsEntity> reagentsEntities = this.reagentRepositoryJpa.findAllByReagentNameContainingIgnoreCase(name);
         System.out.println(reagentsEntities);
         return reagentsEntities.stream().map(this.reagentMapperDbo::toModel).toList();
+    }
+
+    @Override
+    public List<ReagentModel> findAllByExpirationDate(LocalDate currentDate) {
+        List<ReagentsEntity> reagentsEntityList = this.reagentRepositoryJpa.findAllByExpirationDate(currentDate);
+        return reagentsEntityList.stream().map(this.reagentMapperDbo::toModel).toList();
     }
 
     @Override

@@ -13,12 +13,14 @@ import java.util.List;
 
 public interface ReagentUseCase {
     ReagentModel save(ReagentModel reagentModel, MultipartFile multipartFile, String performedBy, Long responsibleId, Long locationId, Long usageId);
-    ReagentModel update(ReagentModel reagentModel, Long reagentId, MultipartFile multipartFile);
+    ReagentModel saveDirect(ReagentModel reagentModel);
+    ReagentModel update(ReagentModel reagentModel, Long reagentId, MultipartFile multipartFile,  Long responsibleId, Long locationId, Long usageId);
     ReagentModel getById(Long id);
     ReagentsEntity getEntity(Long id);
     List<ReagentModel> getAll();
     Page<ReagentModel> getAll(Pageable pageable);
     List<ReagentModel> getAllByName(String name);
+    List<ReagentModel> getAllExpired();
     List<ReagentModel> getAllByLocation(Long locationId);
     void deleteById(Long id);
     boolean deleteFile(String id);

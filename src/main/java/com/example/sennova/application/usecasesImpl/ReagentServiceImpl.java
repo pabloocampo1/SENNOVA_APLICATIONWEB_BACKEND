@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -136,9 +137,73 @@ public class ReagentServiceImpl implements ReagentUseCase {
     }
 
     @Override
+    public ReagentModel saveDirect(ReagentModel reagentModel) {
+        return this.reagentPersistencePort.saveDirect(reagentModel);
+    }
+
+    @Override
     @Transactional
-    public ReagentModel update(ReagentModel reagentModel, Long reagentId, MultipartFile multipartFile) {
-        return null;
+    public ReagentModel update(ReagentModel reagentModel, Long reagentId, MultipartFile multipartFile, Long responsibleId, Long locationId, Long usageId) {
+
+        ReagentModel existing = reagentPersistencePort.findById(reagentId);
+
+        existing.setReagentName(reagentModel.getReagentName());
+        existing.setBrand(reagentModel.getBrand());
+        existing.setPurity(reagentModel.getPurity());
+        existing.setUnits(reagentModel.getUnits());
+        existing.setQuantity(reagentModel.getQuantity());
+        existing.setUnitOfMeasure(reagentModel.getUnitOfMeasure());
+        existing.setBatch(reagentModel.getBatch());
+        existing.setExpirationDate(reagentModel.getExpirationDate());
+        existing.setSenaInventoryTag(reagentModel.getSenaInventoryTag());
+
+
+        // add the relationship
+        UserResponse user = this.userUseCase.findById(responsibleId);
+        existing.setUser(this.userMapper.toModel(user));
+
+        LocationModel locationModel = this.locationUseCase.getById(locationId);
+        existing.setLocation(locationModel);
+
+        UsageModel usageModel = this.usageUseCase.getById(usageId);
+        existing.setUsage(usageModel);
+
+        // update state
+
+        LocalDate currentDate = LocalDate.now();
+        LocalDate expirationDate = existing.getExpirationDate();
+
+        if (expirationDate.isBefore(currentDate)) {
+            existing.setStateExpiration(ReagentStateCons.STATE_EXPIRED);
+        } else {
+            existing.setStateExpiration(ReagentStateCons.STATE_NOT_EXPIRED);
+        }
+
+        if (existing.getQuantity() >= 1) {
+            existing.setState(ReagentStateCons.WITH_STOCK);
+        } else {
+            existing.setState(ReagentStateCons.LOW_STOCK);
+        }
+
+        // add image or no
+        if (multipartFile != null && !multipartFile.isEmpty()) {
+            // eliminar la imagen anterior
+
+            if (existing.getImageUrl() != null) {
+                try {
+                    cloudinaryService.deleteFileByUrl(existing.getImageUrl());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            // subir la nueva
+            String newImageUrl = cloudinaryService.uploadImage(multipartFile);
+            existing.setImageUrl(newImageUrl);
+        }
+
+
+        return reagentPersistencePort.save(existing);
     }
 
     @Override
@@ -167,6 +232,12 @@ public class ReagentServiceImpl implements ReagentUseCase {
     }
 
     @Override
+    public List<ReagentModel> getAllExpired() {
+        LocalDate currentDate = LocalDate.now();
+        return this.reagentPersistencePort.findAllByExpirationDate(currentDate);
+    }
+
+    @Override
     public List<ReagentModel> getAllByLocation(@Valid Long locationId) {
         LocationModel locationModel = this.locationUseCase.getById(locationId);
         return this.reagentPersistencePort.findAllByLocation(locationModel);
@@ -176,14 +247,36 @@ public class ReagentServiceImpl implements ReagentUseCase {
     @Transactional
     public void deleteById(@Valid Long id) {
 
-        // added logic for delete files and more
+        // check if the reagent exist.
+        ReagentModel reagentModel = this.reagentPersistencePort.findById(id);
+
+        // delete image and files from cloudinary
+        List<ReagentMediaFilesEntity> files = this.reagentMediaFileRepository.findAllByReagentEntity_ReagentsId(id);
+
+        if (!files.isEmpty()) {
+            files.forEach(file -> {
+                try {
+                    this.cloudinaryService.deleteFile(file.getPublicId());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+
+        if (reagentModel.getImageUrl() != null && !reagentModel.getImageUrl().isEmpty()) {
+            try {
+                this.cloudinaryService.deleteFileByUrl(reagentModel.getImageUrl());
+            } catch (Exception e) {
+                System.err.println("Error deleting main image from Cloudinary: " + e.getMessage());
+            }
+        }
+
         this.reagentPersistencePort.deleteById(id);
     }
 
     @Override
     @Transactional
     public boolean deleteFile(String publicId) {
-        System.out.println("llego esto bro: " + publicId);
         ReagentMediaFilesEntity file = this.reagentMediaFileRepository.findByPublicId(publicId);
         if (file != null) {
             file.setReagentEntity(null);

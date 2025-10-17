@@ -97,7 +97,6 @@ public class CloudinaryService {
                     )
             );
 
-            System.out.println("Resultado eliminación: " + result);
 
             if (!"ok".equals(result.get("result"))) {
                 throw new RuntimeException("No se pudo eliminar el archivo en Cloudinary: " + publicId);

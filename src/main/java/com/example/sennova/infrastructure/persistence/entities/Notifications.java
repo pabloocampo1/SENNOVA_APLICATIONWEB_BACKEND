@@ -34,9 +34,14 @@ public class Notifications {
     private String type;
 
     @ElementCollection
-    @CollectionTable(name = "tags_notificacion", joinColumns = @JoinColumn(name = "notification_id"))
+    @CollectionTable(
+            name = "tags_notificacion",
+            joinColumns = @JoinColumn(name = "notification_id")
+    )
+    @org.hibernate.annotations.OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
     @Column(name = "tag")
     private List<String> tags;
+
 }
 
 

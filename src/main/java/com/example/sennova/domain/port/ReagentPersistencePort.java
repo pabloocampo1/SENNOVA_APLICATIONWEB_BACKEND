@@ -6,15 +6,18 @@ import com.example.sennova.infrastructure.persistence.entities.inventoryReagents
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ReagentPersistencePort {
     ReagentModel save(ReagentModel reagentModel);
+    ReagentModel saveDirect(ReagentModel reagentModel);
     ReagentModel update(ReagentModel reagentModel);
 
     List<ReagentModel> findAll();
     Page<ReagentModel> findAll(Pageable pageable);
     List<ReagentModel> findAllByName(String name);
+    List<ReagentModel> findAllByExpirationDate(LocalDate currentDate);
     List<ReagentModel> findAllByLocation(LocationModel locationModel);
     List<ReagentModel> findAllByInventoryTag(String inventoryTag);
     ReagentModel findById(Long id);

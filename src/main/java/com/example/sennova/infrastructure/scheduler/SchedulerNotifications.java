@@ -16,7 +16,7 @@ public class SchedulerNotifications {
         this.notificationsService = notificationsService;
     }
 
-    @Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(cron = "0 40 11 * * ?", zone = "America/Bogota")
     public void deleteNotificationExpired() {
         this.notificationsService.deleteByDateBefore();
     }

@@ -36,16 +36,12 @@ public class SchedulerEquipment {
         this.notificationsService = notificationsService;
     }
 
-    @Scheduled(cron = "0 30 5 * * ?", zone = "America/Bogota")
+    @Scheduled(cron = "0 42 12 * * ?", zone = "America/Bogota")
     public void checkMaintenanceEquipment() {
-        System.out.println("empezo");
         List<EquipmentModel> equipments = this.equipmentUseCase.getAllEquipmentToMaintenance();
-        System.out.println("entro aca: " + equipments.size());
         if (equipments.isEmpty()) {
             return;
         }
-
-        System.out.println("paso 12");
 
         List<UserModel> users = this.userUseCase.findAllModels();
 
@@ -61,7 +57,7 @@ public class SchedulerEquipment {
                     }
                 });
 
-        System.out.println("paso 13");
+
         equipments.stream().forEach(equipment -> {
             Notifications notifications = new Notifications();
             notifications.setMessage("EL equipo " + equipment.getEquipmentName() + " tiene mantenimiento hoy.");
@@ -71,7 +67,7 @@ public class SchedulerEquipment {
             notifications.setImageUser(null);
 
             this.notificationsService.saveNotification(notifications);
-            System.out.println("paso 14");
+
         });
 
     }

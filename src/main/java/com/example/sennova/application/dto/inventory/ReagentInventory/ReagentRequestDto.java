@@ -46,6 +46,8 @@ public record ReagentRequestDto(
         @NotNull(message = "El uso es obligatorio.")
         Long usageId,
 
+        String senaInventoryTag,
+
         @NotNull(message = "La ubicacion  es obligatorio.")
         Long locationId
 ) {}

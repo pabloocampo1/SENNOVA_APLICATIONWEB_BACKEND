@@ -102,6 +102,27 @@ public class ReagentController {
 
     }
 
+    @PutMapping(path = "/update/{reagentId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ReagentResponseDto> update(
+            @RequestPart("dto") ReagentRequestDto reagentRequestDto,
+            @RequestPart(name = "image", required = false) MultipartFile imageFile,
+            @PathVariable(name = "reagentId") Long reagentId
+    ) {
+
+        ReagentModel reagentModel = this.reagentMapper.toModel(reagentRequestDto);
+        ReagentModel reagentSaved = this.reagentUseCase.update(
+                reagentModel,
+                reagentId,
+                imageFile,
+                reagentRequestDto.responsibleId(),
+                reagentRequestDto.locationId(),
+                reagentRequestDto.usageId()
+        );
+
+        return new ResponseEntity<>(this.reagentMapper.toResponse(reagentSaved), HttpStatus.OK);
+
+    }
+
     @PostMapping(path = "/upload-files/{reagentId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<List<ReagentMediaFilesEntity>> uploadFiles(
             @RequestPart(name = "files") List<MultipartFile> files,
