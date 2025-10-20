@@ -34,7 +34,7 @@ public class ReagentModel {
 
     @NotNull(message = "La cantidad no puede ser nula.")
     @Min(value = 1, message = "La cantidad debe ser al menos 1.")
-    private Integer quantity;
+    private double quantity;
 
     @NotBlank(message = "La unidad de medida es obligatoria.")
     private String unitOfMeasure;

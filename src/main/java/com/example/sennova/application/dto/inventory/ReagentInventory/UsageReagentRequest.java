@@ -6,7 +6,7 @@ public record UsageReagentRequest(
         String responsibleName,
         Long reagentId,
         @NotNull(message = "No se puede guardar un registro sin la cantidad")
-        Integer quantity,
+        Double quantity,
         String notes
 ) {
 }

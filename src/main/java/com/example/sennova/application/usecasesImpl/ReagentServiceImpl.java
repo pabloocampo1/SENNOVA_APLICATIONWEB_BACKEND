@@ -401,8 +401,11 @@ public class ReagentServiceImpl implements ReagentUseCase {
             throw new IllegalArgumentException("Cantidad inválida: la cantidad solicitada excede el número de unidades disponibles en inventario.");
         }
 
+        double currentQuantity = reagentModel.getQuantity();
+
         // update the state and stock
-        int newQuantity = reagentModel.getQuantity() - usageReagentRequest.quantity();
+        double newQuantity = reagentModel.getQuantity() - usageReagentRequest.quantity();
+        newQuantity = Math.round(newQuantity * 100.0) / 100.0;
         reagentModel.setQuantity(newQuantity);
 
         if (newQuantity >= 1) {
@@ -419,6 +422,7 @@ public class ReagentServiceImpl implements ReagentUseCase {
         reagentsUsageRecord.setNotes(usageReagentRequest.notes());
         reagentsUsageRecord.setUsedBy(usageReagentRequest.responsibleName());
         reagentsUsageRecord.setQuantity_used(usageReagentRequest.quantity());
+        reagentsUsageRecord.setPreviousQuantity(currentQuantity);
         reagentsUsageRecord.setReagent(
                 this.reagentPersistencePort.findEntityById(reagentUpdate.getReagentsId())
         );

@@ -28,7 +28,9 @@ public class ReagentsUsageRecords {
     private String usedBy;
 
     @Column(nullable = false)
-    private Integer quantity_used;
+    private Double quantity_used;
+
+    private Double previousQuantity;
 
     @Column(length = 400)
     private String notes;

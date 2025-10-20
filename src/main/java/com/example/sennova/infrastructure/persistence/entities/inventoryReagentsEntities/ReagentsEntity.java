@@ -40,7 +40,7 @@ public class ReagentsEntity {
     private Integer units;
 
     @Column(nullable = false)
-    private Integer quantity;
+    private Double quantity;
 
     private String imageUrl;
 

@@ -9,7 +9,7 @@ public record ReagentResponseDto(
         String brand,
         String purity,
         Integer units,
-        Integer quantity,
+        Double quantity,
         String unitOfMeasure,
         String senaInventoryTag,
         String responsibleName,

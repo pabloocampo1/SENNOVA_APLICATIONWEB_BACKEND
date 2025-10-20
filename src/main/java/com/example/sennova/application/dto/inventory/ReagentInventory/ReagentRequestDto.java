@@ -29,7 +29,7 @@ public record ReagentRequestDto(
 
         @NotNull(message = "La cantidad es obligatoria.")
         @Min(value = 1, message = "La cantidad debe ser al menos 1.")
-        Integer quantity,
+        Double quantity,
 
         @NotBlank(message = "La unidad de medida es obligatoria.")
         String unitOfMeasure,
