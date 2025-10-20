@@ -147,7 +147,6 @@ public class EquipmentAdapterImpl implements EquipmentPersistencePort {
 
     @Override
     public EquipmentEntity findEntityById(Long id) {
-        System.out.println("entro a buscarlo");
         return this.equipmentRepositoryJpa.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("No se encontro el equipo"));
     }
@@ -165,8 +164,9 @@ public class EquipmentAdapterImpl implements EquipmentPersistencePort {
     @Override
     public long countByMaintenanceMonth() {
         LocalDateTime currentTime = LocalDateTime.now();
+        int currentYear = currentTime.getYear();
         int month = currentTime.getMonthValue();
-        return this.equipmentRepositoryJpa.countByMaintenanceDateMonth(month);
+        return this.equipmentRepositoryJpa.countByMaintenanceDateMonth(month, currentYear);
     }
 
     @Override
@@ -180,6 +180,13 @@ public class EquipmentAdapterImpl implements EquipmentPersistencePort {
         return  equipmentEntityList.stream().map(
                 this.equipmentMapperDbo::toModel
         ).toList();
+    }
+
+    @Override
+    public List<EquipmentModel> findAllByIsPresentFalse() {
+        List<EquipmentEntity> entities = this.equipmentRepositoryJpa.findAllByMarkReportTrue();
+        List<EquipmentModel> entitiesModels = entities.stream().map(this.equipmentMapperDbo::toModel).toList();
+        return  entitiesModels ;
     }
 
 }

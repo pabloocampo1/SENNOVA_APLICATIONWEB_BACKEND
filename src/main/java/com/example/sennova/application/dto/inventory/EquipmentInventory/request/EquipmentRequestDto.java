@@ -14,6 +14,8 @@ public record EquipmentRequestDto(
         @NotBlank(message = "El nombre del equipo es obligatorio")
         String equipmentName,
 
+        boolean markReport,
+
         @Size(max = 100, message = "La marca no debe superar los 100 caracteres")
         String brand,
 

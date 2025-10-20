@@ -47,6 +47,8 @@ public class ReagentModel {
 
     private String imageUrl;
 
+    private Boolean isPresent;
+
     private String batch;
 
     @NotNull(message = "La fecha de expiración es obligatoria.")

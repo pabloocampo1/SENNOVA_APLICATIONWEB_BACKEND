@@ -58,6 +58,8 @@ public class ReagentsEntity {
 
     private String state;
 
+    private Boolean isPresent;
+
     @CreatedDate
     private LocalDate createAt;
 

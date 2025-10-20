@@ -23,17 +23,16 @@ public interface EquipmentRepositoryJpa extends JpaRepository<EquipmentEntity, L
     List<EquipmentEntity> findAllByInternalCodeContainingIgnoreCase(String internalCode);
     List<EquipmentEntity> findAllByEquipmentNameContainingIgnoreCase(String name);
     List<EquipmentEntity> findAllBySenaInventoryTagContainingIgnoreCase(String name);
+    List<EquipmentEntity> findAllByMarkReportTrue();
 
     List<EquipmentEntity> findAllByMaintenanceDate(LocalDate currentDate);
 
     // COUNT ALLL
     long count();
 
-    // creat dto de retorno pa esto
 
-    // manintenance for this month
-    @Query(value = "SELECT COUNT(*) FROM equipment e WHERE MONTH(e.maintenance_date) = :month", nativeQuery = true)
-    long countByMaintenanceDateMonth(@Param("month") int month);
+    @Query(value = "SELECT COUNT(*) FROM equipment e WHERE MONTH(e.maintenance_date) = :month AND YEAR(e.maintenance_date) = :year", nativeQuery = true)
+    long countByMaintenanceDateMonth(@Param("month") int month, @Param("year") int year);
 
     long countByAvailableTrue();
 

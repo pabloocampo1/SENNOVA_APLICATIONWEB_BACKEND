@@ -5,6 +5,7 @@ import com.example.sennova.application.dto.inventory.EquipmentInventory.response
 import com.example.sennova.application.mapper.EquipmentMapper;
 import com.example.sennova.application.usecases.EquipmentUseCase;
 import com.example.sennova.domain.model.EquipmentModel;
+import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentEntity;
 import com.example.sennova.infrastructure.persistence.entities.inventoryEquipmentEntities.EquipmentMediaEntity;
 import com.example.sennova.infrastructure.restTemplate.CloudinaryService;
 import jakarta.validation.Valid;
@@ -68,6 +69,7 @@ public class EquipmentController {
                 equipmentModelSaved.getModel(),
                 equipmentModelSaved.getSerialNumber(),
                 equipmentModelSaved.getAcquisitionDate(),
+                equipmentModelSaved.getMarkReport(),
                 equipmentModelSaved.getMaintenanceDate(),
                 equipmentModelSaved.getSenaInventoryTag(),
                 equipmentModelSaved.getAmperage(),
@@ -141,6 +143,7 @@ public class EquipmentController {
                 equipmentModelSaved.getModel(),
                 equipmentModelSaved.getSerialNumber(),
                 equipmentModelSaved.getAcquisitionDate(),
+                equipmentModelSaved.getMarkReport(),
                 equipmentModelSaved.getMaintenanceDate(),
                 equipmentModelSaved.getSenaInventoryTag(),
                 equipmentModelSaved.getAmperage(),
@@ -249,6 +252,13 @@ public class EquipmentController {
                 HttpStatus.OK);
     }
 
+    @GetMapping("/get-reported-equipment")
+    public ResponseEntity<List<EquipmentResponseDto>> getAllReportedEquipment() {
+        List<EquipmentModel> reportedEquipmentList = this.equipmentUseCase.getAllReportedEquipment();
+        List<EquipmentResponseDto> reportedEquipmentToResponse = reportedEquipmentList.stream().map(this.equipmentMapper::toResponse).toList();
+        return new ResponseEntity<>(reportedEquipmentToResponse, HttpStatus.OK);
+    }
+
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable("id") Long id) {
@@ -259,7 +269,7 @@ public class EquipmentController {
     @PutMapping("/change-status/{id}/{state}")
     public ResponseEntity<EquipmentResponseDto> changeState(@PathVariable("id") Long id, @PathVariable("state") String state) {
         System.out.println(state);
-         EquipmentModel equipmentModelSaved = this.equipmentUseCase.changeState(id, state);
+        EquipmentModel equipmentModelSaved = this.equipmentUseCase.changeState(id, state);
         EquipmentResponseDto response = new EquipmentResponseDto(
                 equipmentModelSaved.getEquipmentId(),
                 equipmentModelSaved.getInternalCode(),
@@ -268,6 +278,7 @@ public class EquipmentController {
                 equipmentModelSaved.getModel(),
                 equipmentModelSaved.getSerialNumber(),
                 equipmentModelSaved.getAcquisitionDate(),
+                equipmentModelSaved.getMarkReport(),
                 equipmentModelSaved.getMaintenanceDate(),
                 equipmentModelSaved.getSenaInventoryTag(),
                 equipmentModelSaved.getAmperage(),
@@ -286,7 +297,7 @@ public class EquipmentController {
                 equipmentModelSaved.getImageUrl(),
                 equipmentModelSaved.getDescription() != null ? equipmentModelSaved.getDescription() : "No hay descripcion para est equipo"
         );
-        return new ResponseEntity<>( response ,HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping(value = "/change-image/{equipmentId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -294,6 +305,18 @@ public class EquipmentController {
 
         return new ResponseEntity<>(this.equipmentUseCase.changeImage(image, equipmentId), HttpStatus.OK);
 
+    }
+
+    @PutMapping("/report-equipment/{equipmentId}")
+    public ResponseEntity<EquipmentResponseDto> reportEquipment(@PathVariable("equipmentId") Long equipmentId) {
+        EquipmentModel equipment = this.equipmentUseCase.reportEquipment(equipmentId);
+        return new ResponseEntity<>(this.equipmentMapper.toResponse(equipment), HttpStatus.OK);
+    }
+
+    @PutMapping("/markEquipmentAsExisting/{equipmentId}")
+    public ResponseEntity<EquipmentResponseDto> markEquipmentAsExisting(@PathVariable("equipmentId") Long equipmentId) {
+        EquipmentModel equipment = this.equipmentUseCase.markEquipmentAsExisting(equipmentId);
+        return new ResponseEntity<>(this.equipmentMapper.toResponse(equipment), HttpStatus.OK);
     }
 
     @PostMapping(value = "/uploadFile/{equipmentId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

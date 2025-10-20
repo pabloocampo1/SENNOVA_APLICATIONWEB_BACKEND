@@ -45,6 +45,7 @@ public class EquipmentModel {
 
     private String description;
 
+    private Boolean markReport;
 
     private Boolean available;
 
@@ -61,6 +62,14 @@ public class EquipmentModel {
     private LocalDateTime updateAt;
 
     private LocalDate maintenanceDate;
+
+    public Boolean getMarkReport() {
+        return markReport;
+    }
+
+    public void setMarkReport(Boolean markReport) {
+        this.markReport = markReport;
+    }
 
     public String getSenaInventoryTag() {
         return senaInventoryTag;

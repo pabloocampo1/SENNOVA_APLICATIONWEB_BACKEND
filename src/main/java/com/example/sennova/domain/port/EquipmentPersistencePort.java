@@ -33,5 +33,6 @@ public interface EquipmentPersistencePort {
     long countByMaintenanceMonth();
     long countTotal();
     List<EquipmentModel> findAllByMaintenanceDate(LocalDate currentDate);
+    List<EquipmentModel> findAllByIsPresentFalse();
 
 }

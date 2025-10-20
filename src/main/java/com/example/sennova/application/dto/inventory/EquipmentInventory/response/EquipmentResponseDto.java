@@ -12,6 +12,7 @@ public record EquipmentResponseDto(
         String model,
         Long serialNumber,
         LocalDate acquisitionDate,
+        Boolean markReport,
         LocalDate maintenanceDate,
          String senaInventoryTag,
         String amperage,

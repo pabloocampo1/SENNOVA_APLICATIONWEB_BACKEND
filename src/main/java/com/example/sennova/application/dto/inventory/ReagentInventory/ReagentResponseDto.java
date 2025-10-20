@@ -18,6 +18,7 @@ public record ReagentResponseDto(
         Long usageId,
         String stateExpiration,
         String state,
+        Boolean isPresent,
         String locationName,
         String usageName,
         String imageUrl,

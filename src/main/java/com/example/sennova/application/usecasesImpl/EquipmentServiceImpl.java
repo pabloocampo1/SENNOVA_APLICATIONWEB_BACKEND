@@ -101,6 +101,9 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
         equipmentModel.setUsage(usageModel);
 
 
+        // check like present
+        equipmentModel.setMarkReport(false);
+
         EquipmentModel savedEquipment = this.equipmentPersistencePort.save(equipmentModel);
 
 
@@ -346,8 +349,7 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
 
     @Override
     public List<EquipmentMediaEntity> getFiles(Long id) {
-        List<EquipmentMediaEntity> all = this.equipmentMediaRepositoryJpa.findByEquipmentId(id);
-        return all;
+        return this.equipmentMediaRepositoryJpa.findByEquipmentId(id);
     }
 
     @Override
@@ -381,6 +383,27 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
     public List<EquipmentModel> getAllEquipmentToMaintenance() {
         LocalDate currentDate = LocalDate.now();
         return this.equipmentPersistencePort.findAllByMaintenanceDate(currentDate);
+    }
+
+    @Override
+    public EquipmentModel reportEquipment(@Valid Long equipmentId) {
+        EquipmentModel equipmentModel = this.equipmentPersistencePort.findById(equipmentId);
+        equipmentModel.setMarkReport(true);
+
+        return  this.equipmentPersistencePort.save(equipmentModel);
+    }
+
+    @Override
+    public EquipmentModel markEquipmentAsExisting(@Valid Long equipmentId) {
+        EquipmentModel equipmentModel = this.equipmentPersistencePort.findById(equipmentId);
+        equipmentModel.setMarkReport(false);
+
+        return  this.equipmentPersistencePort.save(equipmentModel);
+    }
+
+    @Override
+    public List<EquipmentModel> getAllReportedEquipment() {
+        return this.equipmentPersistencePort.findAllByIsPresentFalse();
     }
 
 }

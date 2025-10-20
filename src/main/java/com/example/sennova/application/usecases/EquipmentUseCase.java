@@ -30,5 +30,8 @@ public interface EquipmentUseCase {
     Boolean deleteFile(String public_Id);
     Map<String, Long> getSummaryStatics();
     List<EquipmentModel> getAllEquipmentToMaintenance();
+    EquipmentModel reportEquipment(Long equipmentId);
+    EquipmentModel markEquipmentAsExisting(Long equipmentId);
+    List<EquipmentModel> getAllReportedEquipment();
 
 }

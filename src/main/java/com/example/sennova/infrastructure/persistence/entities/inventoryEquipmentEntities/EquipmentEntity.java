@@ -38,6 +38,8 @@ public class EquipmentEntity {
     @Column(unique = true, nullable = false)
     private Long serialNumber;
 
+    private Boolean markReport;
+
     private LocalDate acquisitionDate;
 
     private String amperage;
