@@ -1,6 +1,7 @@
 package com.example.sennova.application.usecasesImpl;
 
 import com.example.sennova.application.dto.UserDtos.UserResponse;
+import com.example.sennova.application.dto.inventory.ReagentInventory.ReagentSummaryStatistics;
 import com.example.sennova.application.dto.inventory.ReagentInventory.UsageReagentRequest;
 import com.example.sennova.application.mapper.UserMapper;
 import com.example.sennova.application.usecases.LocationUseCase;
@@ -435,5 +436,10 @@ public class ReagentServiceImpl implements ReagentUseCase {
     @Override
     public List<ReagentsUsageRecords> getUsagesByReagentId(@Valid Long reagentId) {
         return this.usageReagentRepositoryJpa.findAllByReagent_ReagentsId(reagentId);
+    }
+
+    @Override
+    public ReagentSummaryStatistics getSummaryStatics() {
+        return this.reagentPersistencePort.getSummaryStatics();
     }
 }

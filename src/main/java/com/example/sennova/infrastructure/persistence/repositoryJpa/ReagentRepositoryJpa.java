@@ -16,4 +16,8 @@ public interface ReagentRepositoryJpa extends JpaRepository<ReagentsEntity, Long
     List<ReagentsEntity> findAllByLocation(LocationEntity locationEntity);
     List<ReagentsEntity> findAllByExpirationDate(LocalDate expirationDate);
 
+    long count();
+    long countByQuantityLessThanEqual(double quantity);
+    long countByStateExpiration(String stateExpiration);
+
 }

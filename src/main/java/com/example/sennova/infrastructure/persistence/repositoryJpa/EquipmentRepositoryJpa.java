@@ -36,6 +36,6 @@ public interface EquipmentRepositoryJpa extends JpaRepository<EquipmentEntity, L
 
     long countByAvailableTrue();
 
-    long countByAvailableFalse();
+    long countByMarkReportTrue();
 
 }

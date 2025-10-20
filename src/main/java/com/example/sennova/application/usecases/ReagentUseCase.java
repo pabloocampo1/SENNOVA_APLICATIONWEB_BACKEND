@@ -1,5 +1,6 @@
 package com.example.sennova.application.usecases;
 
+import com.example.sennova.application.dto.inventory.ReagentInventory.ReagentSummaryStatistics;
 import com.example.sennova.application.dto.inventory.ReagentInventory.UsageReagentRequest;
 import com.example.sennova.domain.model.ReagentModel;
 import com.example.sennova.infrastructure.persistence.entities.inventoryReagentsEntities.ReagentMediaFilesEntity;
@@ -30,6 +31,7 @@ public interface ReagentUseCase {
     ReagentModel changeState(Long reagentId, String state);
     ReagentsUsageRecords saveUsage(UsageReagentRequest usageReagentRequest);
     List<ReagentsUsageRecords> getUsagesByReagentId(Long reagentId);
+    ReagentSummaryStatistics getSummaryStatics();
 
 
 

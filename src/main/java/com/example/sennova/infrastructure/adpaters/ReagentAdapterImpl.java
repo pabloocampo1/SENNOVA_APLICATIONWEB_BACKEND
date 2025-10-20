@@ -1,5 +1,7 @@
 package com.example.sennova.infrastructure.adpaters;
 
+import com.example.sennova.application.dto.inventory.ReagentInventory.ReagentSummaryStatistics;
+import com.example.sennova.domain.constants.ReagentStateCons;
 import com.example.sennova.domain.model.LocationModel;
 import com.example.sennova.domain.model.ReagentModel;
 import com.example.sennova.domain.port.ReagentPersistencePort;
@@ -104,6 +106,16 @@ public class ReagentAdapterImpl implements ReagentPersistencePort {
     @Override
     public void deleteById(Long id) {
         this.reagentRepositoryJpa.deleteById(id);
+    }
+
+    @Override
+    public ReagentSummaryStatistics getSummaryStatics() {
+
+        long all = this.reagentRepositoryJpa.count();
+        long allByLowStock = this.reagentRepositoryJpa.countByQuantityLessThanEqual(0);
+        long allExpired = this.reagentRepositoryJpa.countByStateExpiration(ReagentStateCons.STATE_EXPIRED);
+
+        return new ReagentSummaryStatistics(all, allExpired, allByLowStock);
     }
 
 

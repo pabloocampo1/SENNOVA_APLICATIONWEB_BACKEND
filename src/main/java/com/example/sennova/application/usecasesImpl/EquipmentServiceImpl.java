@@ -367,13 +367,13 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
     public Map<String, Long> getSummaryStatics() {
         long count = this.equipmentPersistencePort.countTotal();
         long countAvailableTrue = this.equipmentPersistencePort.countByAvailableTrue();
-        long countAvailableFalse = this.equipmentPersistencePort.countByAvailableFalse();
+        long countByMarkReportTrue = this.equipmentPersistencePort.countReported();
         long countMaintenanceMonth = this.equipmentPersistencePort.countByMaintenanceMonth();
 
         Map<String, Long> mapObject = new HashMap<>();
         mapObject.put("countAll", count);
         mapObject.put("countAvailableTrue", countAvailableTrue);
-        mapObject.put("countAvailableFalse", countAvailableFalse);
+        mapObject.put("countReported", countByMarkReportTrue);
         mapObject.put("countMaintenanceMonth", countMaintenanceMonth);
 
         return mapObject;

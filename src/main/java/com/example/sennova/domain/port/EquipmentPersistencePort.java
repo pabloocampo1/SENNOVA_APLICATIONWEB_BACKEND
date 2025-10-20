@@ -29,7 +29,7 @@ public interface EquipmentPersistencePort {
     Boolean existsByInternalCode(String internalCode);
     EquipmentEntity findEntityById(Long id);
     long countByAvailableTrue();
-    long countByAvailableFalse();
+    long countReported();
     long countByMaintenanceMonth();
     long countTotal();
     List<EquipmentModel> findAllByMaintenanceDate(LocalDate currentDate);

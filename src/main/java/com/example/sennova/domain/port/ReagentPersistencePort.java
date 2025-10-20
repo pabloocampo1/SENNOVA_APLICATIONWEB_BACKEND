@@ -1,5 +1,6 @@
 package com.example.sennova.domain.port;
 
+import com.example.sennova.application.dto.inventory.ReagentInventory.ReagentSummaryStatistics;
 import com.example.sennova.domain.model.LocationModel;
 import com.example.sennova.domain.model.ReagentModel;
 import com.example.sennova.infrastructure.persistence.entities.inventoryReagentsEntities.ReagentsEntity;
@@ -23,5 +24,6 @@ public interface ReagentPersistencePort {
     ReagentModel findById(Long id);
     ReagentsEntity findEntityById(Long id);
     void deleteById(Long id);
+    ReagentSummaryStatistics getSummaryStatics();
 
 }

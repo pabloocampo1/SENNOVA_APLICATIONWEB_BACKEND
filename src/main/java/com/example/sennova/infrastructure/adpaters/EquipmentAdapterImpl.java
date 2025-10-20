@@ -157,8 +157,8 @@ public class EquipmentAdapterImpl implements EquipmentPersistencePort {
     }
 
     @Override
-    public long countByAvailableFalse() {
-        return this.equipmentRepositoryJpa.countByAvailableFalse();
+    public long countReported() {
+        return this.equipmentRepositoryJpa.countByMarkReportTrue();
     }
 
     @Override

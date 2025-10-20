@@ -2,6 +2,7 @@ package com.example.sennova.web.controllers;
 
 import com.example.sennova.application.dto.inventory.ReagentInventory.ReagentRequestDto;
 import com.example.sennova.application.dto.inventory.ReagentInventory.ReagentResponseDto;
+import com.example.sennova.application.dto.inventory.ReagentInventory.ReagentSummaryStatistics;
 import com.example.sennova.application.dto.inventory.ReagentInventory.UsageReagentRequest;
 import com.example.sennova.application.mapper.ReagentMapper;
 import com.example.sennova.application.usecases.ReagentUseCase;
@@ -39,6 +40,11 @@ public class ReagentController {
     public ResponseEntity<List<ReagentResponseDto>> getAll() {
         List<ReagentModel> reagentModels = this.reagentUseCase.getAll();
         return new ResponseEntity<>(reagentModels.stream().map(this.reagentMapper::toResponse).toList(), HttpStatus.OK);
+    }
+
+    @GetMapping("/get-summary-inventory")
+    public ResponseEntity<ReagentSummaryStatistics> getSummaryInventory() {
+        return new ResponseEntity<>(this.reagentUseCase.getSummaryStatics(), HttpStatus.OK);
     }
 
     @GetMapping("/getAll/page")
