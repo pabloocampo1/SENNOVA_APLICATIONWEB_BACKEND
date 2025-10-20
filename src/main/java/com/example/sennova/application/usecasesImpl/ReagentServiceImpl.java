@@ -8,12 +8,15 @@ import com.example.sennova.application.usecases.ReagentUseCase;
 import com.example.sennova.application.usecases.UsageUseCase;
 import com.example.sennova.application.usecases.UserUseCase;
 import com.example.sennova.domain.constants.ReagentStateCons;
+import com.example.sennova.domain.constants.RoleConstantsNotification;
+import com.example.sennova.domain.constants.TypeNotifications;
 import com.example.sennova.domain.constants.UnitsOfMeasureEnum;
 import com.example.sennova.domain.model.LocationModel;
 import com.example.sennova.domain.model.ReagentModel;
 import com.example.sennova.domain.model.UsageModel;
 import com.example.sennova.domain.model.UserModel;
 import com.example.sennova.domain.port.ReagentPersistencePort;
+import com.example.sennova.infrastructure.persistence.entities.Notifications;
 import com.example.sennova.infrastructure.persistence.entities.inventoryReagentsEntities.ReagentMediaFilesEntity;
 import com.example.sennova.infrastructure.persistence.entities.inventoryReagentsEntities.ReagentsEntity;
 import com.example.sennova.infrastructure.persistence.entities.inventoryReagentsEntities.ReagentsUsageRecords;
@@ -45,9 +48,10 @@ public class ReagentServiceImpl implements ReagentUseCase {
     private final ReagentMediaFileRepository reagentMediaFileRepository;
     private final UsageUseCase usageUseCase;
     private final UsageReagentRepositoryJpa usageReagentRepositoryJpa;
+    private final NotificationsService notificationsService;
 
     @Autowired
-    public ReagentServiceImpl(ReagentPersistencePort reagentPersistencePort, CloudinaryService cloudinaryService, LocationUseCase locationUseCase, UserUseCase userUseCase, UserMapper userMapper, ReagentMediaFileRepository reagentMediaFileRepository, UsageUseCase usageUseCase, UsageReagentRepositoryJpa usageReagentRepositoryJpa) {
+    public ReagentServiceImpl(ReagentPersistencePort reagentPersistencePort, CloudinaryService cloudinaryService, LocationUseCase locationUseCase, UserUseCase userUseCase, UserMapper userMapper, ReagentMediaFileRepository reagentMediaFileRepository, UsageUseCase usageUseCase, UsageReagentRepositoryJpa usageReagentRepositoryJpa, NotificationsService notificationsService) {
         this.reagentPersistencePort = reagentPersistencePort;
         this.cloudinaryService = cloudinaryService;
         this.locationUseCase = locationUseCase;
@@ -56,6 +60,7 @@ public class ReagentServiceImpl implements ReagentUseCase {
         this.reagentMediaFileRepository = reagentMediaFileRepository;
         this.usageUseCase = usageUseCase;
         this.usageReagentRepositoryJpa = usageReagentRepositoryJpa;
+        this.notificationsService = notificationsService;
     }
 
 
@@ -183,6 +188,8 @@ public class ReagentServiceImpl implements ReagentUseCase {
             existing.setState(ReagentStateCons.WITH_STOCK);
         } else {
             existing.setState(ReagentStateCons.LOW_STOCK);
+            // send and save notification
+            this.saveNotification(reagentModel);
         }
 
         // add image or no
@@ -204,6 +211,18 @@ public class ReagentServiceImpl implements ReagentUseCase {
 
 
         return reagentPersistencePort.save(existing);
+    }
+
+    @Transactional
+    public void saveNotification(ReagentModel reagentModel){
+        Notifications newNotification = new Notifications();
+        newNotification.setMessage("El reactivo  " + reagentModel.getReagentName() + " esta bajo de stock.");
+        newNotification.setType(TypeNotifications.NEW_EQUIPMENT);
+        newNotification.setActorUser("System");
+        newNotification.setImageUser(null);
+        newNotification.setTags(List.of(RoleConstantsNotification.ROLE_ADMIN, RoleConstantsNotification.ROLE_SUPERADMIN, RoleConstantsNotification.ROLE_ANALYSIS));
+
+        this.notificationsService.saveNotification(newNotification);
     }
 
     @Override
@@ -338,7 +357,10 @@ public class ReagentServiceImpl implements ReagentUseCase {
             reagent.setState(ReagentStateCons.WITH_STOCK);
         } else {
             reagent.setState(ReagentStateCons.LOW_STOCK);
+            this.saveNotification(reagent);
         }
+
+        if (reagent.getQuantity() <= 0) this.saveNotification(reagent);
 
         return this.reagentPersistencePort.save(reagent);
     }
@@ -352,6 +374,9 @@ public class ReagentServiceImpl implements ReagentUseCase {
             case "SIN CONTENIDO":
                 reagent.setState(ReagentStateCons.LOW_STOCK);
                 reagent.setQuantity(0);
+
+                // save and send notification
+                this.saveNotification(reagent);
                 ;
 
             case "CON CONTENIDO":
@@ -383,6 +408,7 @@ public class ReagentServiceImpl implements ReagentUseCase {
         if (newQuantity >= 1) {
             reagentModel.setState(ReagentStateCons.WITH_STOCK);
         } else {
+            this.saveNotification(reagentModel);
             reagentModel.setState(ReagentStateCons.LOW_STOCK);
         }
 

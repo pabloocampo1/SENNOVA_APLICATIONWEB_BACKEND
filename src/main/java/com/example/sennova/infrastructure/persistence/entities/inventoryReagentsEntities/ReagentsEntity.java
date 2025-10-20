@@ -81,6 +81,6 @@ public class ReagentsEntity {
     @OneToMany(mappedBy = "reagentEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReagentMediaFilesEntity> mediaFiles;
 
-    @OneToMany(mappedBy = "reagent", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "reagent", cascade = CascadeType.REMOVE)
     private List<ReagentsUsageRecords> reagentsUsageRecordsList;
 }
