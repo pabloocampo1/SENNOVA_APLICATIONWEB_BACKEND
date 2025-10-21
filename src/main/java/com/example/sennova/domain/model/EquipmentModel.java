@@ -49,10 +49,8 @@ public class EquipmentModel {
 
     private Boolean available;
 
-    @NotNull(message = "Debe existir un responsable asignado")
     private UserModel responsible;
 
-    @NotNull(message = "Debe estar asignado a una ubicación")
     private LocationModel location;
 
     private UsageModel usage;

@@ -4,10 +4,13 @@ import com.example.sennova.application.dto.inventory.ReagentInventory.ReagentSum
 import com.example.sennova.domain.constants.ReagentStateCons;
 import com.example.sennova.domain.model.LocationModel;
 import com.example.sennova.domain.model.ReagentModel;
+import com.example.sennova.domain.model.UsageModel;
 import com.example.sennova.domain.port.ReagentPersistencePort;
 import com.example.sennova.infrastructure.mapperDbo.LocationMapperDbo;
 import com.example.sennova.infrastructure.mapperDbo.ReagentMapperDbo;
+import com.example.sennova.infrastructure.mapperDbo.UsageMapperDbo;
 import com.example.sennova.infrastructure.persistence.entities.LocationEntity;
+import com.example.sennova.infrastructure.persistence.entities.UsageEntity;
 import com.example.sennova.infrastructure.persistence.entities.inventoryReagentsEntities.ReagentsEntity;
 import com.example.sennova.infrastructure.persistence.repositoryJpa.ReagentRepositoryJpa;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +27,14 @@ public class ReagentAdapterImpl implements ReagentPersistencePort {
     private final ReagentRepositoryJpa reagentRepositoryJpa;
     private final ReagentMapperDbo reagentMapperDbo;
     private final LocationMapperDbo locationMapperDbo;
+    private final UsageMapperDbo usageMapperDbo;
 
     @Autowired
-    public ReagentAdapterImpl(ReagentRepositoryJpa reagentRepositoryJpa, ReagentMapperDbo reagentMapperDbo, LocationMapperDbo locationMapperDbo) {
+    public ReagentAdapterImpl(ReagentRepositoryJpa reagentRepositoryJpa, ReagentMapperDbo reagentMapperDbo, LocationMapperDbo locationMapperDbo, UsageMapperDbo usageMapperDbo) {
         this.reagentRepositoryJpa = reagentRepositoryJpa;
         this.reagentMapperDbo = reagentMapperDbo;
         this.locationMapperDbo = locationMapperDbo;
+        this.usageMapperDbo = usageMapperDbo;
     }
 
 
@@ -88,6 +93,13 @@ public class ReagentAdapterImpl implements ReagentPersistencePort {
     public List<ReagentModel> findAllByInventoryTag(String inventoryTag) {
         List<ReagentsEntity> reagentsEntities = this.reagentRepositoryJpa.findAllBySenaInventoryTagContainingIgnoreCase(inventoryTag);
         return reagentsEntities.stream().map(this.reagentMapperDbo::toModel).toList();
+    }
+
+    @Override
+    public List<ReagentModel> findAllByUsage(UsageModel usageModel) {
+        UsageEntity usage = this.usageMapperDbo.toEntity(usageModel);
+        List<ReagentsEntity> entitiesByUsage = this.reagentRepositoryJpa.findAllByUsage(usage);
+        return entitiesByUsage.stream().map(this.reagentMapperDbo::toModel).toList();
     }
 
     @Override

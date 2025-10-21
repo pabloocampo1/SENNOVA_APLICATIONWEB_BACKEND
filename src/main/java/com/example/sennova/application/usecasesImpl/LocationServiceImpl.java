@@ -1,8 +1,12 @@
 package com.example.sennova.application.usecasesImpl;
 
 import com.example.sennova.application.usecases.LocationUseCase;
+import com.example.sennova.domain.model.EquipmentModel;
 import com.example.sennova.domain.model.LocationModel;
+import com.example.sennova.domain.model.ReagentModel;
+import com.example.sennova.domain.port.EquipmentPersistencePort;
 import com.example.sennova.domain.port.LocationPersistencePort;
+import com.example.sennova.domain.port.ReagentPersistencePort;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +21,14 @@ import java.util.List;
 public class LocationServiceImpl implements LocationUseCase {
 
     private final LocationPersistencePort locationPersistencePort;
+    private final EquipmentPersistencePort equipmentPersistencePort;
+    private final ReagentPersistencePort reagentPersistencePort;
 
     @Autowired
-    public LocationServiceImpl(LocationPersistencePort locationPersistencePort) {
+    public LocationServiceImpl(LocationPersistencePort locationPersistencePort, EquipmentPersistencePort equipmentPersistencePort, ReagentPersistencePort reagentPersistencePort) {
         this.locationPersistencePort = locationPersistencePort;
+        this.equipmentPersistencePort = equipmentPersistencePort;
+        this.reagentPersistencePort = reagentPersistencePort;
     }
 
     @Override
@@ -57,9 +65,20 @@ public class LocationServiceImpl implements LocationUseCase {
 
     @Override
     public void deleteById(Long id) {
-        if(!this.locationPersistencePort.existById(id)){
-            throw new IllegalArgumentException("No se pudo realizar la accion, intentalo de nuevo");
+        LocationModel locationModel = this.locationPersistencePort.findById(id);
+        List<EquipmentModel> listEquipment = this.equipmentPersistencePort.findAllByLocation(locationModel);
+
+        for (EquipmentModel equipment : listEquipment){
+            equipment.setLocation(null);
+            this.equipmentPersistencePort.save(equipment);
         }
+
+        List<ReagentModel> reagentList = this.reagentPersistencePort.findAllByLocation(locationModel);
+        for (ReagentModel reagent : reagentList){
+            reagent.setLocation(null);
+            this.reagentPersistencePort.save(reagent);
+        }
+
         this.locationPersistencePort.deleteById(id);
     }
 

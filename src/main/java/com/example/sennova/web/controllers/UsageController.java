@@ -67,7 +67,7 @@ public class UsageController {
     @GetMapping("/getAllPage")
     public ResponseEntity<Page<UsageResponseDto>> getAllPage(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "6") int elements
+            @RequestParam(defaultValue = "15") int elements
     ){
         Pageable pageable = PageRequest.of(page, elements, Sort.by("createAt").descending() );
         return new ResponseEntity<>(this.usageUseCase.getAll(pageable).map(this.usageMapper::toResponse), HttpStatus.OK);

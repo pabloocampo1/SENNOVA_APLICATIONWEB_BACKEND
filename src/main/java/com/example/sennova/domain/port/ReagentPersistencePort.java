@@ -3,6 +3,7 @@ package com.example.sennova.domain.port;
 import com.example.sennova.application.dto.inventory.ReagentInventory.ReagentSummaryStatistics;
 import com.example.sennova.domain.model.LocationModel;
 import com.example.sennova.domain.model.ReagentModel;
+import com.example.sennova.domain.model.UsageModel;
 import com.example.sennova.infrastructure.persistence.entities.inventoryReagentsEntities.ReagentsEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ public interface ReagentPersistencePort {
     List<ReagentModel> findAllByExpirationDate(LocalDate currentDate);
     List<ReagentModel> findAllByLocation(LocationModel locationModel);
     List<ReagentModel> findAllByInventoryTag(String inventoryTag);
+    List<ReagentModel> findAllByUsage(UsageModel usageModel);
     ReagentModel findById(Long id);
     ReagentsEntity findEntityById(Long id);
     void deleteById(Long id);

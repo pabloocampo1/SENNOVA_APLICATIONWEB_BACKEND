@@ -71,16 +71,16 @@ public class EquipmentEntity {
 
     // fk with other entities
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private UserEntity responsible;
 
-    @ManyToOne()
-    @JoinColumn(name = "location_id", referencedColumnName = "location_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "location_id", referencedColumnName = "location_id", nullable = true)
     private LocationEntity location;
 
 
     @ManyToOne
-    @JoinColumn(name = "usage_id", referencedColumnName = "usage_id")
+    @JoinColumn(name = "usage_id", referencedColumnName = "usage_id", nullable = true)
     private UsageEntity usage;
 
     // instance of reference for relationship
