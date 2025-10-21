@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface EquipmentRepositoryJpa extends JpaRepository<EquipmentEntity, Long> {
 
-    boolean existsBySerialNumber(Long serialNumber);
+    boolean existsBySerialNumber(String serialNumber);
 
 
     @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM EquipmentEntity e WHERE e.internalCode = :internalCode")

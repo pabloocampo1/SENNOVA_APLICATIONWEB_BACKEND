@@ -24,7 +24,7 @@ public record EquipmentRequestDto(
 
         @NotNull(message = "El número de serie es obligatorio")
         @Positive(message = "El número de serie debe ser un valor positivo")
-        Long serialNumber,
+        String serialNumber,
 
         String senaInventoryTag,
 

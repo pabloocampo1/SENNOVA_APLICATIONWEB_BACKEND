@@ -16,6 +16,7 @@ public interface UserRepositoryJpa extends JpaRepository<UserEntity, Long> {
     @Query(value = "SELECT * FROM users WHERE username = :username", nativeQuery = true)
     Optional<UserEntity> findByUsername(@Param("username") String username);
 
+
     List<UserEntity> findAllByNameContainingIgnoreCase(String name);
     List<UserEntity> findAllByDni(Long dni);
 

@@ -16,4 +16,5 @@ public interface UsagePersistencePort {
     UsageModel findById(Long id);
     void deleteById(Long id);
 
+
 }

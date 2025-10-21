@@ -80,7 +80,7 @@ public class EquipmentServiceImpl implements EquipmentUseCase {
                 && !state.equals(EquipmentConstants.STATUS_OUT_OF_SERVICE));
 
         // validate if the number serial is unique
-        Long serialNumber = equipmentModel.getSerialNumber();
+        String serialNumber = equipmentModel.getSerialNumber();
         if (this.equipmentPersistencePort.existsBySerialNumber(serialNumber)) {
             throw new IllegalArgumentException("El numero serial ya existe. Debe de ser unico.");
         }

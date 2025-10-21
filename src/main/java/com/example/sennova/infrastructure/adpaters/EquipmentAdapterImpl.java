@@ -136,7 +136,7 @@ public class EquipmentAdapterImpl implements EquipmentPersistencePort {
     }
 
     @Override
-    public Boolean existsBySerialNumber(Long serialNumber) {
+    public Boolean existsBySerialNumber(String serialNumber) {
         return this.equipmentRepositoryJpa.existsBySerialNumber(serialNumber);
     }
 

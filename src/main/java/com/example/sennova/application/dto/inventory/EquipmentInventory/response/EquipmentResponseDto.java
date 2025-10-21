@@ -10,7 +10,7 @@ public record EquipmentResponseDto(
         String equipmentName,
         String brand,
         String model,
-        Long serialNumber,
+        String serialNumber,
         LocalDate acquisitionDate,
         Boolean markReport,
         LocalDate maintenanceDate,

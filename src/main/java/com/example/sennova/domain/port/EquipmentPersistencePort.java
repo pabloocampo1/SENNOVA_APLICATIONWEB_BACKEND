@@ -25,7 +25,7 @@ public interface EquipmentPersistencePort {
     List<EquipmentModel> findAllByLocation(LocationModel locationModel);
     List<EquipmentModel> findAllByUsage(UsageModel usageModel);
     void delete(Long id);
-    Boolean existsBySerialNumber(Long serialNumber);
+    Boolean existsBySerialNumber(String serialNumber);
     Boolean existsByInternalCode(String internalCode);
     EquipmentEntity findEntityById(Long id);
     long countByAvailableTrue();

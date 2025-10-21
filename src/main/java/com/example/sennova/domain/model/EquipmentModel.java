@@ -27,7 +27,7 @@ public class EquipmentModel {
 
     @NotNull(message = "El número de serie es obligatorio")
     @Positive(message = "El número de serie debe ser positivo")
-    private Long serialNumber;
+    private String serialNumber;
 
     @PastOrPresent(message = "La fecha de adquisición no puede estar en el futuro")
     private LocalDate acquisitionDate;
@@ -125,11 +125,11 @@ public class EquipmentModel {
         this.imageUrl = imageUrl;
     }
 
-    public Long getSerialNumber() {
+    public String getSerialNumber() {
         return serialNumber;
     }
 
-    public void setSerialNumber(Long serialNumber) {
+    public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
 
