@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface ProductUseCase {
     Page<ProductModel> getAll(Pageable pageable);
+    List<ProductModel> all();
     ProductModel getById(Long id);
     List<ProductModel> getByName(String name);
     void deleteProduct(Long id);

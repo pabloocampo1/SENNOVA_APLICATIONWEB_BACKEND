@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -65,6 +66,7 @@ public class UserServiceImpl implements UserUseCase {
             userModel.setAvailable(userSaveRequest.available());
             userModel.setNotifyEquipment(true);
             userModel.setNotifyResults(true);
+            userModel.setCreateAt(LocalDate.now());
             userModel.setNotifyQuotes(true);
             userModel.setNotifyReagents(true);
 

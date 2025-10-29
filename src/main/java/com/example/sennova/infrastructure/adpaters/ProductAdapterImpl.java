@@ -49,6 +49,20 @@ public class ProductAdapterImpl implements ProductPersistencePort {
     }
 
     @Override
+    public List<ProductModel> all() {
+         List<ProductEntity> productEntities1prueba = this.productRepositoryJpa.findAll();
+         List<ProductEntity> productEntitiesPruebaCompletedAndSave = productEntities1prueba.stream().map(productEntity -> {
+             productEntity.setAvailable(true);
+            return this.productRepositoryJpa.save(productEntity);
+
+         }).toList();
+
+         List<ProductEntity> productEntities = this.productRepositoryJpa.findAllByAvailableTrue();
+         List<ProductModel> productModelList = productEntities.stream().map(this.productMapperDbo::toModel).toList();
+        return productModelList;
+    }
+
+    @Override
     public void deleteById(Long id) {
          if (!this.productRepositoryJpa.existsById(id)){
              throw new UsernameNotFoundException("no se encontro el usuario");

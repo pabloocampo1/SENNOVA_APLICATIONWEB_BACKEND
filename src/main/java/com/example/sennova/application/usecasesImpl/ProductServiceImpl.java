@@ -34,6 +34,11 @@ public class ProductServiceImpl implements ProductUseCase {
     }
 
     @Override
+    public List<ProductModel> all() {
+        return this.productPersistencePort.all();
+    }
+
+    @Override
     public ProductModel getById(@Valid Long id) {
         return this.productPersistencePort.findById(id);
     }

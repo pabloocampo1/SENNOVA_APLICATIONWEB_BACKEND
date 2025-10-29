@@ -215,7 +215,7 @@ public class ReagentServiceImpl implements ReagentUseCase {
     }
 
     @Transactional
-    public void saveNotification(ReagentModel reagentModel){
+    public void saveNotification(ReagentModel reagentModel) {
         Notifications newNotification = new Notifications();
         newNotification.setMessage("El reactivo  " + reagentModel.getReagentName() + " esta bajo de stock.");
         newNotification.setType(TypeNotifications.NEW_EQUIPMENT);

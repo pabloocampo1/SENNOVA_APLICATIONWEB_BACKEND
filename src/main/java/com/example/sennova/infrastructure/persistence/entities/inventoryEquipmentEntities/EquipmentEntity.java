@@ -15,6 +15,21 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
+
+/**
+ * ⚠️ TEMPORARY NOTE:
+ * Certain validation constraints (e.g., not-null, unique fields) were relaxed
+ * to allow bulk equipment import from Excel files.
+ *
+ * If this data-loading process is complete, re-enable the validation logic
+ * in both the entity and service layers to maintain database integrity.
+ *
+ * Context: The import process bypasses some standard validations to prevent
+ * constraint violations when inserting legacy or incomplete records.
+ */
+
+
 @Entity
 @Table(name = "equipment")
 @Data
@@ -36,7 +51,7 @@ public class EquipmentEntity {
     private String model;
 
     @Column(unique = true, nullable = false)
-    private Long serialNumber;
+    private String serialNumber;
 
     private Boolean markReport;
 
@@ -67,6 +82,8 @@ public class EquipmentEntity {
     @LastModifiedDate
     private LocalDateTime updateAt;
 
+    @Lob
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String description;
 
     // fk with other entities
@@ -98,6 +115,7 @@ public class EquipmentEntity {
 
 
 }
+
 
 
 

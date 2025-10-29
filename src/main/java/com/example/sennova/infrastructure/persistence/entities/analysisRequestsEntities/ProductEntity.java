@@ -44,6 +44,8 @@ public class ProductEntity {
     @LastModifiedDate
     private LocalDate updateAt;
 
+    private Boolean available;
+
     @Column(length = 500)
     private String notes;
 

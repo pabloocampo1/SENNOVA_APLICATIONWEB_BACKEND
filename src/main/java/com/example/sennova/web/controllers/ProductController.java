@@ -49,6 +49,12 @@ public class ProductController {
         return new ResponseEntity<>(this.productMapper.toResponse(this.productUseCase.getById(id)), HttpStatus.OK);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<ProductResponseBasicDto>> all(){
+        List<ProductModel> modelList = this.productUseCase.all();
+        return new ResponseEntity<>(modelList.stream().map(this.productMapper::toResponse).toList(), HttpStatus.OK);
+    }
+
     @GetMapping("/getByName/{name}")
     public ResponseEntity<List<ProductResponseBasicDto>> getByName(@PathVariable("name") String name) {
         return new ResponseEntity<>(this.productMapper.toResponse(this.productUseCase.getByName(name)), HttpStatus.OK);
