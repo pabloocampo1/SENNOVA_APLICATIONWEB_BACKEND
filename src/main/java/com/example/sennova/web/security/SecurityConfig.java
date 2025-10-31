@@ -85,6 +85,10 @@ public class SecurityConfig {
                             // Usages and location
 
 
+                            // test request
+                            request.requestMatchers(HttpMethod.POST, "/api/v1/testRequest/**").permitAll();
+
+
                             request.anyRequest().authenticated();
                         }
                 )

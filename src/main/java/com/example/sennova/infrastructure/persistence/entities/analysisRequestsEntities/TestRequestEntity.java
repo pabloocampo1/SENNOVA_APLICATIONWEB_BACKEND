@@ -19,20 +19,25 @@ import java.util.List;
 public class TestRequestEntity {
 
     @Id
-    @Column(nullable = false, unique = true, length = 100, name = "request_code")
-    private Long requestCode;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "test_request_id")
+    private Long testRequestId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true, length = 100, name = "request_code")
+    private String requestCode;
+
     private LocalDate testDate;
 
-    @Column(nullable = false)
-    private LocalDate Approval_date;
+    @Column(nullable = true)
+    private LocalDate ApprovalDate;
 
-    private LocalDate discard_date;
+    private LocalDate discardDate;
+
+    private LocalDate submissionDate;
 
     private double price;
 
-    private Boolean status;
+    private Boolean isApproved;
 
     @CreatedDate
     private LocalDate createAt;
@@ -45,7 +50,7 @@ public class TestRequestEntity {
 
     // relationships
 
-    @OneToMany(mappedBy = "test_request")
+    @OneToMany(mappedBy = "testRequest")
     private List<SampleEntity> sampleEntityList;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -55,7 +60,7 @@ public class TestRequestEntity {
     @ManyToMany
     @JoinTable(
             name = "test_user",
-            joinColumns = @JoinColumn(name = "request_code"),
+            joinColumns = @JoinColumn(name = "test_request_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<UserEntity> members;

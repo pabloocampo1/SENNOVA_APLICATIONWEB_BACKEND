@@ -16,14 +16,37 @@ import java.util.List;
 public class SampleEntity {
 
     @Id
-    @Column(nullable = false, unique = true, length = 200, name = "sample_code")
-    private String sampleCode;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, unique = true, name = "sample_id")
+    private Long sampleId;
 
     @Column(nullable = false)
     private String matrix;
 
-    @Column(length = 300)
+    @Lob
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String description;
+
+    @Column(nullable = false, unique = true)
+    private String sampleCode;
+
+    private LocalDate sampling_time;
+
+    private LocalDate sampling_date;
+
+    private double gross_weight;
+
+    private double temperature;
+
+    private String package_description;
+
+    private String storage_conditions;
+
+    private String observations;
+
+    private Boolean statusReception;
+
+    private String sampleImage;
 
     @CreatedDate
     private LocalDate createAt;
@@ -32,14 +55,10 @@ public class SampleEntity {
     private LocalDate updateAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "test_request_code", referencedColumnName = "request_code", nullable = false)
-    private TestRequestEntity test_request;
+    @JoinColumn(name = "test_request_id", referencedColumnName = "test_request_id", nullable = false)
+    private TestRequestEntity testRequest;
 
     @OneToMany(mappedBy = "sample")
-    private List<SampleProductAnalysisEntity> analysisEntities;
-
-    @OneToOne(mappedBy = "sample")
-    private SampleReception reception;
-
+    private List<SampleAnalysisEntity> analysisEntities;
 
 }

@@ -19,6 +19,6 @@ public class SampleProductDocumentResult {
 
     @ManyToOne
     @JoinColumn(name = "sample_product_analysis", referencedColumnName = "sample_product_analysis_id")
-    private SampleProductAnalysisEntity sampleProductAnalysis;
+    private SampleAnalysisEntity sampleProductAnalysis;
 
 }

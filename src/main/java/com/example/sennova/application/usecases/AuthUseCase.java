@@ -5,6 +5,5 @@ import com.example.sennova.application.dto.authDto.LoginResponseDto;
 
 public interface AuthUseCase {
     LoginResponseDto login(LoginRequestDto loginRequestDto);
-    // change password
-    // validate email
+   
 }

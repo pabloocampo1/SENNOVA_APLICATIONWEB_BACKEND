@@ -50,6 +50,6 @@ public class ProductEntity {
     private String notes;
 
     @OneToMany(mappedBy = "product")
-    private List<SampleProductAnalysisEntity> sampleProductAnalysisEntities;
+    private List<SampleAnalysisEntity> sampleProductAnalysisEntities;
 
 }
